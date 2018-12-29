@@ -111,7 +111,7 @@ public class StoreUserMoneyController {
 		//增加钱包增加金额
 		succ = userStoreMoneyService.awardMony(userId,storeId,awardMoney);
 		log.info("[orderAward]" + "增加钱包金额:" + succ);
-		//添加流水记录
+		//添加流水记录操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
 		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,awardMoney,1);
 		log.info("[orderAward]" + "增加账户流水成功:" + cnt);
 		return ResultGenerator.genSuccessResult("派奖成功");

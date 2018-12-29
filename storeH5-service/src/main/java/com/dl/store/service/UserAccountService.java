@@ -72,7 +72,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		String accountSn = SNGenerator.nextSN(SNBusinessCodeEnum.ACCOUNT_SN.getCode());
 		userAccount.setAmount(BigDecimal.ZERO.subtract(ticketAmt));
 		userAccount.setAccountSn(accountSn);
-		userAccount.setProcessType(3);
+		userAccount.setProcessType(processType);
 		userAccount.setThirdPartName("店铺-" + storeId);
 		userAccount.setThirdPartPaid(ticketAmt);
 		userAccount.setPayId(storeId+"");
