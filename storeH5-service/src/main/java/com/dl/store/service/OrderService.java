@@ -1412,7 +1412,7 @@ public class OrderService extends AbstractService<Order> {
      * @param orderSn
      * @return
      */
-	@Transactional("transactionManager3")
+	@Transactional("transactionManager1")
     public boolean updatePayStatus(String orderSn,BigDecimal money) {
     	boolean succ = false;
     	Order order = new Order();
@@ -1429,7 +1429,7 @@ public class OrderService extends AbstractService<Order> {
     	return succ;
     }
 	
-	@Transactional("transactionManager3")
+	@Transactional("transactionManager1")
 		public boolean updateOrderRollBack(String orderSn) {
 				boolean succ = false;
 				Order order = new Order();
@@ -1447,7 +1447,7 @@ public class OrderService extends AbstractService<Order> {
 	 * @param orderSn
 	 * @return
 	 */
-	@Transactional("transactionManager3")
+	@Transactional("transactionManager1")
 	public boolean updateAwardStatus(String orderSn) {
 		boolean succ = false;
 		Order order = new Order();
