@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dl.store.dao3.UserLoginLogMapper">
+  <resultMap id="BaseResultMap" type="com.dl.store.model.UserLoginLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="login_type" jdbcType="INTEGER" property="loginType" />
+    <result column="login_status" jdbcType="INTEGER" property="loginStatus" />
+    <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+    <result column="login_time" jdbcType="INTEGER" property="loginTime" />
+    <result column="logout_time" jdbcType="INTEGER" property="logoutTime" />
+    <result column="plat" jdbcType="VARCHAR" property="plat" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="mid" jdbcType="VARCHAR" property="mid" />
+    <result column="os" jdbcType="VARCHAR" property="os" />
+    <result column="w" jdbcType="VARCHAR" property="w" />
+    <result column="h" jdbcType="VARCHAR" property="h" />
+    <result column="imei" jdbcType="VARCHAR" property="imei" />
+    <result column="login_source" jdbcType="VARCHAR" property="loginSource" />
+    <result column="login_params" jdbcType="VARCHAR" property="loginParams" />
+    <result column="login_result" jdbcType="VARCHAR" property="loginResult" />
+    <result column="device_channel" jdbcType="VARCHAR" property="deviceChannel"/>
+    <result column="lon" jdbcType="DOUBLE" property="lon"/>
+    <result column="lat" jdbcType="DOUBLE" property="lat"/>
+    <result column="city" jdbcType="VARCHAR" property="city"/>
+    <result column="province" jdbcType="VARCHAR" property="province"/>
+  </resultMap>
+  
+  <select id="getLastLog" resultMap="BaseResultMap">
+  	select * from dl_user_login_log where user_id=#{userId} order by login_time desc limit 1
+  </select>
+  
+  <update id="updateLogOutTime">
+  	update dl_user_login_log set logout_time=#{logoutTime} where id=#{id}
+  </update>
+
+  
+</mapper>

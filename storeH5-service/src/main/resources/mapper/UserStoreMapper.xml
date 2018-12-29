@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dl.store.dao3.UserStoreMoneyMapper">
+  <resultMap id="BaseResultMap" type="com.dl.store.model.UserStoreMoney">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="store_id" jdbcType="INTEGER" property="storeId" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="last_time" jdbcType="INTEGER" property="lastTime" />
+  </resultMap>
+
+	
+  <select id = "queryInfo" resultMap="BaseResultMap" parameterType="com.dl.store.model.UserStoreMoney">
+    select * from dl_user_store_money where user_id = #{userId} and store_id = #{storeId}
+  </select>
+  
+  
+   <update id="orderPay" parameterType="com.dl.store.model.UserStoreMoney">
+    	 UPDATE dl_user_store_money
+			 <trim prefix="set" suffixOverrides=",">
+			  <if test="money!=null">money=#{money},</if>
+			 </trim>
+		 WHERE user_id=#{userId}  and store_id = #{storeId}
+  </update>
+  
+</mapper>

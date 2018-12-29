@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dl.store.dao3.LotteryClassifyMapper">
+  <resultMap id="BaseResultMap" type="com.dl.store.model.LotteryClassify">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="lottery_classify_id" jdbcType="INTEGER" property="lotteryClassifyId" />
+    <result column="lottery_name" jdbcType="VARCHAR" property="lotteryName" />
+    <result column="lottery_img" jdbcType="VARCHAR" property="lotteryImg" />
+    <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+    <result column="status_reason" jdbcType="VARCHAR" property="statusReason" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_show" jdbcType="INTEGER" property="isShow" />
+    <result column="create_time" jdbcType="INTEGER" property="createTime" />
+    <result column="redirect_url" jdbcType="VARCHAR" property="redirectUrl" />
+  </resultMap>
+  
+  <select id="selectAllLotteryClassData" resultMap="BaseResultMap">
+        select
+           lottery_name,
+           sub_title,
+           lottery_img,
+           redirect_url
+        from
+            dl_lottery_classify
+        where 
+           status = 0 and is_show = 1
+        order by sort asc, create_time desc
+  </select>
+  
+  <select id="selectAllLotteryClasses" resultMap="BaseResultMap">
+        select
+           lottery_classify_id,
+           lottery_name,
+           lottery_img,
+           sub_title,
+           status_reason,
+           status,
+           redirect_url
+        from
+            dl_lottery_classify
+        where is_show = 1
+        order by sort asc
+  </select>
+  
+  <select id="selectLotteryClassesById" resultMap="BaseResultMap">
+        select
+           lottery_classify_id,
+           lottery_name,
+           lottery_img,
+           sub_title,
+           status_reason,
+           status,
+           redirect_url
+        from
+            dl_lottery_classify
+        where is_show = 1 and lottery_classify_id  = #{lotteryClassifyId}
+        order by sort asc
+  </select>
+  
+</mapper>

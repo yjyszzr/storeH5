@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dl.store.dao3.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.dl.store.model.Order">
+    <id column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+    <result column="parent_sn" jdbcType="VARCHAR" property="parentSn" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+    <result column="print_lottery_status" jdbcType="DECIMAL" property="printLotteryStatus" />
+    <result column="print_lottery_refund_amount" jdbcType="INTEGER" property="printLotteryRefundAmount" />
+    <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+    <result column="pay_id" jdbcType="INTEGER" property="payId" />
+    <result column="pay_code" jdbcType="VARCHAR" property="payCode" />
+    <result column="pay_name" jdbcType="VARCHAR" property="payName" />
+    <result column="pay_sn" jdbcType="VARCHAR" property="paySn" />
+    <result column="money_paid" jdbcType="DECIMAL" property="moneyPaid" />
+    <result column="ticket_amount" jdbcType="DECIMAL" property="ticketAmount" />
+    <result column="surplus" jdbcType="DECIMAL" property="surplus" />
+    <result column="user_surplus" jdbcType="DECIMAL" property="userSurplus" />
+    <result column="user_surplus_limit" jdbcType="DECIMAL" property="userSurplusLimit" />
+    <result column="third_party_paid" jdbcType="DECIMAL" property="thirdPartyPaid" />
+    <result column="user_bonus_id" jdbcType="INTEGER" property="userBonusId" />
+    <result column="bonus" jdbcType="DECIMAL" property="bonus" />
+    <result column="give_integral" jdbcType="INTEGER" property="giveIntegral" />
+    <result column="order_from" jdbcType="VARCHAR" property="orderFrom" />
+    <result column="add_time" jdbcType="INTEGER" property="addTime" />
+    <result column="pay_time" jdbcType="INTEGER" property="payTime" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
+    <result column="lottery_classify_id" jdbcType="INTEGER" property="lotteryClassifyId" />
+    <result column="lottery_play_classify_id" jdbcType="INTEGER" property="lotteryPlayClassifyId" />
+    <result column="match_time" jdbcType="TIMESTAMP" property="matchTime" />
+    <result column="winning_money" jdbcType="DECIMAL" property="winningMoney" />
+    <result column="pass_type" jdbcType="VARCHAR" property="passType" />
+    <result column="play_type" jdbcType="VARCHAR" property="playType" />
+    <result column="cathectic" jdbcType="INTEGER" property="cathectic" />
+    <result column="bet_num" jdbcType="VARCHAR" property="betNum" />
+    <result column="accept_time" jdbcType="INTEGER" property="acceptTime" />
+    <result column="ticket_time" jdbcType="INTEGER" property="ticketTime" />
+    <result column="forecast_money" jdbcType="DECIMAL" property="forecastMoney" />
+    <result column="issue" jdbcType="VARCHAR" property="issue" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="ticket_num" jdbcType="INTEGER" property="ticketNum" />
+    <result column="device_channel" jdbcType="VARCHAR" property="deviceChannel" />
+    <result column="award_time" jdbcType="VARCHAR" property="awardTime" />
+    <result column="pic" jdbcType="VARCHAR" property="pic" />
+    <result column="store_id" jdbcType="INTEGER" property="storeId" />
+  </resultMap>
+  <insert id="insertOrder" parameterType="com.dl.store.model.Order" useGeneratedKeys="true" keyProperty="orderId">
+  		insert into dl_order (order_sn,parent_sn,user_id,order_status,pay_status,pay_id,pay_code,pay_name,pay_sn,
+  		money_paid,ticket_amount,surplus,user_surplus,user_surplus_limit,third_party_paid,user_bonus_id,bonus,give_integral,order_from,
+  		add_time,pay_time,order_type,lottery_classify_id,lottery_play_classify_id,match_time,winning_money,pass_type,play_type,cathectic,bet_num,
+  		accept_time,ticket_time,forecast_money,issue,is_delete,device_channel,store_id)
+  		values (#{orderSn},#{parentSn},#{userId},#{orderStatus},#{payStatus},#{payId},#{payCode},#{payName},#{paySn},
+  		#{moneyPaid},#{ticketAmount},#{surplus},#{userSurplus},#{userSurplusLimit},#{thirdPartyPaid},#{userBonusId},#{bonus},#{giveIntegral},
+  		#{orderFrom},#{addTime},#{payTime},#{orderType},#{lotteryClassifyId},#{lotteryPlayClassifyId},#{matchTime},#{winningMoney},#{passType},#{playType},#{cathectic},#{betNum},
+  		#{acceptTime},#{ticketTime},#{forecastMoney},#{issue},#{isDelete},#{deviceChannel},#{storeId})
+  </insert>
+  
+  
+  <update id="deleteOrderByOrderSn">
+  		update dl_order set is_delete=1 where is_delete=0 and order_sn=#{orderSn}
+  </update>
+  
+  <update id="updatePayStatusByOrderSn" parameterType="com.dl.store.model.Order">
+  		update dl_order set order_status=#{orderStatus},pay_status=#{payStatus},pay_time=#{payTime},pay_code=#{payCode} where is_delete=0 and order_sn=#{orderSn}
+  </update>
+  
+    <select id="getOrderInfoList" resultType="com.dl.store.dto.OrderInfoListDTO">
+        select
+            do.order_id orderId,
+	        do.order_sn orderSn,
+	        do.order_status orderStatus,
+	        do.pay_status orderPayStatus,
+	        do.money_paid moneyPaid,
+	        do.ticket_amount ticketAmount,
+	        do.pay_time payTime,
+	        do.add_time addTime,
+	        do.match_time matchTime,
+	        do.winning_money winningMoney,
+	        do.lottery_play_classify_id lotteryPlayClassifyId,
+	        do.lottery_classify_id lotteryClassifyId,
+	        dlc.lottery_name lotteryName
+        from
+            dl_order do 
+        left join dl_lottery_classify dlc on do.lottery_classify_id = dlc.lottery_classify_id
+        where 
+            do.is_delete = 0 
+        and 
+            do.user_id in
+            <foreach collection="userIdList" item="item" index="index" open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+        and 
+        	do.add_time &gt; 1541061937
+        and 
+            do.order_status in 
+            <foreach collection="statusList" item="item" index="index" open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+        and 
+            do.store_id in 
+            <foreach collection="storeIdList" item="item" index="index" open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+        order by add_time desc
+  </select>
+    
+  <select id="getOrderInfoByOrderSn" resultMap="BaseResultMap">
+  		select  * from dl_order where order_sn = #{orderSn}
+  </select>
+  
+  
+    
+  <update id="updateWiningMoney">
+  	update dl_order set winning_money = #{winningMoney},order_status=#{orderStatus},award_time=#{awardTime} 
+  	where order_status=3 and order_sn = #{orderSn}
+  </update>
+  
+    <select id="queryOrderSnListUnOpenReward" resultType="java.lang.String">
+	   select order_sn
+	   from dl_order
+	   where order_status=3 AND pay_status=1 AND is_delete=0
+	   order by pay_time
+  </select>
+  
+  
+    
+  <select id="queryOrderListByOrder20minOut" parameterType = "com.dl.store.model.Order" resultMap="BaseResultMap">
+	   select 
+	        *
+	   from 
+	        dl_order
+	   where    pay_status = 0
+		        AND is_delete = 0
+		        AND (#{nowTime}-add_time) &gt; 1200
+	     order by add_time limit 80
+  </select>
+  
+    
+  <update id="batchUpdateOrderStatus0To8" >
+	 update dl_order set pay_status=2,order_status=8
+	 where pay_status=0 and order_sn in 
+	 <foreach collection="orderSnList" item="item" index="index" open="(" separator="," close=")">
+            	#{item}
+     </foreach>
+  </update>
+  
+  <select id="selectPaySuccessOrdersList" resultMap="BaseResultMap">
+  select * from dl_order where pay_status = 1 and order_status = 3 and is_delete!=1
+  </select>
+    <update id="updateOrderStatus6To5"> 
+   update dl_order set order_status = 5 WHERE order_sn =#{orderSn} and order_status = 6
+  </update>
+  
+   
+  <update id="updateOrderStatus6To7"> 
+   update dl_order set order_status = 7 WHERE order_sn =#{orderSn} and order_status = 6
+  </update>
+  
+  
+    
+ <select id="selectOpenedAllRewardOrderList" resultType="com.dl.store.dto.OrderWithUserDTO">
+     select 
+     	ticket_amount betMoney,
+     	add_time betTime,
+        order_sn orderSn,
+        user_id userId,
+        lottery_classify_id lotteryClassifyId,
+        winning_money realRewardMoney
+     from 
+        dl_order
+     where 
+        order_status = 9
+        and pay_status = 1
+        and is_delete = 0
+  </select>
+</mapper>

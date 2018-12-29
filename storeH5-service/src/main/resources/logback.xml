@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="LOG_DIR" value="/a/logs/app/store" />
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] - %msg %n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<appender name="rollingFileINFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/store-info.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_DIR}/info/store-info.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>		
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] - %msg %n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter> 
+	</appender>
+	
+	
+	<appender name="rollingFileERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/store-error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_DIR}/error/store-error.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>		
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] - %msg %n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter> 
+	</appender>
+
+	<logger name="com.dl.store" level="INFO" />
+	<logger name="org.springframework" level="INFO"/>
+	<logger name="com.dl.store.dao3" level="INFO" />
+	<logger name="com.alibaba.druid" level="WARN" />
+
+	<root level="INFO">
+		<appender-ref ref="console" />
+		<appender-ref ref="rollingFileINFO" />
+		<appender-ref ref="rollingFileERROR" />
+	</root>
+</configuration>

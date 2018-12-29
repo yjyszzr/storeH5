@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dl.store.dao3.DlDeviceActionControlMapper">
+  <resultMap id="BaseResultMap" type="com.dl.store.model.DlDeviceActionControl">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="mac" jdbcType="VARCHAR" property="mac" />
+    <result column="busi_type" jdbcType="INTEGER" property="busiType" />
+    <result column="alert_times" jdbcType="INTEGER" property="alertTimes" />
+    <result column="add_time" jdbcType="INTEGER" property="addTime" />
+    <result column="update_time" jdbcType="INTEGER" property="updateTime" />
+  </resultMap>
+
+  <select id = "queryDeviceByIMEI" resultMap="BaseResultMap">
+    select * from dl_device_action_control where mac = #{mac}
+  </select>
+
+  <select id = "queryDeviceAlertTimesForH5" resultMap="BaseResultMap">
+    select * from dl_device_action_control where mac = #{userId} and busi_type = #{busiType} and update_time &lt;= #{updateTime}
+  </select>
+
+  <update id="updateDeviceUpdateTime">
+    update dl_device_action_control set update_time = #{updateTime} where mac = #{mac}
+  </update>
+
+</mapper>

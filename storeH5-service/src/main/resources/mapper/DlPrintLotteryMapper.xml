@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dl.store.dao.DlPrintLotteryMapper">
+  <resultMap id="BaseResultMap" type="com.dl.store.model.DlPrintLottery">
+    <id column="print_lottery_id" jdbcType="INTEGER" property="printLotteryId" />
+    <result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+    <result column="ticket_id" jdbcType="VARCHAR" property="ticketId" />
+    <result column="accept_time" jdbcType="INTEGER" property="acceptTime" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="game" jdbcType="VARCHAR" property="game" />
+    <result column="issue" jdbcType="VARCHAR" property="issue" />
+    <result column="play_type" jdbcType="VARCHAR" property="playType" />
+    <result column="bet_type" jdbcType="VARCHAR" property="betType" />
+    <result column="times" jdbcType="INTEGER" property="times" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="stakes" jdbcType="VARCHAR" property="stakes" />
+    <result column="reward_stakes" jdbcType="VARCHAR" property="rewardStakes" />
+    <result column="error_code" jdbcType="INTEGER" property="errorCode" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="platform_id" jdbcType="VARCHAR" property="platformId" />
+    <result column="print_status" jdbcType="INTEGER" property="printStatus" />
+    <result column="print_sp" jdbcType="VARCHAR" property="printSp" />
+    <result column="print_no" jdbcType="VARCHAR" property="printNo" />
+    <result column="print_time" jdbcType="TIMESTAMP" property="printTime" />
+    <result column="real_reward_money" jdbcType="DECIMAL" property="realRewardMoney" />
+    <result column="third_part_reward_money" jdbcType="DECIMAL" property="thirdPartRewardMoney" />
+    <result column="compare_status" jdbcType="VARCHAR" property="compareStatus" />
+    <result column="third_reward_status" jdbcType="INTEGER" property="thirdRewardStatus" />
+    <result column="compared_stakes" jdbcType="VARCHAR" property="comparedStakes" />
+  </resultMap>
+  
+  <sql id="allFields">
+  print_lottery_id,order_sn,ticket_id,accept_time,merchant,game,issue,play_type,
+  bet_type,times,money,stakes,reward_stakes,error_code,status,platform_id,print_status,
+  print_sp,print_no,print_time,real_reward_money,third_part_reward_money,compare_status,
+  compared_stakes,third_reward_status
+  </sql>
+  
+ <insert id="batchInsertDlPrintLottery">
+  insert into dl_print_lottery
+  (game,merchant,ticket_id,accept_time,
+  bet_type,money,issue,play_type,
+  times,stakes,print_sp,order_sn,real_reward_money,
+  third_part_reward_money,compare_status,print_status,compared_stakes,reward_stakes,
+  status,print_lottery_com) values
+ <foreach collection="dlPrintLotterys" item="dlPrintLottery" separator=",">
+       (#{dlPrintLottery.game},#{dlPrintLottery.merchant},#{dlPrintLottery.ticketId},#{dlPrintLottery.acceptTime},
+        #{dlPrintLottery.betType},#{dlPrintLottery.money},#{dlPrintLottery.issue},#{dlPrintLottery.playType},
+        #{dlPrintLottery.times},#{dlPrintLottery.stakes},#{dlPrintLottery.printSp},#{dlPrintLottery.orderSn},#{dlPrintLottery.realRewardMoney},
+        #{dlPrintLottery.thirdPartRewardMoney},#{dlPrintLottery.compareStatus},#{dlPrintLottery.printStatus},#{dlPrintLottery.comparedStakes},#{dlPrintLottery.rewardStakes},
+        #{dlPrintLottery.status},#{dlPrintLottery.printLotteryCom})
+  </foreach>
+  </insert>
+  
+   <select id="getPrintLotteryListByGoOpenRewardOrderSns" resultMap="BaseResultMap">
+  	select 
+  	<include refid="allFields"></include>
+  	from dl_print_lottery 
+  	where status=1 and order_sn in 
+  	 <foreach collection="orderSns" item="orderSn" index="index" open="(" separator="," close=")">
+		#{orderSn}
+     </foreach>
+     order by order_sn
+  </select>
+  
+    <select id="printLotterysByOrderSn" resultMap="BaseResultMap">
+  	select 
+  	<include refid="allFields"></include>
+  	from dl_print_lottery 
+  	where order_sn=#{orderSn} 
+  </select>
+</mapper>
