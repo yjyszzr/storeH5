@@ -62,7 +62,7 @@ import com.dl.store.dao.DlPrintLotteryMapper;
 import com.dl.store.dao.OrderWithUserMapper;
 import com.dl.store.dao2.DlLeagueMatchResultMapper;
 import com.dl.store.dao3.OrderDetailMapper;
-import com.dl.store.dao3.OrderMapper;
+import com.dl.store.dao.OrderMapper;
 import com.dl.store.dto.LotteryPrintDTO;
 import com.dl.store.dto.OrderAppendInfoDTO;
 import com.dl.store.dto.OrderDTO;
@@ -97,6 +97,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional("transactionManager1")
 public class OrderService extends AbstractService<Order> {
 	
 	@Value("${dl.img.file.pre.url}")

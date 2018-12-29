@@ -23,7 +23,7 @@ import com.dl.base.util.SNGenerator;
 import com.dl.base.util.SessionUtil;
 import com.dl.store.core.MemberConstant;
 import com.dl.store.core.ProjectConstant;
-import com.dl.store.dao3.OrderMapper;
+import com.dl.store.dao.OrderMapper;
 import com.dl.store.dao3.UserAccountMapper;
 import com.dl.store.dao3.UserMapper;
 import com.dl.store.dao3.UserStoreMoneyMapper;

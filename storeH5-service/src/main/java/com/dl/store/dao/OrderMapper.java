@@ -1,4 +1,4 @@
-package com.dl.store.dao3;
+package com.dl.store.dao;
 
 import java.util.List;
 
