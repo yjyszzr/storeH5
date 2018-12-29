@@ -1,29 +1,43 @@
-//package com.dl.store.schedule;
-//
-//import java.util.List;
-//
-//import javax.annotation.Resource;
-//
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.scheduling.annotation.EnableScheduling;
-//import org.springframework.scheduling.annotation.Scheduled;
-//
-//import com.dl.store.model.Order;
-//import com.dl.store.service.OrderService;
-//
-//import lombok.extern.slf4j.Slf4j;
-//
-//@Slf4j
-//@Configuration
-//@EnableScheduling
-//public class StoreTaskSchedule {
-//
-//	@Resource
-//	private OrderService orderService;
-//
+package com.dl.store.schedule;
+
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import com.dl.store.service.OrderService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Configuration
+@EnableScheduling
+public class StoreTaskSchedule {
+
+	@Resource
+	private OrderService orderService;
+
+	
+	
+	
+	/**
+	 * 给中奖用户派奖
+	 */
+//	@Scheduled(cron = "${task.schedule.member.reward.money}")
+//	public void addRewardMoneyToUsers() {
+//		log.info("更新中奖用户的账户，派奖开始");
+//		orderService.addRewardMoneyToUsers();
+//		log.info("更新中奖用户的账户，派奖结束");
+//	}
+//	
+	
+//	
+//	
+//	
+//	
 //	/**
 //	 * 第四步： 更新待开奖的订单状态及中奖金额
-//	 *
+//	 * 
 //	 */
 //	@Scheduled(cron = "${task.schedule.order.open.reward}")
 //	public void updateOrderAfterOpenReward() {
@@ -42,7 +56,7 @@
 //		orderService.updateOrderMatchResult();
 //		log.info("结束执行更新订单详情赛果任务");
 //	}
-//
+// 
 //	/**************** 超时订单处理 **************/
 //	@Scheduled(cron = "${task.schedule.payment.time.out}")
 //	public void dealBeyondTimeOrderOut() {
@@ -68,13 +82,6 @@
 //			}
 //		}
 //	}
-//	/**
-//	 * 给中奖用户派奖
-//	 */
-//	@Scheduled(cron = "${task.schedule.member.reward.money}")
-//	public void addRewardMoneyToUsers() {
-//		log.info("更新中奖用户的账户，派奖开始");
-//		orderService.addRewardMoneyToUsers();
-//		log.info("更新中奖用户的账户，派奖结束");
-//	}
-//}
+//	
+	
+}

@@ -59,47 +59,6 @@ public class UserService extends AbstractService<User> {
 	@Resource
 	private IMessageService iMessageService;
 	
-	@Resource
-	private UserStoreMoneyMapper userStoreMoneyMapper;
-	
-	/***
-	 * 订单支付，店铺余额减
-	 * @param userId
-	 * @param storeId
-	 * @param money
-	 * @return
-	 */
-	public boolean orderPay(Integer userId,Integer storeId,BigDecimal ticketAmt){
-		boolean succ = false;
-		if(ticketAmt.doubleValue() > 0) {
-			UserStoreMoney params = new UserStoreMoney();
-			params.setUserId(userId);
-			params.setStoreId(storeId);
-			UserStoreMoney userStoreMoney = userStoreMoneyMapper.queryInfo(params);
-			log.info("[orderPay]" + " query:" + userStoreMoney.getUserId() + " storeId:" + userStoreMoney.getStoreId() + " money:" + userStoreMoney.getMoney());
-			BigDecimal userMoney = userStoreMoney.getMoney();
-			BigDecimal moneyResult = userMoney.subtract(ticketAmt);
-			userStoreMoney.setMoney(moneyResult);
-			int cnt = userStoreMoneyMapper.orderPay(userStoreMoney);
-			log.info("[orderPay]" + " cnt:" + cnt + " result:" + moneyResult + " orderMoney:" + ticketAmt + " userMoney:" + userMoney);
-			succ = true;
-		}
-		return succ;
-	}
-	
-	
-	/***
-	 * 查询用户该店铺下余额信息
-	 * @param userStoreMoney
-	 * @return
-	 */
-	public UserStoreMoney queryUserMoneyInfo(Integer userId,Integer storeId) {
-		UserStoreMoney userStoreMoney = new UserStoreMoney();
-		userStoreMoney.setStoreId(storeId);
-		userStoreMoney.setUserId(userId);
-		return userStoreMoneyMapper.queryInfo(userStoreMoney);
-	}
-	
 	/**
 	 * 保存用户
 	 *

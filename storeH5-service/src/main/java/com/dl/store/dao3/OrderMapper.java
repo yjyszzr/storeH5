@@ -53,7 +53,20 @@ public interface OrderMapper extends Mapper<Order> {
 	 */
 	public int updatePayStatusByOrderSn(Order order);
 
-
+	/***
+	 * 更改订单派奖状态
+	 * @param order
+	 * @return
+	 */
+	public int updateAwardStatusByOrderSn(Order order);
+	
+	/**
+	 * 更改订单回滚状态
+	 * @param order
+	 * @return
+	 */
+	public int updateOrderRollBack(Order order);
+	
 	public List<OrderWithUserDTO> selectOpenedAllRewardOrderList();
 
 	public int updateOrderStatus6To5(@Param("orderSn")String orderSn);

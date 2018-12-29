@@ -18,6 +18,8 @@ import com.dl.store.param.HallParam;
 import com.dl.store.param.UserIdParam;
 import com.dl.store.service.LotteryHallService;
 import com.dl.store.service.UserService;
+import com.dl.store.service.UserStoreMoneyService;
+
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +30,8 @@ public class LotteryHallController {
 	@Resource
 	private LotteryHallService lotteryHallService;
 	@Resource
+	private UserStoreMoneyService userStoreMoneyService;
+	@Resource 
 	private UserService userService;
 	
 	@ApiOperation(value = "首页大厅", notes = "首页大厅")	
@@ -42,7 +46,7 @@ public class LotteryHallController {
 		Integer storeId = param.getStoreId();
 		log.info("[hallInfo]" + " userId:" + userId + " storeId:" + storeId);
 		if(userId != null && storeId != null) {
-			UserStoreMoney userStoreMoney = userService.queryUserMoneyInfo(userId,param.getStoreId());
+			UserStoreMoney userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,param.getStoreId());
 			if(userStoreMoney != null) {
 				money = userStoreMoney.getMoney();
 			}

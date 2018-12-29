@@ -1,19 +1,11 @@
 package com.dl.store.web;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,48 +13,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dl.base.enums.MatchPlayTypeEnum;
-import com.dl.base.model.UserDeviceInfo;
 import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
-import com.dl.base.util.JSONHelper;
 import com.dl.base.util.SessionUtil;
 import com.dl.lottery.api.ILotteryMatchService;
 import com.dl.lottery.dto.DLZQBetInfoDTO;
-import com.dl.lottery.dto.DlJcZqMatchCellDTO;
 import com.dl.lottery.dto.DlJcZqMatchListDTO;
 import com.dl.lottery.dto.LeagueInfoDTO;
-import com.dl.lottery.dto.MatchBetCellDTO;
-import com.dl.lottery.dto.MatchBetPlayDTO;
 import com.dl.lottery.dto.OrderIdDTO;
-import com.dl.lottery.enums.LotteryResultEnum;
 import com.dl.lottery.param.DlJcZqMatchBetParam;
 import com.dl.lottery.param.DlJcZqMatchListParam;
-import com.dl.lottery.param.IsHideParam;
-import com.dl.lottery.param.MatchTimePream;
-import com.dl.order.param.OrderDetailByOrderSnPara;
+import com.dl.order.api.IOrderService;
+import com.dl.order.dto.OrderDetailDTO;
+import com.dl.order.dto.OrderInfoListDTO;
+import com.dl.order.dto.StoreUserInfoDTO;
+import com.dl.order.dto.TicketSchemeDTO;
+import com.dl.order.param.OrderDetailParam;
 import com.dl.order.param.OrderInfoListParam;
 import com.dl.order.param.TicketSchemeParam;
-import com.dl.shop.payment.dto.UserBetDetailInfoDTO;
-import com.dl.shop.payment.dto.UserBetPayInfoDTO;
-import com.dl.shop.payment.enums.PayEnums;
-import com.dl.store.core.ProjectConstant;
-import com.dl.store.dto.OrderDTO;
-import com.dl.store.dto.OrderDetailDTO;
-import com.dl.store.dto.OrderInfoListDTO;
-import com.dl.store.dto.StoreUserInfoDTO;
-import com.dl.store.dto.TicketSchemeDTO;
 import com.dl.store.dto.UserDTO;
 import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.UserStoreMoney;
-import com.dl.store.param.OrderDetailParam;
-import com.dl.store.param.SubmitOrderParam;
-import com.dl.store.param.SubmitOrderParam.TicketDetail;
 import com.dl.store.param.UserIdParam;
-import com.dl.store.service.OrderService;
 import com.dl.store.service.UserService;
-import com.dl.store.util.MD5;
+import com.dl.store.service.UserStoreMoneyService;
 import com.github.pagehelper.PageInfo;
 
 import io.swagger.annotations.ApiOperation;
@@ -84,10 +59,16 @@ public class StoreMatchController {
     private StringRedisTemplate stringRedisTemplate;
     
     @Resource
-    private OrderService orderService;
+    private IOrderService iOrderService;
+    
+//    @Resource
+//    private OrderService orderService;
     
     @Resource
     private UserService userService;
+    
+    @Resource
+    private UserStoreMoneyService userStoreMoneyService;
     
     @ApiOperation(value = "获取筛选条件列表-足球", notes = "获取筛选条件列表-足球")
     @PostMapping("/filterConditions")
@@ -114,14 +95,14 @@ public class StoreMatchController {
 	@ApiOperation(value = "订单列表", notes = "订单列表")
     @PostMapping("/getOrderInfoList")
     public BaseResult<PageInfo<OrderInfoListDTO>> getOrderInfoList(@Valid @RequestBody OrderInfoListParam param) {
-		PageInfo<OrderInfoListDTO> orderInfoListDTOs = orderService.getOrderInfoList(param);
+		PageInfo<OrderInfoListDTO> orderInfoListDTOs = iOrderService.getOrderInfoListForStoreProject(param).getData();
 		return ResultGenerator.genSuccessResult("订单列表查询成功", orderInfoListDTOs);
     }
 	
 	@ApiOperation(value = "查询出票方案", notes = "查询出票方案")
     @PostMapping("/getTicketScheme")
     public BaseResult<TicketSchemeDTO> getTicketScheme(@Valid @RequestBody TicketSchemeParam param) {
-		TicketSchemeDTO ticketSchemeDTO = orderService.getTicketScheme(param);
+		TicketSchemeDTO ticketSchemeDTO = iOrderService.getTicketScheme(param).getData();
 		return ResultGenerator.genSuccessResult("出票方案查询成功", ticketSchemeDTO);
     }
 	
@@ -141,7 +122,7 @@ public class StoreMatchController {
 		UserDTO user = userService.queryUserInfo(userIdParam);
 		StoreUserInfoDTO storeUserDTO = null;
 		if("1".equals(user.getIsSuperWhite()) && userId != null && userId > 0) {
-			userStoreMoney = userService.queryUserMoneyInfo(userId,storeId);	
+			userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,storeId);	
 			storeUserDTO = new StoreUserInfoDTO();
 			storeUserDTO.setIsSuperWhite("1");
 			if(userStoreMoney != null) {
@@ -150,20 +131,57 @@ public class StoreMatchController {
 				log.info("[getOrderDetail]" + " money:" + bigDec);
 			}
 		}
-		OrderDetailDTO orderDetailDTO = orderService.getOrderDetail(param);
+		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(param).getData();
 		orderDetailDTO.setUserInfo(storeUserDTO);
 		return ResultGenerator.genSuccessResult("订单详情查询成功", orderDetailDTO);
     }
 
-	@ApiOperation(value = "根据ordersn查询订单详情", notes = "根据ordersn查询订单详情")
-	@PostMapping("/getOrderDetailByOrderSn")
-	public BaseResult<OrderDetailDTO> getOrderDetailByOrderSn(@Valid @RequestBody OrderDetailByOrderSnPara param) {
-		com.dl.store.dto.OrderDetailDTO orderDetailDTO = orderService.getOrderDetailByOrderSn(param);
+	@ApiOperation(value = "根据orderId查询订单详情", notes = "根据orderId查询订单详情")
+	@PostMapping("/getOrderDetailByOrderId")
+	public BaseResult<OrderDetailDTO> getOrderDetailByOrderSn(@Valid @RequestBody OrderDetailParam param) {
+		 OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(param).getData();
 		return ResultGenerator.genSuccessResult("订单详情查询成功", orderDetailDTO);
 	}
 	
 	@ApiOperation(value = "生成订单", notes = "生成订单")
 	@PostMapping("/createOrder")
+	public BaseResult<OrderIdDTO> createOrder(@Valid @RequestBody DlJcZqMatchBetParam param){
+	return	lotteryMatchService.createOrderForStoreProject(param);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	@ApiOperation(value = "根据ordersn查询订单详情(已废弃)", notes = "根据ordersn查询订单详情(已废弃)")
+	@PostMapping("/getOrderDetailByOrderSnScrap")
+	public BaseResult<OrderDetailDTO> getOrderDetailByOrderSnScrap(@Valid @RequestBody OrderDetailByOrderSnPara param) {
+//		OrderDetailDTO orderDetailDTO = orderService.getOrderDetailByOrderSn(param);
+		return ResultGenerator.genSuccessResult("订单详情查询成功", new OrderDetailDTO());
+	}
+	@ApiOperation(value = "生成模拟订单(已废弃)", notes = "生成模拟订单(已废弃)")
+	@PostMapping("/createOrderBySimulate")
 	public BaseResult<OrderIdDTO> createOrderBySimulate(@Valid @RequestBody DlJcZqMatchBetParam param){
 		log.info("DlJcZqMatchBetParam订单参数====================================={}",param); 
 		BaseResult<String> rst = this.nSaveBetInfo(param);
@@ -498,6 +516,6 @@ public class StoreMatchController {
 		stringRedisTemplate.opsForValue().set(payToken, dtoJson, ProjectConstant.BET_INFO_EXPIRE_TIME, TimeUnit.MINUTES);
 		return ResultGenerator.genSuccessResult("success", payToken);
 	}
-	
+	*/
 }
  

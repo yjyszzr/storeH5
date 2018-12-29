@@ -22,6 +22,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -48,22 +49,23 @@ import com.dl.lottery.dto.DLZQOrderLotteryBetInfoDTO;
 import com.dl.lottery.param.DlPlayCodeParam;
 import com.dl.lottery.param.GetBetInfoByOrderSn;
 import com.dl.member.param.SysConfigParam;
+import com.dl.order.dto.OrderDetailDTO;
+import com.dl.order.dto.OrderDetailDTO.Cathectic;
+import com.dl.order.dto.OrderDetailDTO.CathecticResult;
+import com.dl.order.dto.OrderDetailDTO.MatchInfo;
 import com.dl.order.param.OrderDataParam;
 import com.dl.order.param.OrderDetailByOrderSnPara;
 import com.dl.order.param.OrderInfoListParam;
 import com.dl.order.param.TicketSchemeParam;
 import com.dl.store.core.ProjectConstant;
 import com.dl.store.dao.DlPrintLotteryMapper;
+import com.dl.store.dao.OrderWithUserMapper;
 import com.dl.store.dao2.DlLeagueMatchResultMapper;
 import com.dl.store.dao3.OrderDetailMapper;
 import com.dl.store.dao3.OrderMapper;
 import com.dl.store.dto.LotteryPrintDTO;
 import com.dl.store.dto.OrderAppendInfoDTO;
 import com.dl.store.dto.OrderDTO;
-import com.dl.store.dto.OrderDetailDTO;
-import com.dl.store.dto.OrderDetailDTO.Cathectic;
-import com.dl.store.dto.OrderDetailDTO.CathecticResult;
-import com.dl.store.dto.OrderDetailDTO.MatchInfo;
 import com.dl.store.dto.OrderDetailDataDTO;
 import com.dl.store.dto.OrderInfoAndDetailDTO;
 import com.dl.store.dto.OrderInfoDTO;
@@ -127,6 +129,9 @@ public class OrderService extends AbstractService<Order> {
 
 	@Resource
 	private DlLeagueMatchResultMapper dlLeagueMatchResultMapper;
+	
+	@Resource
+	private OrderWithUserMapper orderWithUserMapper;
  
 
     
@@ -684,8 +689,9 @@ public class OrderService extends AbstractService<Order> {
 				}
 			}
 		}
-
-		orderDetailDTO.setAppendInfoList(appendInfoList);
+		
+		//xxx
+//		orderDetailDTO.setAppendInfoList(appendInfoList);
 		orderDetailDTO.setShowStore(showStore);
 
 		return orderDetailDTO;
@@ -894,7 +900,7 @@ public class OrderService extends AbstractService<Order> {
 			log.error("订单ordersn：为空，该订单不存在");
 			throw new ServiceException(RespStatusEnum.FAIL.getCode(), "订单不能为空");
 		}
-		com.dl.store.dto.OrderDetailDTO orderDetailDTO = new com.dl.store.dto.OrderDetailDTO();
+		OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
 		Order order = new Order();
 		Integer userId = SessionUtil.getUserId();
 		order.setUserId(userId);
@@ -1030,9 +1036,9 @@ public class OrderService extends AbstractService<Order> {
 		orderDetailDTO.setRedirectUrl(redirectUrl);
 		List<OrderDetail> orderDetails = orderDetailMapper.queryListByOrderSn(param.getOrderSn());
 		if (CollectionUtils.isNotEmpty(orderDetails)) {
-			List<com.dl.store.dto.OrderDetailDTO.MatchInfo> matchInfos = new ArrayList<com.dl.store.dto.OrderDetailDTO.MatchInfo>();
+			List<MatchInfo> matchInfos = new ArrayList<OrderDetailDTO.MatchInfo>();
 			for (OrderDetail orderDetail : orderDetails) {
-				com.dl.store.dto.OrderDetailDTO.MatchInfo matchInfo = new com.dl.store.dto.OrderDetailDTO.MatchInfo();
+				OrderDetailDTO.MatchInfo matchInfo = new OrderDetailDTO.MatchInfo();
 				matchInfo.setChangci(orderDetail.getChangci());
 				String match = orderDetail.getMatchTeam();
 				/*
@@ -1378,10 +1384,8 @@ public class OrderService extends AbstractService<Order> {
 		return orderInfoAndDetailDTO;
 	}
 
-	
-	
 	public void addRewardMoneyToUsers() {
-		List<OrderWithUserDTO> orderWithUserDTOs = orderMapper.selectOpenedAllRewardOrderList();
+		List<OrderWithUserDTO> orderWithUserDTOs = orderWithUserMapper.selectOpenedAllRewardOrderList();
 		log.info("派奖已中奖的用户数据：code=" + orderWithUserDTOs.size());
 		if (CollectionUtils.isNotEmpty(orderWithUserDTOs)) {
 			log.info("需要派奖的数据:" + orderWithUserDTOs.size());
@@ -1397,10 +1401,62 @@ public class OrderService extends AbstractService<Order> {
 				userIdAndRewardDTO.setLotteryClassifyId(orderWithUserDTO.getLotteryClassifyId());
 				userIdAndRewardDTOs.add(userIdAndRewardDTO);
 			}
-//			Integer accountTime = DateUtil.getCurrentTimeLong();
-//			userAccountService.saveRewardMessageAsync(userIdAndRewardDTOs,accountTime);
 			userAccountService.batchUpdateUserAccount(userIdAndRewardDTOs,ProjectConstant.REWARD_AUTO);
 		}
 	}
  
+	/**
+     * 更新订单为已支付
+     * @param orderSn
+     * @return
+     */
+	@Transactional("transactionManager3")
+    public boolean updatePayStatus(String orderSn,BigDecimal money) {
+    	boolean succ = false;
+    	Order order = new Order();
+    	order.setOrderSn(orderSn);
+    	order.setOrderStatus(3);
+    	order.setPayStatus(1);
+    	order.setPayCode("store");
+    	order.setSurplus(money);
+    	order.setPayTime(DateUtil.getCurrentTimeLong());
+    	int cnt = orderMapper.updatePayStatusByOrderSn(order);
+    	if(cnt > 0) {
+    		succ = true;
+    	}
+    	return succ;
+    }
+	
+	@Transactional("transactionManager3")
+		public boolean updateOrderRollBack(String orderSn) {
+				boolean succ = false;
+				Order order = new Order();
+		    	order.setOrderSn(orderSn);
+		    	order.setOrderStatus(9);
+		    	int cnt = orderMapper.updateOrderRollBack(order);
+		    	if(cnt > 0) {
+		    		succ = true;
+		    	}
+				return succ;
+			}
+	
+	/**
+	 * 修改派奖状态
+	 * @param orderSn
+	 * @return
+	 */
+	@Transactional("transactionManager3")
+	public boolean updateAwardStatus(String orderSn) {
+		boolean succ = false;
+		Order order = new Order();
+    	order.setOrderSn(orderSn);
+    	order.setOrderStatus(9);
+    	order.setAwardTime(DateUtil.getCurrentTimeLong());
+    	int cnt = orderMapper.updateAwardStatusByOrderSn(order);
+    	if(cnt > 0) {
+    		succ = true;
+    	}
+		return succ;
+	}
+	
 }

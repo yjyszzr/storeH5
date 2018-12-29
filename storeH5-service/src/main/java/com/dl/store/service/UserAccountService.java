@@ -61,7 +61,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 	@Resource
 	private OrderMapper orderMapper;
 	
-	public int insertOrderPayInfo(Integer userId,Integer storeId,String orderSn,BigDecimal ticketAmt){
+	public int insertOrderPayInfo(Integer userId,Integer storeId,String orderSn,BigDecimal ticketAmt,int processType){
 		int cnt = 0;
 		UserStoreMoney userStoreMoney = new UserStoreMoney();
 		userStoreMoney.setUserId(userId);
@@ -82,7 +82,15 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		userAccount.setStatus(1);
 		userAccount.setStoreId(storeId);
 		userAccount.setOrderSn(orderSn);
-		userAccount.setNote("购彩" + String.format("%.2f",ticketAmt.doubleValue()) + "元");
+		String note = "";
+		if(processType == 3) {
+			note = "购彩" + String.format("%.2f",ticketAmt.doubleValue()) + "元";
+		}else if(processType == 1) {
+			note = "奖金" + String.format("%.2f",ticketAmt.doubleValue()) + "元";
+		}else if(processType == 6) {
+			note = "退款" + String.format("%.2f",ticketAmt.doubleValue()) + "元";
+		}
+		userAccount.setNote(note);
 		cnt = userAccountMapper.insertUserAccountBySelective(userAccount);
 		return cnt;
 	}
