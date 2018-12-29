@@ -146,7 +146,9 @@ public class StoreMatchController {
 	@ApiOperation(value = "生成订单", notes = "生成订单")
 	@PostMapping("/createOrder")
 	public BaseResult<OrderIdDTO> createOrder(@Valid @RequestBody DlJcZqMatchBetParam param){
-	return	lotteryMatchService.createOrderForStoreProject(param);
+		Integer userId = SessionUtil.getUserId();
+		log.info("[createOrder]" + " userId:" + userId);
+		return	lotteryMatchService.createOrderForStoreProject(param);
 	}
 	
 	
