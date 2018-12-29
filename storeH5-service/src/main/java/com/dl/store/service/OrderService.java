@@ -134,12 +134,12 @@ public class OrderService extends AbstractService<Order> {
 	private OrderWithUserMapper orderWithUserMapper;
  
 
-    
     /**
      * 更新订单为已支付
      * @param orderSn
      * @return
      */
+	@Transactional("transactionManager1")
     public boolean updatePayStatus(String orderSn) {
     	boolean succ = false;
     	Order order = new Order();
@@ -160,6 +160,7 @@ public class OrderService extends AbstractService<Order> {
      * @param orderSn
      * @return
      */
+    @Transactional("transactionManager1")
     public boolean isOrderPayed(String orderSn) {
     	boolean isPaid = false;
     	Order order = orderMapper.getOrderInfoByOrderSn(orderSn);
@@ -221,6 +222,7 @@ public class OrderService extends AbstractService<Order> {
 	 * @param orderSn
 	 * @return
 	 */
+	@Transactional("transactionManager1")
 	public Order queryOrderByOrderSn(String orderSn) {
 		Order order = orderMapper.getOrderInfoByOrderSn(orderSn);
 		return order;
