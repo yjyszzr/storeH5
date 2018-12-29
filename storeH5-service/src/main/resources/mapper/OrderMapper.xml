@@ -63,8 +63,17 @@
   </update>
   
   <update id="updatePayStatusByOrderSn" parameterType="com.dl.store.model.Order">
-  		update dl_order set surplus=#{surplus},order_status=#{orderStatus},pay_status=#{payStatus},pay_time=#{payTime},pay_code=#{payCode} where is_delete=0 and order_sn=#{orderSn}
+  		update dl_order set surplus=#{surplus},order_status=#{orderStatus},pay_status=#{payStatus},pay_time=#{payTime},pay_code=#{payCode},surplus=#{surplus} where is_delete=0 and order_sn=#{orderSn}
   </update>
+  
+  <update id="updateAwardStatusByOrderSn" parameterType="com.dl.store.model.Order">
+  		update dl_order set order_status=#{orderStatus},award_time=#{awardTime} where is_delete=0 and order_sn=#{orderSn}
+  </update>
+  
+  <update id="updateOrderRollBack" parameterType="com.dl.store.model.Order">
+  		update dl_order set order_status=#{orderStatus} where is_delete=0 and order_sn=#{orderSn}
+  </update>
+  
   
     <select id="getOrderInfoList" resultType="com.dl.store.dto.OrderInfoListDTO">
         select
