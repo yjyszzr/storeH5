@@ -112,7 +112,8 @@ public class StoreMatchController {
     public BaseResult<OrderDetailDTO> getOrderDetail(@Valid @RequestBody OrderDetailParam param) {
 		Integer userId = SessionUtil.getUserId();
 		Integer storeId = param.getStoreId();
-		log.info("[getOrderDetail]" + " userId:" + userId + " storeId:" + storeId);
+		String orderId = param.getOrderId();
+		log.info("接口为[getOrderDetail]" + " userId:" + userId + ",storeId:" + storeId + ",orderId:"+orderId);
 		if(storeId == null || storeId <= 0) {
 			return ResultGenerator.genResult(OrderEnums.STORE_ID_EMPTY.getcode(),OrderEnums.STORE_ID_EMPTY.getMsg());
 		}
