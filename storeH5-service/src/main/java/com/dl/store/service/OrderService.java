@@ -1435,7 +1435,7 @@ public class OrderService extends AbstractService<Order> {
 				boolean succ = false;
 				Order order = new Order();
 		    	order.setOrderSn(orderSn);
-		    	order.setOrderStatus(9);
+		    	order.setOrderStatus(10);
 		    	int cnt = orderMapper.updateOrderRollBack(order);
 		    	if(cnt > 0) {
 		    		succ = true;
