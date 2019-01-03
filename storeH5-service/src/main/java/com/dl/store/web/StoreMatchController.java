@@ -126,11 +126,14 @@ public class StoreMatchController {
 			userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,storeId);	
 			storeUserDTO = new StoreUserInfoDTO();
 			storeUserDTO.setIsSuperWhite("1");
+			BigDecimal bigDec = null;
 			if(userStoreMoney != null) {
-				BigDecimal bigDec = userStoreMoney.getMoney();
-				storeUserDTO.setMoney(bigDec.toString());
-				log.info("[getOrderDetail]" + " money:" + bigDec);
+				bigDec = userStoreMoney.getMoney();
+			}else {
+				bigDec = BigDecimal.ZERO;
 			}
+			log.info("[getOrderDetail]" + " money:" + bigDec);
+			storeUserDTO.setMoney(bigDec.toString());
 		}
 		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(param).getData();
 		orderDetailDTO.setUserInfo(storeUserDTO);
