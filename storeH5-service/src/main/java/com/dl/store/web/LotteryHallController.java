@@ -59,7 +59,7 @@ public class LotteryHallController {
 			if(money != null) {
 				hallInfo.setMoney(money+"");
 			}else {
-				hallInfo.setMoney(null);
+				hallInfo.setMoney(BigDecimal.ZERO.toString());
 			}
 			if(userDTO != null) {
 				isSuperWhite = userDTO.getIsSuperWhite();
