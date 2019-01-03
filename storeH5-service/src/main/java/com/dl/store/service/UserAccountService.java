@@ -1,16 +1,5 @@
 package com.dl.store.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.dl.base.constant.CommonConstants;
 import com.dl.base.enums.AccountEnum;
@@ -37,8 +26,16 @@ import com.dl.store.param.AmountTypeParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Joiner;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -141,6 +138,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 			userAccountList = userAccountMapper.queryUserAccountByTime(userId, processType, startTime, endTime);
 		}
 
+		userAccountList.removeIf(s->s.getProcessType() == 9);//过滤掉这个类型
 		PageInfo<UserAccount> pageInfo = new PageInfo<UserAccount>(userAccountList);
 		for (UserAccount ua : userAccountList) {
 			UserAccountDTO userAccountDTO = new UserAccountDTO();

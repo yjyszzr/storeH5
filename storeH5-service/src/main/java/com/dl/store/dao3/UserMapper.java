@@ -1,13 +1,14 @@
 package com.dl.store.dao3;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.dl.base.mapper.Mapper;
 import com.dl.store.model.User;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface UserMapper extends Mapper<User> {
+
+	User queryUserByMobile(Integer mobile);
 
 	int insertWithReturnId(User user);
 

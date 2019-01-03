@@ -14,16 +14,18 @@ import com.dl.base.util.SessionUtil;
 import com.dl.member.api.IMessageService;
 import com.dl.member.api.IUserService;
 import com.dl.member.dto.UserNoticeDTO;
-import com.dl.store.param.MobileAndPassParam;
 import com.dl.store.core.MemberConstant;
 import com.dl.store.dao3.UserMapper;
-import com.dl.store.dao3.UserStoreMoneyMapper;
-import com.dl.store.dto.*;
+import com.dl.store.dto.UserDTO;
+import com.dl.store.dto.UserLoginDTO;
+import com.dl.store.dto.YesOrNoDTO;
 import com.dl.store.enums.MemberEnums;
 import com.dl.store.model.DlUserAuths;
 import com.dl.store.model.User;
-import com.dl.store.model.UserStoreMoney;
-import com.dl.store.param.*;
+import com.dl.store.param.MobileAndPassParam;
+import com.dl.store.param.SetLoginPassParam;
+import com.dl.store.param.UserIdParam;
+import com.dl.store.param.UserParam;
 import com.dl.store.util.Encryption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -32,6 +34,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
@@ -102,6 +105,15 @@ public class UserService extends AbstractService<User> {
 			String channel = userDevice.getChannel();
 			user.setDeviceChannel(channel);
 		}
+
+		//查询彩小秘用户是否是超级用户
+		Boolean isSuperUserWhite =  this.queryCxmUserIsSuperWhite(Integer.valueOf(userParam.getMobile()));
+		if(isSuperUserWhite){
+			user.setIsSuperWhite(1);
+		}else{
+			user.setIsSuperWhite(0);
+		}
+
 		Integer insertRsult = userMapper.insertWithReturnId(user);
 		if (1 != insertRsult) {
 			log.error("注册用户失败");
@@ -111,6 +123,18 @@ public class UserService extends AbstractService<User> {
 
 		return userId;
 	}
+
+
+	@Transactional("transactionManager2")
+	public Boolean queryCxmUserIsSuperWhite(Integer mobile){
+		User user = userMapper.queryUserByMobile(mobile);
+		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 
 	public BaseResult<UserDTO> queryUserByUserIdExceptPass() {
 		Integer userId = SessionUtil.getUserId();
