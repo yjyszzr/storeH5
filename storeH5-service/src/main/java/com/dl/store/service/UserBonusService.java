@@ -75,7 +75,6 @@ public class UserBonusService extends AbstractService<UserBonus> {
 	 * @param userBonusParam
 	 * @return
 	 */
-	@Transactional
 	public void updateUserBonusStatusUsed(Integer userBonusId, String orderSn) {
 		if (userBonusId == null || StringUtils.isEmpty(orderSn)) {
 			throw new ServiceException(MemberEnums.PARAMS_NOT_NULL.getcode(), MemberEnums.PARAMS_NOT_NULL.getMsg());
@@ -110,7 +109,6 @@ public class UserBonusService extends AbstractService<UserBonus> {
 	 * @param userBonusParam
 	 * @return
 	 */
-	@Transactional
 	public void updateUserBonusStatusUnused(Integer userBonusId) {
 		UserBonus userBonus = this.findById(userBonusId);
 		if (userBonus == null) {
@@ -169,6 +167,26 @@ public class UserBonusService extends AbstractService<UserBonus> {
 	 *
 	 * @return
 	 */
+	public Integer queryValidBonusListSize(BonusLimitConditionParam bonusLimitConditionParam) {
+		Integer userId = bonusLimitConditionParam.getUserId();
+		UserBonus userBonus = new UserBonus();
+		userBonus.setUserId(userId);
+		userBonus.setIsDelete(MemberConstant.NOT_DELETE);
+		userBonus.setBonusStatus(MemberConstant.BONUS_STATUS_UNUSED);
+		userBonus.setStartTime(DateUtil.getCurrentTimeLong());
+		userBonus.setEndTime(DateUtil.getCurrentTimeLong());
+		userBonus.setMinGoodsAmount(bonusLimitConditionParam.getOrderMoneyPaid());
+		List<UserBonus> userBonusList = userBonusMapper.queryUserBonusForPay(userBonus);
+		return userBonusList.size();
+	}
+
+
+
+	/**
+	 * 给支付提供查询用户可用的红包列表
+	 *
+	 * @return
+	 */
 	public List<UserBonusDTO> queryValidBonusListForPayV2(OrderSnParam orderSnParam,Integer userId) {
 		List<UserBonusDTO> userBonusDTOList = new ArrayList<UserBonusDTO>();
 		//根据订单号查询支付所用 余额
@@ -186,6 +204,7 @@ public class UserBonusService extends AbstractService<UserBonus> {
 		userBonus.setBonusStatus(MemberConstant.BONUS_STATUS_UNUSED);
 		userBonus.setStartTime(DateUtil.getCurrentTimeLong());
 		userBonus.setEndTime(DateUtil.getCurrentTimeLong());
+		userBonus.setStoreId(orderSnParam.getStoreId());
 		List<UserBonus> userBonusList = userBonusMapper.queryUserBonusForPay(userBonus);
 		if (CollectionUtils.isEmpty(userBonusList)) {
 			return userBonusDTOList;

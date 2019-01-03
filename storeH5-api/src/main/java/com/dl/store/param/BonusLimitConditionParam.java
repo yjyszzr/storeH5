@@ -14,7 +14,9 @@ public class BonusLimitConditionParam {
 	@ApiModelProperty("订单实际付款金额")
 	@NotNull
     private BigDecimal orderMoneyPaid;
-	
-    //可定义其他参数
+
+	@ApiModelProperty("用户id")
+	@NotNull
+	private Integer userId;
 	
 }

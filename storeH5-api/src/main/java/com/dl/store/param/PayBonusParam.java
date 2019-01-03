@@ -7,15 +7,15 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class OrderSnParam implements Serializable{
+public class PayBonusParam implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty("订单编号")
-	@NotNull(message = "orderSn不能为空")
+	@NotNull(message = "order_sn不能为空")
 	private String orderSn;
 	
-	@ApiModelProperty("店铺ID")
-	@NotNull(message = "storeId不能为空")
-	private Integer storeId;
+	@ApiModelProperty("用户红包id")
+	@NotNull(message = "红包id不能为空")
+	private Integer userBonusId;
 }

@@ -1,21 +1,21 @@
-package com.dl.store.schedule;
-
-import javax.annotation.Resource;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
-import com.dl.store.service.OrderService;
-
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-@Configuration
-@EnableScheduling
-public class StoreTaskSchedule {
-
-	@Resource
-	private OrderService orderService;
+//package com.dl.store.schedule;
+//
+//import javax.annotation.Resource;
+//
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.scheduling.annotation.EnableScheduling;
+//
+//import com.dl.store.service.OrderService;
+//
+//import lombok.extern.slf4j.Slf4j;
+//
+//@Slf4j
+//@Configuration
+//@EnableScheduling
+//public class StoreTaskSchedule {
+//
+//	@Resource
+//	private OrderService orderService;
 
 	
 	
@@ -84,4 +84,4 @@ public class StoreTaskSchedule {
 //	}
 //	
 	
-}
+//}
