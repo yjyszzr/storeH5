@@ -365,19 +365,21 @@ public class UserService extends AbstractService<User> {
 		Integer userId = params.getUserId();
 		User user = this.findById(userId);
 		UserDTO userDTO = new UserDTO();
-		try {
-			BeanUtils.copyProperties(userDTO, user);
-			String strRandom4 = RandomUtil.generateUpperString(4);
-			String mobile = user.getMobile();
-			mobile = mobile.replace(mobile.substring(3, 7), strRandom4);
-			userDTO.setMobile(mobile);
-			userDTO.setUserMoney(String.valueOf(user.getUserMoney()));
-			userDTO.setUserMoneyLimit(String.valueOf(user.getUserMoneyLimit()));
-			userDTO.setIsSuperWhite(null == user.getIsSuperWhite()?"0":String.valueOf(user.getIsSuperWhite()));
-			BigDecimal totalMoney = user.getUserMoney().add(user.getUserMoneyLimit());
-			userDTO.setTotalMoney(String.valueOf(totalMoney));
-		} catch (Exception e) {
-			throw new ServiceException(RespStatusEnum.SERVER_ERROR.getCode(), RespStatusEnum.SERVER_ERROR.getMsg());
+		if(user != null) {
+			try {
+				BeanUtils.copyProperties(userDTO, user);
+				String strRandom4 = RandomUtil.generateUpperString(4);
+				String mobile = user.getMobile();
+				mobile = mobile.replace(mobile.substring(3, 7), strRandom4);
+				userDTO.setMobile(mobile);
+				userDTO.setUserMoney(String.valueOf(user.getUserMoney()));
+				userDTO.setUserMoneyLimit(String.valueOf(user.getUserMoneyLimit()));
+				userDTO.setIsSuperWhite(null == user.getIsSuperWhite()?"0":String.valueOf(user.getIsSuperWhite()));
+				BigDecimal totalMoney = user.getUserMoney().add(user.getUserMoneyLimit());
+				userDTO.setTotalMoney(String.valueOf(totalMoney));
+			} catch (Exception e) {
+				throw new ServiceException(RespStatusEnum.SERVER_ERROR.getCode(), RespStatusEnum.SERVER_ERROR.getMsg());
+			}
 		}
 		return userDTO;
 	}
