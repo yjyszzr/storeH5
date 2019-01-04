@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -75,15 +74,16 @@ public class UserBonusService extends AbstractService<UserBonus> {
 	 * @param userBonusParam
 	 * @return
 	 */
-	public void updateUserBonusStatusUsed(Integer userBonusId, String orderSn) {
+	public BaseResult<String> updateUserBonusStatusUsed(Integer userBonusId, String orderSn) {
 		if (userBonusId == null || StringUtils.isEmpty(orderSn)) {
-			throw new ServiceException(MemberEnums.PARAMS_NOT_NULL.getcode(), MemberEnums.PARAMS_NOT_NULL.getMsg());
+		    return ResultGenerator.genResult(MemberEnums.PARAMS_NOT_NULL.getcode(), MemberEnums.PARAMS_NOT_NULL.getMsg());
 		}
 
 		UserBonus userBonus = this.findById(userBonusId);
 		if (userBonus == null) {
-			throw new ServiceException(MemberEnums.BONUS_UNEXITS.getcode(), "用户红包编号为" + userBonusId + MemberEnums.BONUS_UNEXITS.getMsg());
+            return ResultGenerator.genResult(MemberEnums.BONUS_UNEXITS.getcode(), "用户红包编号为" + userBonusId + MemberEnums.BONUS_UNEXITS.getMsg());
 		}
+
 		Condition cUsed = new Condition(UserBonus.class);
 		Criteria criteria = cUsed.createCriteria();
 		criteria.andCondition("user_bonus_id =", userBonusId);
@@ -91,17 +91,45 @@ public class UserBonusService extends AbstractService<UserBonus> {
 		criteria.andCondition("is_delete =" + MemberConstant.NOT_DELETE);
 		List<UserBonus> userBonusList = this.findByCondition(cUsed);
 		if (userBonusList.size() > 0) {
-			throw new ServiceException(MemberEnums.BONUS_USED.getcode(), "用户红包编号为" + userBonusId + MemberEnums.BONUS_USED.getMsg());
+			return ResultGenerator.genResult(MemberEnums.BONUS_USED.getcode(), "用户红包编号为" + userBonusId + MemberEnums.BONUS_USED.getMsg());
 		}
 
 		UserBonus usedUserBonus = new UserBonus();
-		usedUserBonus.setUserBonusId(userBonus.getUserBonusId());
-		usedUserBonus.setUsedTime(DateUtil.getCurrentTimeLong());
-		usedUserBonus.setOrderSn(orderSn);
-		usedUserBonus.setUserId(SessionUtil.getUserId());
-		usedUserBonus.setBonusStatus(MemberConstant.BONUS_STATUS_USED);
-		this.update(usedUserBonus);
+        usedUserBonus.setUserBonusId(userBonus.getUserBonusId());
+        usedUserBonus.setUsedTime(DateUtil.getCurrentTimeLong());
+        usedUserBonus.setOrderSn(orderSn);
+        usedUserBonus.setUserId(SessionUtil.getUserId());
+        usedUserBonus.setBonusStatus(MemberConstant.BONUS_STATUS_USED);
+        this.update(usedUserBonus);
+		return ResultGenerator.genSuccessResult("success");
 	}
+
+    /**
+     * 查询一个红包是否支付的时候可用
+     */
+    public BaseResult<UserBonus> queryOneValidBonus(Integer userBonusId, String orderSn){
+        Integer userId = SessionUtil.getUserId();
+        UserBonus userBonus = userBonusMapper.queryOneBonus(userBonusId,userId);
+        if(userBonus == null){
+            return ResultGenerator.genResult(MemberEnums.DBDATA_IS_NULL.getcode(),MemberEnums.DBDATA_IS_NULL.getMsg());
+        }
+
+        //根据订单号查询支付所用 余额
+        com.dl.order.param.OrderSnParam snParam = new com.dl.order.param.OrderSnParam();
+        snParam.setOrderSn(orderSn);
+        BaseResult<OrderDTO> orderDTOBaseResult = iOrderService.getOrderInfoByOrderSn(snParam);
+        if(!orderDTOBaseResult.isSuccess()){
+            return ResultGenerator.genResult(MemberEnums.DBDATA_IS_NULL.getcode(),MemberEnums.DBDATA_IS_NULL.getMsg());
+        }
+        OrderDTO orderDTO = orderDTOBaseResult.getData();
+        BigDecimal moneyPaid = orderDTO.getMoneyPaid();
+        if(userBonus.getMinGoodsAmount().compareTo(moneyPaid) < 0){
+            return ResultGenerator.genResult(MemberEnums.CANNOT_USE.getcode(),MemberEnums.CANNOT_USE.getMsg());
+        }
+
+        return ResultGenerator.genSuccessResult("success",userBonus);
+    }
+
 
 	/**
 	 * 更新红包状态为未使用
@@ -253,7 +281,7 @@ public class UserBonusService extends AbstractService<UserBonus> {
 			userBonus.setBonusStatus(Integer.valueOf(status));
 		}
 
-		List<UserBonus> userBonusList = null;
+		List<UserBonus> userBonusList = new ArrayList<>();
 		if (!status.equals("1")) {
 			userBonusList = userBonusMapper.queryUserBonusBySelective(userBonus);
 		} else {
@@ -261,7 +289,6 @@ public class UserBonusService extends AbstractService<UserBonus> {
 		}
 
 		PageInfo<UserBonus> pageInfo = new PageInfo<UserBonus>(userBonusList);
-
 		List<UserBonusDTO> userBonusDTOList = new ArrayList<UserBonusDTO>();
 		userBonusList.forEach(s -> {
 			UserBonusDTO userBonusDTO = this.createReturnUserBonusDTO(s);
@@ -373,23 +400,18 @@ public class UserBonusService extends AbstractService<UserBonus> {
 
 
 	/**
-	 * 更新红包为已过期
-	 * 
-	 * @param userBonusIdList
-	 */
-	public void updateBonusExpire() {
-		log.info("更新过期的红包定时任务开始");
-		Integer now = DateUtil.getCurrentTimeLong();
-		List<Integer> userBonusIdList = userBonusMapper.queryUserBonusIdsExpire(now);
-		if (CollectionUtils.isEmpty(userBonusIdList)) {
-			log.info("没有过期的红包，定时任务结束");
-			return;
-		}
+     * 更新红包为已过期
+     *
+     */
+    public void updateBonusExpire() {
+        Integer now = DateUtil.getCurrentTimeLong();
+        List<Integer> userBonusIdList = userBonusMapper.queryUserBonusIdsExpire(now);
+        if (CollectionUtils.isEmpty(userBonusIdList)) {
+            return;
+        }
 
-		int rst = userBonusMapper.updateBatchUserBonusExpire(userBonusIdList);
-		log.info("本次更新过期的红包" + rst + "个");
-		log.info("更新过期的红包的定时任务结束");
-	}
-
+        int rst = userBonusMapper.updateBatchUserBonusExpire(userBonusIdList);
+        log.info("本次更新过期的红包" + rst + "个");
+    }
 
 }
