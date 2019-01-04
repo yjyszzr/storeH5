@@ -239,11 +239,17 @@ public class UserBonusService extends AbstractService<UserBonus> {
 		UserBonus userBonus = new UserBonus();
 		userBonus.setUserId(userId);
 		userBonus.setIsDelete(MemberConstant.NOT_DELETE);
-		userBonus.setBonusStatus(MemberConstant.BONUS_STATUS_UNUSED);
-		userBonus.setStartTime(DateUtil.getCurrentTimeLong());
-		userBonus.setEndTime(DateUtil.getCurrentTimeLong());
+		userBonus.setBonusStatus(Integer.valueOf(orderSnParam.getStatus()));
 		userBonus.setStoreId(orderSnParam.getStoreId());
-		List<UserBonus> userBonusList = userBonusMapper.queryUserBonusForPay(userBonus);
+		List<UserBonus> userBonusList = new ArrayList<>();
+		if("0".equals(orderSnParam.getStatus())){
+			userBonus.setStartTime(DateUtil.getCurrentTimeLong());
+			userBonus.setEndTime(DateUtil.getCurrentTimeLong());
+			userBonusList = userBonusMapper.queryUserBonusForPay(userBonus);
+		}else{
+			userBonusList = userBonusMapper.queryUserBonusBySelective(userBonus);
+		}
+
 		if (CollectionUtils.isEmpty(userBonusList)) {
 			return userBonusDTOList;
 		}

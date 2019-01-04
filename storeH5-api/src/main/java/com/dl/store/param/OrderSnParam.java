@@ -18,4 +18,8 @@ public class OrderSnParam implements Serializable{
 	@ApiModelProperty("店铺ID")
 	@NotNull(message = "storeId不能为空")
 	private Integer storeId;
+
+	@ApiModelProperty("红包状态: 0-未使用 2-已过期")
+	@NotNull(message = "状态不能为空")
+	private String status;
 }
