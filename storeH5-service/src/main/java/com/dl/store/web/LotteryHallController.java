@@ -69,10 +69,8 @@ public class LotteryHallController {
 				isSuperWhite = userDTO.getIsSuperWhite();
 			}
 
-			Integer bonusSize = userBonusService.validBonusSize(userId);
-			if(bonusSize == 0 ){
-				hallInfo.setMyBonusNum(String.valueOf(bonusSize));
-			}
+			Integer bonusSize = userBonusService.validBonusSize(userId,param.getStoreId());
+			hallInfo.setMyBonusNum(String.valueOf(bonusSize));
 		}
 
 		hallInfo.setIsSuperWhite(isSuperWhite);

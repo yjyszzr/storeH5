@@ -18,6 +18,8 @@ public interface UserBonusMapper extends Mapper<UserBonus> {
 
 	 List<UserBonus> queryUserBonusForPay(UserBonus userBonus);
 
+	 Integer queryUserBonusSize(@Param("userId") Integer userId,@Param("storeId") Integer storeId);
+
 	 List<UserBonus> queryUserBonusForUsed(UserBonus userBonus);
 
 	 List<Integer> queryUserBonusIdsExpire(@Param("now") Integer now);

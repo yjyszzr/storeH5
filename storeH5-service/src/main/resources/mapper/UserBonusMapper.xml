@@ -207,5 +207,8 @@
 	<select id="queryOneBonus" resultMap="BaseResultMap">
 		select * from dl_user_bonus where user_bonus_id = #{userBonusId} and user_id = #{userId}
 	</select>
-  
+    <select id="queryUserBonusSize" resultType="int" parameterType="Integer">
+		select count(1) from dl_user_bonus where bonus_status = 0 and  user_id = #{userId} and store_id = #{storeId}
+	</select>
+
 </mapper>
