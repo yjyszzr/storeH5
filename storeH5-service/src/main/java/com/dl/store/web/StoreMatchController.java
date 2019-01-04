@@ -115,8 +115,8 @@ public class StoreMatchController {
 		Integer userId = SessionUtil.getUserId();
 		Integer storeId = param.getStoreId();
 		String orderId = param.getOrderId();
-		Integer bonudsId = param.getBonudsId();
-		log.info("接口为[getOrderDetail]" + " userId:" + userId + ",storeId:" + storeId + ",orderId:"+orderId + " bonusId:" + bonudsId);
+		Integer bonusId = param.getBonusId();
+		log.info("接口为[getOrderDetail]" + " userId:" + userId + ",storeId:" + storeId + ",orderId:"+orderId + " bonusId:" + bonusId);
 		if(storeId == null || storeId <= 0) {
 			return ResultGenerator.genResult(OrderEnums.STORE_ID_EMPTY.getcode(),OrderEnums.STORE_ID_EMPTY.getMsg());
 		}
@@ -140,8 +140,8 @@ public class StoreMatchController {
 			log.info("[getOrderDetail]" + " money:" + bigDec + " bonusSize:" + bonusSize);
 			storeUserDTO.setMoney(bigDec.toString());
 			storeUserDTO.setBonusNum(bonusSize);
-			if(bonudsId != null && bonudsId > 0) {
-				UserBonusDTO userBonusDTO = userBonusService.queryUserBonus(bonudsId);
+			if(bonusId != null && bonusId > 0) {
+				UserBonusDTO userBonusDTO = userBonusService.queryUserBonus(bonusId);
 				log.info("[getOrderDetail]" + " userBonusDTO:" + userBonusDTO);
 				if(userBonusDTO != null) {
 					BigDecimal amt = BigDecimal.valueOf(Double.valueOf(orderDetailDTO.getTicketAmount())).subtract(userBonusDTO.getBonusPrice());
