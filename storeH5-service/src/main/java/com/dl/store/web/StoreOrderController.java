@@ -14,6 +14,7 @@ import com.dl.store.dto.DlHallInfoDTO;
 import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.Order;
+import com.dl.store.model.UserBonus;
 import com.dl.store.model.UserStoreMoney;
 import com.dl.store.param.OrderPayParam;
 import com.dl.store.service.OrderService;
@@ -69,29 +70,53 @@ public class StoreOrderController {
 		if(isPaid) {
 			return ResultGenerator.genResult(OrderEnums.ORDER_PAID.getcode(),OrderEnums.ORDER_PAID.getMsg());
 		}
-		if(money.subtract(ticketAmout).doubleValue() < 0) {//余额不够
-			return ResultGenerator.genResult(OrderEnums.USER_MONEY_NOTENOUGH.getcode(),OrderEnums.USER_MONEY_NOTENOUGH.getMsg());
-		}
+		UserBonus userBonuds = null;
 		if(bonusId != null && bonusId > 0) {
-			boolean isBondsAvailable = false;
 			UserBonusDTO userBonusDTO = userBonusService.queryUserBonus(bonusId);
 			if(userBonusDTO == null) {
 				return ResultGenerator.genResult(OrderEnums.USERBONDS_NOT_EXIST.getcode(),OrderEnums.USERBONDS_NOT_EXIST.getMsg());
 			}
+			BaseResult<UserBonus> bR = userBonusService.queryOneValidBonus(bonusId,orderSn);
+			if(!bR.isSuccess()) {
+				return ResultGenerator.genResult(OrderEnums.USERBONDS_NOTUSED.getcode(),OrderEnums.USERBONDS_NOTUSED.getMsg());
+			}
+			userBonuds = bR.getData();
 		}
-		//记录流水 操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
-		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,ticketAmout,3);
+		BigDecimal amt = ticketAmout;
+		BigDecimal bonudsPrice = null;
+		Integer userBoundsId = null;
+		//带有优惠券类型
+		if(userBonuds != null){
+			amt = ticketAmout.subtract(userBonuds.getBonusPrice());
+			bonudsPrice = userBonuds.getBonusPrice();
+			userBoundsId = userBonuds.getUserBonusId();
+		}
+		if(money.subtract(amt).doubleValue() < 0) {//余额不够
+			return ResultGenerator.genResult(OrderEnums.USER_MONEY_NOTENOUGH.getcode(),OrderEnums.USER_MONEY_NOTENOUGH.getMsg());
+		}
+		//优惠券流水记录
+		if(userBonuds != null) {
+			userAccountService.insertOrderPayInfo(userId, storeId, orderSn, userBonuds.getBonusPrice(),5);
+			log.info("[orderPay]" + " 记录优惠券流水");
+		}
+		//记录钱包流水 操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
+		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,amt,3);
 		if(cnt > 0) {
 			log.info("[orderPay]" + " UserAccountService insertOrderPayInfo succ cnt:" + cnt);
 		}
+		//扣除优惠券逻辑
+		if(userBonuds != null) {
+			BaseResult<String> bR = userBonusService.updateUserBonusStatusUsed(bonusId,orderSn);
+			log.info("[orderPay]" + " 扣除优惠券为已使用bR.getMsg()" + bR.getMsg());
+		}
 		//扣除余额 Integer userId,Integer storeId,BigDecimal money
-		boolean isSucc = userStoreMoneyService.orderPay(userId,storeId,ticketAmout);
+		boolean isSucc = userStoreMoneyService.orderPay(userId,storeId,amt,userBonuds.getBonusPrice());
 		log.info("[orderPay]" + " succ:" + isSucc);
 		if(!isSucc) {
 			return ResultGenerator.genResult(OrderEnums.USER_MONEY_PAY_FAILE.getcode(),OrderEnums.USER_MONEY_PAY_FAILE.getMsg());
 		}
 		//更改订单状态为已支付
-		boolean succ = orderService.updatePayStatus(orderSn,ticketAmout);
+		boolean succ = orderService.updatePayStatus(orderSn,amt,bonudsPrice,userBoundsId);
 		log.info("[orderPay]" + " succ:" + succ);
 		return ResultGenerator.genSuccessResult("支付成功");
 	}

@@ -1414,7 +1414,7 @@ public class OrderService extends AbstractService<Order> {
      * @return
      */
 	@Transactional("transactionManager1")
-    public boolean updatePayStatus(String orderSn,BigDecimal money) {
+    public boolean updatePayStatus(String orderSn,BigDecimal money,BigDecimal bonuds,Integer userBonudsId) {
     	boolean succ = false;
     	Order order = new Order();
     	order.setOrderSn(orderSn);
@@ -1422,6 +1422,8 @@ public class OrderService extends AbstractService<Order> {
     	order.setPayStatus(1);
     	order.setPayCode("store");
     	order.setSurplus(money);
+    	order.setBonus(bonuds);
+    	order.setUserBonusId(userBonudsId);
     	order.setPayTime(DateUtil.getCurrentTimeLong());
     	int cnt = orderMapper.updatePayStatusByOrderSn(order);
     	if(cnt > 0) {
