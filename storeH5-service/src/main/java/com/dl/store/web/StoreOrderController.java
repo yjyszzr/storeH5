@@ -78,6 +78,7 @@ public class StoreOrderController {
 			}
 			BaseResult<UserBonus> bR = userBonusService.queryOneValidBonus(bonusId,orderSn);
 			if(!bR.isSuccess()) {
+				log.info("[orderPay]" + " msg:" + bR.getMsg() + " code:" + bR.getCode());
 				return ResultGenerator.genResult(OrderEnums.USERBONDS_NOTUSED.getcode(),OrderEnums.USERBONDS_NOTUSED.getMsg());
 			}
 			userBonuds = bR.getData();
