@@ -32,7 +32,7 @@ public interface UserBonusMapper extends Mapper<UserBonus> {
 
 	int updateUnReadBonus(@Param("userId") Integer userId);
 
-	UserBonus queryOneBonus(@Param("userId") Integer userId,@Param("userBonusId") Integer userBonusId);
+	UserBonus queryOneBonus(@Param("userBonusId") Integer userBonusId,@Param("userId") Integer userId);
 
 	List<UserBonus> queryPUshBonusList(@Param("start") Integer start, @Param("end") Integer end);
 }

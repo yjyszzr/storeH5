@@ -60,5 +60,4 @@ public class UserBonusController {
         return ResultGenerator.genSuccessResult("更新红包状态为已使用成功");
     }
 
-
 }
