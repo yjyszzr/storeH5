@@ -83,6 +83,7 @@ public class StoreUserMoneyController {
 		}
 		Order order = orderService.queryOrderByOrderSn(orderSn);
 		if(order == null) {
+			log.info("[orderAward]" + " 查询订单失败");
 			return ResultGenerator.genFailResult("查询订单失败");
 		}
 		Integer userId = order.getUserId();
@@ -90,18 +91,23 @@ public class StoreUserMoneyController {
 		Integer orderStatus = order.getOrderStatus();
 		BigDecimal awardMoney = order.getWinningMoney();
 		if(userId == null || userId <= 0) {
+			log.info("[orderAward]" + " UserId为空");
 			return ResultGenerator.genFailResult("UserId为空");
 		}
-		if(storeId == null || storeId <= 0) {
-			return ResultGenerator.genFailResult("StoreId为空");
-		}
+//		if(storeId == null || storeId <= 0) {
+//			log.info("[orderAward]" + " StoreId为空");
+//			return ResultGenerator.genFailResult("StoreId为空");
+//		}
 		if(awardMoney == null || awardMoney.doubleValue() <= 0) {
+			log.info("[orderAward]" + "awardMoney派奖金额为空");
 			return ResultGenerator.genFailResult("awardMoney派奖金额为空");
 		}
 		if(orderStatus == 9) {	//已派奖
+			log.info("[orderAward]" + "该订单已派奖");
 			return ResultGenerator.genFailResult("该订单已派奖");
 		}
 		if(orderStatus != 5) {	//已中奖才给派奖
+			log.info("[orderAward]" + "该订单未中奖");
 			return ResultGenerator.genFailResult("该订单未中奖");
 		}
 		//操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
