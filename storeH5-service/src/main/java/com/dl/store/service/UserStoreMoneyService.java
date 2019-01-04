@@ -28,19 +28,19 @@ public class UserStoreMoneyService {
 	 * @param money
 	 * @return
 	 */
-	public boolean orderPay(Integer userId,Integer storeId,BigDecimal ticketAmt){
+	public boolean orderPay(Integer userId,Integer storeId,BigDecimal amt,BigDecimal userBonudsPrice){
 		boolean succ = false;
-		if(ticketAmt.doubleValue() > 0) {
+		if(amt.doubleValue() > 0) {
 			UserStoreMoney params = new UserStoreMoney();
 			params.setUserId(userId);
 			params.setStoreId(storeId);
 			UserStoreMoney userStoreMoney = userStoreMoneyMapper.queryInfo(params);
 			log.info("[orderPay]" + " query:" + userStoreMoney.getUserId() + " storeId:" + userStoreMoney.getStoreId() + " money:" + userStoreMoney.getMoney());
 			BigDecimal userMoney = userStoreMoney.getMoney();
-			BigDecimal moneyResult = userMoney.subtract(ticketAmt);
+			BigDecimal moneyResult = userMoney.subtract(amt);
 			userStoreMoney.setMoney(moneyResult);
 			int cnt = userStoreMoneyMapper.orderPay(userStoreMoney);
-			log.info("[orderPay]" + " cnt:" + cnt + " result:" + moneyResult + " orderMoney:" + ticketAmt + " userMoney:" + userMoney);
+			log.info("[orderPay]" + " cnt:" + cnt + " result:" + moneyResult + " orderMoney:" + amt + " userMoney:" + userMoney);
 			succ = true;
 		}
 		return succ;
