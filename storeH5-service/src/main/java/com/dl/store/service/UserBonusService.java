@@ -123,7 +123,7 @@ public class UserBonusService extends AbstractService<UserBonus> {
         }
         OrderDTO orderDTO = orderDTOBaseResult.getData();
         BigDecimal moneyPaid = orderDTO.getMoneyPaid();
-        if(userBonus.getMinGoodsAmount().compareTo(moneyPaid) < 0){
+        if(userBonus.getMinGoodsAmount().compareTo(moneyPaid) > 0){
             return ResultGenerator.genResult(MemberEnums.CANNOT_USE.getcode(),MemberEnums.CANNOT_USE.getMsg());
         }
 
@@ -256,7 +256,7 @@ public class UserBonusService extends AbstractService<UserBonus> {
 
 		userBonusList.forEach(s -> {
 			UserBonusDTO userBonusDTO = this.createReturnUserBonusDTO(s);
-			if(s.getMinGoodsAmount().compareTo(moneyPaid) < 0){ userBonusDTO.setBonusStatus("3");}
+			if(s.getMinGoodsAmount().compareTo(moneyPaid) > 0){ userBonusDTO.setBonusStatus("3");}
 			userBonusDTOList.add(userBonusDTO);
 		});
 		return userBonusDTOList;
