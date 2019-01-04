@@ -85,7 +85,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		userAccount.setStatus(1);
 		userAccount.setStoreId(storeId);
 		userAccount.setOrderSn(orderSn);
-		if(bonusId > 0) {
+		if(bonusId != null && bonusId > 0) {
 			userAccount.setBonusPrice(bonusAmt);
 		}
 		String note = "";
