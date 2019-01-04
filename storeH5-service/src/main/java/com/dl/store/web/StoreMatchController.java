@@ -32,6 +32,7 @@ import com.dl.order.dto.TicketSchemeDTO;
 import com.dl.order.param.OrderDetailParam;
 import com.dl.order.param.OrderInfoListParam;
 import com.dl.order.param.TicketSchemeParam;
+import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.dto.UserDTO;
 import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.UserStoreMoney;
@@ -117,6 +118,7 @@ public class StoreMatchController {
 		Integer userId = SessionUtil.getUserId();
 		Integer storeId = param.getStoreId();
 		String orderId = param.getOrderId();
+		Integer bonudsId = param.getBonudsId();
 		log.info("接口为[getOrderDetail]" + " userId:" + userId + ",storeId:" + storeId + ",orderId:"+orderId);
 		if(storeId == null || storeId <= 0) {
 			return ResultGenerator.genResult(OrderEnums.STORE_ID_EMPTY.getcode(),OrderEnums.STORE_ID_EMPTY.getMsg());
@@ -126,6 +128,7 @@ public class StoreMatchController {
 		userIdParam.setUserId(userId);
 		UserDTO user = userService.queryUserInfo(userIdParam);
 		StoreUserInfoDTO storeUserDTO = null;
+		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(param).getData();
 		if("1".equals(user.getIsSuperWhite()) && userId != null && userId > 0) {
 			userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,storeId);	
 			storeUserDTO = new StoreUserInfoDTO();
@@ -140,8 +143,19 @@ public class StoreMatchController {
 			log.info("[getOrderDetail]" + " money:" + bigDec + " bonusSize:" + bonusSize);
 			storeUserDTO.setMoney(bigDec.toString());
 			storeUserDTO.setBonusNum(bonusSize);
+			if(bonudsId != null && bonudsId > 0) {
+				UserBonusDTO userBonusDTO = userBonusService.queryUserBonus(bonudsId);
+				if(userBonusDTO != null) {
+					BigDecimal amt = BigDecimal.valueOf(Double.valueOf(orderDetailDTO.getTicketAmount())).subtract(userBonusDTO.getBonusPrice());
+					log.info("[getOrderDetail]" + "实付金额:" + amt + " 订单金额:" + orderDetailDTO.getTicketAmount() + " 红包金额:" + userBonusDTO.getBonusPrice());
+					storeUserDTO.setActualAmount(amt+"");
+				}else {
+					storeUserDTO.setActualAmount(orderDetailDTO.getTicketAmount());
+				}
+			}else {
+				storeUserDTO.setActualAmount(orderDetailDTO.getTicketAmount());
+			}
 		}
-		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(param).getData();
 		orderDetailDTO.setUserInfo(storeUserDTO);
 		return ResultGenerator.genSuccessResult("订单详情查询成功", orderDetailDTO);
     }

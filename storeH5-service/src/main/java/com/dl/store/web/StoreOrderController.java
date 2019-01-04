@@ -11,12 +11,14 @@ import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
 import com.dl.store.dto.DlHallInfoDTO;
+import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.Order;
 import com.dl.store.model.UserStoreMoney;
 import com.dl.store.param.OrderPayParam;
 import com.dl.store.service.OrderService;
 import com.dl.store.service.UserAccountService;
+import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserStoreMoneyService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,8 @@ public class StoreOrderController {
 	private UserStoreMoneyService userStoreMoneyService;
 	@Resource
 	private UserAccountService userAccountService;
+	@Resource
+	private UserBonusService userBonusService;
 	
 	@ApiOperation(value = "订单支付", notes = "订单支付")
 	@PostMapping("/pay")
@@ -70,6 +74,10 @@ public class StoreOrderController {
 		}
 		if(bonusId != null && bonusId > 0) {
 			boolean isBondsAvailable = false;
+			UserBonusDTO userBonusDTO = userBonusService.queryUserBonus(bonusId);
+			if(userBonusDTO == null) {
+				return ResultGenerator.genResult(OrderEnums.USERBONDS_NOT_EXIST.getcode(),OrderEnums.USERBONDS_NOT_EXIST.getMsg());
+			}
 		}
 		//记录流水 操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
 		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,ticketAmout,3);

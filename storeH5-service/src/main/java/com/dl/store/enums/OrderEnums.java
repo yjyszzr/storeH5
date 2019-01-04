@@ -2,6 +2,7 @@ package com.dl.store.enums;
 
 public enum OrderEnums {
 	//301012
+	USERBONDS_NOT_EXIST(302007,"优惠券不存在"),
 	ORDER_PAID(302006,"订单已支付"),
 	USER_MONEY_PAY_FAILE(302005,"订单支付余额扣除失败"),
 	USER_MONEY_NOTENOUGH(302004,"用户余额不够"),
