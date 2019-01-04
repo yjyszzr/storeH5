@@ -36,6 +36,7 @@ import com.dl.store.dto.UserDTO;
 import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.UserStoreMoney;
 import com.dl.store.param.UserIdParam;
+import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserService;
 import com.dl.store.service.UserStoreMoneyService;
 import com.github.pagehelper.PageInfo;
@@ -69,6 +70,9 @@ public class StoreMatchController {
     
     @Resource
     private UserStoreMoneyService userStoreMoneyService;
+    
+    @Resource
+    private UserBonusService userBonusService;
     
     @ApiOperation(value = "获取筛选条件列表-足球", notes = "获取筛选条件列表-足球")
     @PostMapping("/filterConditions")
@@ -132,8 +136,10 @@ public class StoreMatchController {
 			}else {
 				bigDec = BigDecimal.ZERO;
 			}
-			log.info("[getOrderDetail]" + " money:" + bigDec);
+			Integer bonusSize = userBonusService.validBonusSize(userId);
+			log.info("[getOrderDetail]" + " money:" + bigDec + " bonusSize:" + bonusSize);
 			storeUserDTO.setMoney(bigDec.toString());
+			storeUserDTO.setBonusNum(bonusSize);
 		}
 		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(param).getData();
 		orderDetailDTO.setUserInfo(storeUserDTO);

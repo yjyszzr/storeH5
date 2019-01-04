@@ -14,4 +14,7 @@ public class OrderPayParam {
 	@ApiModelProperty("订单号")
 	@NotBlank(message="订单号不能为空")
 	private String orderSn;
+	@ApiModelProperty("代金券id")
+	@NotBlank(message="代金券id")
+	private Integer bonusId;
 }

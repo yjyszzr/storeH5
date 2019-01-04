@@ -38,7 +38,8 @@ public class StoreOrderController {
 		String orderSn = param.getOrderSn();
 		Integer storeId = param.getStoreId();
 		Integer userId = SessionUtil.getUserId();
-		log.info("[orderPay]" + " orderSn:" + orderSn + " storeId:" + storeId + " userId:" + userId);
+		Integer bonusId = param.getBonusId();
+		log.info("[orderPay]" + " orderSn:" + orderSn + " storeId:" + storeId + " userId:" + userId + " bonusId:" + bonusId);
 		if(StringUtils.isEmpty(orderSn)) {
 			return ResultGenerator.genResult(OrderEnums.ORDER_SN_EMPTY.getcode(),OrderEnums.ORDER_SN_EMPTY.getMsg());
 		}
@@ -66,6 +67,9 @@ public class StoreOrderController {
 		}
 		if(money.subtract(ticketAmout).doubleValue() < 0) {//余额不够
 			return ResultGenerator.genResult(OrderEnums.USER_MONEY_NOTENOUGH.getcode(),OrderEnums.USER_MONEY_NOTENOUGH.getMsg());
+		}
+		if(bonusId != null && bonusId > 0) {
+			boolean isBondsAvailable = false;
 		}
 		//记录流水 操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
 		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,ticketAmout,3);
