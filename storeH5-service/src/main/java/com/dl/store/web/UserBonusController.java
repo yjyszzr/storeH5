@@ -28,7 +28,6 @@ public class UserBonusController {
     @Resource
     private UserBonusService userBonusService;
 
-
     @ApiOperation(value="根据状态查询有效的红包集合", notes="根据状态查询有效的红包集合",hidden=false)
     @PostMapping("/bonusListByStatus")
     public BaseResult<List<UserBonusDTO>> queryBonusListByStatus(@RequestBody UserBonusStatusParam userBonusStatusParam) {

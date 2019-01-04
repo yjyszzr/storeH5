@@ -19,15 +19,15 @@ public class UserAccountController {
 	@Resource
 	private UserAccountService userAccountService;
 
-	/** 
+	/**
 	 * 查询用户账户明细列表
 	 * @param UserBonusParam
 	 * @return
 	 */
-    @ApiOperation(value="查询用户账户明细列表", notes="查询用户账户明细列表",hidden=false)
+	@ApiOperation(value="查询用户账户明细列表", notes="查询用户账户明细列表",hidden=false)
 	@RequestMapping(path="/getUserAccountList", method=RequestMethod.POST)
 	public BaseResult<PageInfo<UserAccountDTO>> getUserAccountList(@RequestBody AmountTypeParam amountTypeParam) {
-    	PageInfo<UserAccountDTO> rst = userAccountService.queryUserAccountList(amountTypeParam);
-    	return ResultGenerator.genSuccessResult("查询用户账户明细列表",rst);
+		PageInfo<UserAccountDTO> rst = userAccountService.queryUserAccountList(amountTypeParam);
+		return ResultGenerator.genSuccessResult("查询用户账户明细列表",rst);
 	}
 }

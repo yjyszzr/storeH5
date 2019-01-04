@@ -22,13 +22,15 @@ public interface UserBonusMapper extends Mapper<UserBonus> {
 
 	 List<Integer> queryUserBonusIdsExpire(@Param("now") Integer now);
 
-	 List<Integer> queryUserBonusIdsSoonExpire();
+//	 List<Integer> queryUserBonusIdsSoonExpire();
 
 	 int updateBatchUserBonusExpire(@Param("list") List<Integer> userBonusIdList);
 
 	int getUnReadBonusNum(@Param("userId") Integer userId);
 
 	int updateUnReadBonus(@Param("userId") Integer userId);
+
+	UserBonus queryOneBonus(@Param("userId") Integer userId,@Param("userBonusId") Integer userBonusId);
 
 	List<UserBonus> queryPUshBonusList(@Param("start") Integer start, @Param("end") Integer end);
 }

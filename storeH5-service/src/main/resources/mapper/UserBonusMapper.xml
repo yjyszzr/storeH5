@@ -131,6 +131,9 @@
 		    <if test="endTime != null">
 		        AND end_time &gt;= #{endTime}
 		    </if>
+			<if test="storeId != null">
+				AND store_id = #{storeId}
+			</if>
 	    </where>
 	    order by used_time DESC
   </select>
@@ -200,5 +203,9 @@
   <update id="updateUnReadBonus">
   	update dl_user_bonus set is_read = 1 where user_id=#{userId} and is_read=0
   </update>
+
+	<select id="queryOneBonus" resultMap="BaseResultMap">
+		select * from dl_user_bonus where user_bonus_id = #{userBonusId} and user_id = #{userId}
+	</select>
   
 </mapper>

@@ -71,8 +71,6 @@ public class LotteryHallController {
 
 			Integer bonusSize = userBonusService.validBonusSize(userId);
 			if(bonusSize == 0 ){
-				hallInfo.setMyBonusNum("暂无优惠券");
-			}else{
 				hallInfo.setMyBonusNum(String.valueOf(bonusSize));
 			}
 		}

@@ -1,18 +1,34 @@
-//package com.dl.store.schedule;
-//
-//import javax.annotation.Resource;
-//
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.scheduling.annotation.EnableScheduling;
-//
-//import com.dl.store.service.OrderService;
-//
-//import lombok.extern.slf4j.Slf4j;
-//
-//@Slf4j
-//@Configuration
-//@EnableScheduling
-//public class StoreTaskSchedule {
+package com.dl.store.schedule;
+
+
+import com.dl.store.service.UserBonusService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import javax.annotation.Resource;
+
+@Slf4j
+@Configuration
+@EnableScheduling
+public class StoreTaskSchedule {
+
+	@Resource
+	private UserBonusService userBonusService;
+
+	/************************** 用户的定时任务 *****************/
+	/**
+	 * 更新过期的红包
+	 */
+	@Scheduled(cron = "${store.schedule.bonus.expire}")
+	public void updateBonusExpire() {
+		log.info("更新过期的红包定时任务开始");
+		userBonusService.updateBonusExpire();
+		log.info("更新过期的红包的定时任务结束");
+	}
+
+
 //
 //	@Resource
 //	private OrderService orderService;
@@ -84,4 +100,4 @@
 //	}
 //	
 	
-//}
+}
