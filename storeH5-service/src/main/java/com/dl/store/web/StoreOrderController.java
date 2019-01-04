@@ -110,7 +110,7 @@ public class StoreOrderController {
 			log.info("[orderPay]" + " 扣除优惠券为已使用bR.getMsg()" + bR.getMsg());
 		}
 		//扣除余额 Integer userId,Integer storeId,BigDecimal money
-		boolean isSucc = userStoreMoneyService.orderPay(userId,storeId,amt,userBonuds.getBonusPrice());
+		boolean isSucc = userStoreMoneyService.orderPay(userId,storeId,amt,bonudsPrice);
 		log.info("[orderPay]" + " succ:" + isSucc);
 		if(!isSucc) {
 			return ResultGenerator.genResult(OrderEnums.USER_MONEY_PAY_FAILE.getcode(),OrderEnums.USER_MONEY_PAY_FAILE.getMsg());
