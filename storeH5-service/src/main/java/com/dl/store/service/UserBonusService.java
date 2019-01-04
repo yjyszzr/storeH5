@@ -109,6 +109,7 @@ public class UserBonusService extends AbstractService<UserBonus> {
      */
     public BaseResult<UserBonus> queryOneValidBonus(Integer userBonusId, String orderSn){
         Integer userId = SessionUtil.getUserId();
+
         UserBonus userBonus = userBonusMapper.queryOneBonus(userBonusId,userId);
         if(userBonus == null){
             return ResultGenerator.genResult(MemberEnums.DBDATA_IS_NULL.getcode(),MemberEnums.DBDATA_IS_NULL.getMsg());
@@ -412,5 +413,7 @@ public class UserBonusService extends AbstractService<UserBonus> {
         int rst = userBonusMapper.updateBatchUserBonusExpire(userBonusIdList);
         log.info("本次更新过期的红包" + rst + "个");
     }
+
+
 
 }
