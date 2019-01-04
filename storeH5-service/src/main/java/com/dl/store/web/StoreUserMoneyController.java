@@ -68,7 +68,7 @@ public class StoreUserMoneyController {
 		succ = userStoreMoneyService.orderRollBack(userId,storeId,moneyPaid);
 		log.info("[orderRollBack]" + "账户回滚结果:" + succ);
 		//增加流水记录
-		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,moneyPaid,6);
+		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,moneyPaid,null,null,6);
 		log.info("[orderRollBack]" + "增加账户流水记录:" + cnt);
 		return ResultGenerator.genSuccessResult("账户回滚成功");
 	}
@@ -118,7 +118,7 @@ public class StoreUserMoneyController {
 		succ = userStoreMoneyService.awardMony(userId,storeId,awardMoney);
 		log.info("[orderAward]" + "增加钱包金额:" + succ);
 		//添加流水记录操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
-		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,awardMoney,1);
+		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,awardMoney,null,null,1);
 		log.info("[orderAward]" + "增加账户流水成功:" + cnt);
 		return ResultGenerator.genSuccessResult("派奖成功");
 	}

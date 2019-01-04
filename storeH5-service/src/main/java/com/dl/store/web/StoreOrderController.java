@@ -95,13 +95,14 @@ public class StoreOrderController {
 		if(money.subtract(amt).doubleValue() < 0) {//余额不够
 			return ResultGenerator.genResult(OrderEnums.USER_MONEY_NOTENOUGH.getcode(),OrderEnums.USER_MONEY_NOTENOUGH.getMsg());
 		}
-		//优惠券流水记录
-		if(userBonuds != null) {
-			userAccountService.insertOrderPayInfo(userId, storeId, orderSn, userBonuds.getBonusPrice(),5);
-			log.info("[orderPay]" + " 记录优惠券流水");
-		}
+//		//优惠券流水记录
+//		if(userBonuds != null) {
+//			userAccountService.insertOrderPayInfo(userId, storeId, orderSn,userBoundsId,bonudsPrice,3);
+//			log.info("[orderPay]" + " 记录优惠券流水");
+//		}
+		//Integer userId,Integer storeId,String orderSn,BigDecimal ticketAmt,Integer bonusId,BigDecimal bonusAmt,int processType
 		//记录钱包流水 操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
-		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,amt,3);
+		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,amt,userBoundsId,bonudsPrice,3);
 		if(cnt > 0) {
 			log.info("[orderPay]" + " UserAccountService insertOrderPayInfo succ cnt:" + cnt);
 		}
