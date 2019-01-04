@@ -181,6 +181,23 @@ public class UserBonusService extends AbstractService<UserBonus> {
 	}
 
 
+	/**
+	 * 查询用户可用的红包数量
+	 *
+	 * @return
+	 */
+	public Integer validBonusSize(Integer userId) {
+		UserBonus userBonus = new UserBonus();
+		userBonus.setUserId(userId);
+		userBonus.setIsDelete(MemberConstant.NOT_DELETE);
+		userBonus.setBonusStatus(MemberConstant.BONUS_STATUS_UNUSED);
+		userBonus.setStartTime(DateUtil.getCurrentTimeLong());
+		userBonus.setEndTime(DateUtil.getCurrentTimeLong());
+		List<UserBonus> userBonusList = userBonusMapper.queryUserBonusForPay(userBonus);
+		return userBonusList.size();
+	}
+
+
 
 	/**
 	 * 给支付提供查询用户可用的红包列表

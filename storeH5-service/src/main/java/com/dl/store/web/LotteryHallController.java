@@ -1,12 +1,5 @@
 package com.dl.store.web;
 
-import java.math.BigDecimal;
-import java.util.List;
-import javax.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
@@ -17,11 +10,19 @@ import com.dl.store.model.UserStoreMoney;
 import com.dl.store.param.HallParam;
 import com.dl.store.param.UserIdParam;
 import com.dl.store.service.LotteryHallService;
+import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserService;
 import com.dl.store.service.UserStoreMoneyService;
-
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/hall")
@@ -33,6 +34,9 @@ public class LotteryHallController {
 	private UserStoreMoneyService userStoreMoneyService;
 	@Resource 
 	private UserService userService;
+
+	@Resource
+	private UserBonusService userBonusService;
 	
 	@ApiOperation(value = "首页大厅", notes = "首页大厅")	
 	@PostMapping("/info")
@@ -64,7 +68,15 @@ public class LotteryHallController {
 			if(userDTO != null) {
 				isSuperWhite = userDTO.getIsSuperWhite();
 			}
+
+			Integer bonusSize = userBonusService.validBonusSize(userId);
+			if(bonusSize == 0 ){
+				hallInfo.setMyBonusNum("暂无优惠券");
+			}else{
+				hallInfo.setMyBonusNum(String.valueOf(bonusSize));
+			}
 		}
+
 		hallInfo.setIsSuperWhite(isSuperWhite);
 		log.info("[hallInfo]" + " money:" + money + " isSuperWhite:" + isSuperWhite);
 		return ResultGenerator.genSuccessResult("succ",hallInfo);

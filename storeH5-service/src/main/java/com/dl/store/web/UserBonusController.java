@@ -47,7 +47,7 @@ public class UserBonusController {
         return ResultGenerator.genSuccessResult("查询用户有效的红包列表成功",userBonusDTOList);
     }
 
-    @ApiOperation(value="可用的红包列表数量: 内部接口", notes="可用的红包列表数量：内部接口",hidden=false)
+    @ApiOperation(value="支付的时候可用的红包列表数量: 内部接口", notes="可用的红包列表数量：内部接口",hidden=false)
     @PostMapping("/validBonusSize")
     public BaseResult<Integer> validBonusSize(@RequestBody BonusLimitConditionParam bonusLimitConditionParam) {
        Integer size =  userBonusService.queryValidBonusListSize(bonusLimitConditionParam);
