@@ -34,7 +34,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
@@ -58,13 +57,10 @@ public class UserService extends AbstractService<User> {
 
 	@Resource
 	private DlUserAuthsService dlUserAuthsService;
-
+	
 	@Resource
 	private IMessageService iMessageService;
 	
-	@Resource
-	private UserService1 userService1;
-
 	public Boolean queryStoreUserIsSuperWhite(Integer userId){
 		User user = userMapper.queryUserByUserId(userId);
 		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
@@ -179,7 +175,7 @@ public class UserService extends AbstractService<User> {
 
 		log.info("memDTO 信息:"+ JSON.toJSONString(memRst.getData()));
 		com.dl.member.dto.UserDTO userDto = memRst.getData();
-		Integer userId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt());
+		Integer userId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
 		if(userId != null){
 			DlUserAuths dlUserAuths = new DlUserAuths();
 			dlUserAuths.setThirdMobile(userDto.getMobile());
@@ -257,7 +253,7 @@ public class UserService extends AbstractService<User> {
 	 *
 	 * @param uParams
 	 */
-	public Integer saveUser(String mobile,String pass,String salt) {
+	public Integer saveUser(String mobile,String pass,String salt,String isSuperWhite) {
 		User user = new User();
 		String userName = generateUserName(mobile);// 账号
 		String nickName = generateNickName(mobile);// 昵称
@@ -285,9 +281,8 @@ public class UserService extends AbstractService<User> {
 		user.setPushKey("");
 		user.setDeviceChannel("");
 		//查询彩小秘用户是否是超级用户
-		Boolean isSuperUserWhite = userService1.queryCxmUserIsSuperWhite(mobile);
-		log.info("[saveUser]" + " mobile:" + mobile + " isSuperWhite:" + isSuperUserWhite);
-		if(isSuperUserWhite){
+		log.info("[saveUser]" + " mobile:" + mobile + " isSuperWhite:" + isSuperWhite);
+		if("1".equals(isSuperWhite)){
 			user.setIsSuperWhite(1);
 		}else{
 			user.setIsSuperWhite(0);
