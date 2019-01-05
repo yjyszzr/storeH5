@@ -62,6 +62,9 @@ public class UserService extends AbstractService<User> {
 	@Resource
 	private IMessageService iMessageService;
 	
+	@Resource
+	private UserService1 userService1;
+	
 	/**
 	 * 保存用户
 	 *
@@ -105,9 +108,9 @@ public class UserService extends AbstractService<User> {
 			String channel = userDevice.getChannel();
 			user.setDeviceChannel(channel);
 		}
-
 		//查询彩小秘用户是否是超级用户
-		Boolean isSuperUserWhite =  this.queryCxmUserIsSuperWhite(Integer.valueOf(userParam.getMobile()));
+		Boolean isSuperUserWhite = userService1.queryCxmUserIsSuperWhite(Integer.valueOf(userParam.getMobile()));
+		log.info("[saveUser]" + " mobile:" + userParam.getMobile() + " isSuperWhite:" + isSuperUserWhite);
 		if(isSuperUserWhite){
 			user.setIsSuperWhite(1);
 		}else{
@@ -123,18 +126,6 @@ public class UserService extends AbstractService<User> {
 
 		return userId;
 	}
-
-
-	@Transactional("transactionManager2")
-	public Boolean queryCxmUserIsSuperWhite(Integer mobile){
-		User user = userMapper.queryUserByMobile(mobile);
-		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
 
 	public BaseResult<UserDTO> queryUserByUserIdExceptPass() {
 		Integer userId = SessionUtil.getUserId();
