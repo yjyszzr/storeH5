@@ -1,5 +1,18 @@
 package com.dl.store.web;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.apache.log4j.Logger;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
@@ -28,19 +41,9 @@ import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserService;
 import com.dl.store.service.UserStoreMoneyService;
 import com.github.pagehelper.PageInfo;
+
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.util.List;
 
 /**
 * Created by CodeGenerator on 2018/03/21.
@@ -157,6 +160,7 @@ public class StoreMatchController {
 			}
 		}
 		orderDetailDTO.setUserInfo(storeUserDTO);
+		orderDetailDTO.setStoreId(param.getStoreId());
 		return ResultGenerator.genSuccessResult("订单详情查询成功", orderDetailDTO);
     }
 
