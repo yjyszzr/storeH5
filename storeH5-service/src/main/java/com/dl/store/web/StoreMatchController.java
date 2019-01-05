@@ -31,8 +31,8 @@ import com.dl.order.dto.OrderInfoListDTO;
 import com.dl.order.dto.StoreUserInfoDTO;
 import com.dl.order.dto.TicketSchemeDTO;
 import com.dl.order.param.OrderDetailParam;
+import com.dl.order.param.OrderIdParam;
 import com.dl.order.param.OrderInfoListParam;
-import com.dl.order.param.OrderSnParam;
 import com.dl.order.param.TicketSchemeParam;
 import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.dto.UserDTO;
@@ -162,8 +162,10 @@ public class StoreMatchController {
 			}
 		}
 		orderDetailDTO.setUserInfo(storeUserDTO);
-		OrderSnParam snParam =new OrderSnParam();
-		 OrderDTO   orderDTO    = 	iOrderService.getOrderInfoByOrderSn(snParam).getData();
+		OrderIdParam orderIdParam  =new OrderIdParam();
+		orderIdParam.setOrderId(Integer.parseInt(param.getOrderId()));
+		 OrderDTO   orderDTO    = 	iOrderService.getOrderInfoByOrderId(orderIdParam).getData();
+		 log.info("订单信息orderDTO===================", orderDTO);
 		orderDetailDTO.setStoreId(orderDTO.getStoreId());
 		return ResultGenerator.genSuccessResult("订单详情查询成功", orderDetailDTO);
     }
