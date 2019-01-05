@@ -134,11 +134,7 @@
 			#{item}
 		</foreach>
   </select>
-  
-  <insert id="savestoreThirdApiLog">
-  	insert into dl_third_api_log(api_name,api_type,api_param,api_result,api_desc)
-  	values(#{apiName},#{apiType},#{apiParam},#{apiResult},#{apiDesc})
-  </insert>
+
     
   <update id="updateUserMoneyForCashCoupon" parameterType="com.dl.store.model.User" >
   	UPDATE dl_user 

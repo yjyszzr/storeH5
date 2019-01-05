@@ -18,4 +18,10 @@ public class DlHallInfoDTO {
 
 	@ApiModelProperty(value = "我的卡券数量")
 	private String myBonusNum = "";
+
+	@ApiModelProperty(value = "是否显示账户明细：0-不显示 1-显示")
+	private String isShowAccount = "0";
+
+	@ApiModelProperty(value = "是否显示我的代金券：0-不显示 1-显示")
+	private String isShowBonus = "0";
 }

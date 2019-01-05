@@ -37,6 +37,7 @@ public class LotteryHallController {
 
 	@Resource
 	private UserBonusService userBonusService;
+
 	
 	@ApiOperation(value = "首页大厅", notes = "首页大厅")	
 	@PostMapping("/info")
@@ -71,6 +72,12 @@ public class LotteryHallController {
 
 			Integer bonusSize = userBonusService.validBonusSize(userId,param.getStoreId());
 			hallInfo.setMyBonusNum(String.valueOf(bonusSize));
+
+			Boolean rst = userService.queryStoreUserIsSuperWhite(userId);
+			if(rst){
+				hallInfo.setIsShowAccount("1");
+				hallInfo.setIsShowAccount("1");
+			}
 		}
 
 		hallInfo.setIsSuperWhite(isSuperWhite);

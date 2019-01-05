@@ -64,7 +64,16 @@ public class UserService extends AbstractService<User> {
 	
 	@Resource
 	private UserService1 userService1;
-	
+
+	public Boolean queryStoreUserIsSuperWhite(Integer userId){
+		User user = userMapper.queryUserByUserId(userId);
+		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	/**
 	 * 保存用户
 	 *
