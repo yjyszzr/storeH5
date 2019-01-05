@@ -108,15 +108,6 @@ public class UserService extends AbstractService<User> {
 			String channel = userDevice.getChannel();
 			user.setDeviceChannel(channel);
 		}
-		//查询彩小秘用户是否是超级用户
-		Boolean isSuperUserWhite = userService1.queryCxmUserIsSuperWhite(Integer.valueOf(userParam.getMobile()));
-		log.info("[saveUser]" + " mobile:" + userParam.getMobile() + " isSuperWhite:" + isSuperUserWhite);
-		if(isSuperUserWhite){
-			user.setIsSuperWhite(1);
-		}else{
-			user.setIsSuperWhite(0);
-		}
-
 		Integer insertRsult = userMapper.insertWithReturnId(user);
 		if (1 != insertRsult) {
 			log.error("注册用户失败");
@@ -288,6 +279,14 @@ public class UserService extends AbstractService<User> {
 		if (1 != insertRsult) {
 			log.error("注册用户失败");
 			return null;
+		}
+		//查询彩小秘用户是否是超级用户
+		Boolean isSuperUserWhite = userService1.queryCxmUserIsSuperWhite(Integer.valueOf(mobile));
+		log.info("[saveUser]" + " mobile:" + mobile + " isSuperWhite:" + isSuperUserWhite);
+		if(isSuperUserWhite){
+			user.setIsSuperWhite(1);
+		}else{
+			user.setIsSuperWhite(0);
 		}
 		Integer userId = user.getUserId();
 		return userId;
