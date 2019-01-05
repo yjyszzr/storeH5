@@ -16,7 +16,7 @@ public class UserService1 extends AbstractService<User>{
 	private UserMapper userMapper;
 	
 	@Transactional("transactionManager1")
-	public Boolean queryCxmUserIsSuperWhite(Integer mobile){
+	public Boolean queryCxmUserIsSuperWhite(String mobile){
 		User user = userMapper.queryUserByMobile(mobile);
 		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
 			return true;

@@ -276,7 +276,7 @@ public class UserService extends AbstractService<User> {
 		user.setPushKey("");
 		user.setDeviceChannel("");
 		//查询彩小秘用户是否是超级用户
-		Boolean isSuperUserWhite = userService1.queryCxmUserIsSuperWhite(Integer.valueOf(mobile));
+		Boolean isSuperUserWhite = userService1.queryCxmUserIsSuperWhite(mobile);
 		log.info("[saveUser]" + " mobile:" + mobile + " isSuperWhite:" + isSuperUserWhite);
 		if(isSuperUserWhite){
 			user.setIsSuperWhite(1);
