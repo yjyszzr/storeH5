@@ -9,16 +9,16 @@ import com.dl.store.model.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional("transactionManager1")
 @Slf4j
+@Transactional("transactionManager1")
 public class UserService1 extends AbstractService<User>{
 	@Resource
 	private UserMapper userMapper;
-	
-	@Transactional("transactionManager1")
+
 	public Boolean queryCxmUserIsSuperWhite(String mobile){
 		User user = userMapper.queryUserByMobile(mobile);
-		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
+		log.info("[queryCxmUserIsSuperWhite]" + " user:" + user);
+		if(user != null && user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
 			return true;
 		}else{
 			return false;
