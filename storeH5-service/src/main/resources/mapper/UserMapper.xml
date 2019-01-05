@@ -163,8 +163,8 @@
 		select * from dl_user where user_id =#{userId}
 	</select>
 
-	<select id="queryUserByMobile" resultMap="BaseResultMap">
-		select * from dl_user where mobile =#{mobile}
+	<select id="queryUserByMobile" resultMap="BaseResultMap"  parameterType="java.lang.String">
+		select * from dl_user where mobile = #{mobile}
 	</select>
 
   <update id="updateInDBUserMoney">
