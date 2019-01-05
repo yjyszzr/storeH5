@@ -76,7 +76,7 @@ public class LotteryHallController {
 			Boolean rst = userService.queryStoreUserIsSuperWhite(userId);
 			if(rst){
 				hallInfo.setIsShowAccount("1");
-				hallInfo.setIsShowAccount("1");
+				hallInfo.setIsShowBonus("1");
 			}
 		}
 
