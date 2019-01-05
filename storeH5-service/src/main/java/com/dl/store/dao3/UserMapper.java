@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserMapper extends Mapper<User> {
 
-	User queryUserByMobile(String mobile);
+	User queryUserByMobile(@Param("mobile") String mobile);
 
 	int insertWithReturnId(User user);
 
