@@ -147,7 +147,7 @@ public class StoreMatchController {
 					BigDecimal amt = BigDecimal.valueOf(Double.valueOf(orderDetailDTO.getTicketAmount())).subtract(userBonusDTO.getBonusPrice());
 					log.info("[getOrderDetail]" + "实付金额:" + amt + " 订单金额:" + orderDetailDTO.getTicketAmount() + " 红包金额:" + userBonusDTO.getBonusPrice());
 					storeUserDTO.setActualAmount(amt+"");
-					storeUserDTO.setBonusName(userBonusDTO.getBonusName());
+					storeUserDTO.setBonusName(userBonusDTO.getBonusPrice().toString()+"元代金券");
 					storeUserDTO.setBonusPrice(userBonusDTO.getBonusPrice().toString());
 				}else {
 					storeUserDTO.setActualAmount(orderDetailDTO.getTicketAmount());
