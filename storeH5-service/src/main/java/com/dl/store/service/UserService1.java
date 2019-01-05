@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.dl.base.service.AbstractService;
-import com.dl.store.dao3.UserMapper;
+import com.dl.store.dao.UserMapper1;
 import com.dl.store.model.User;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional("transactionManager1")
 public class UserService1 extends AbstractService<User>{
 	@Resource
-	private UserMapper userMapper;
+	private UserMapper1 userMapper;
 
 	public Boolean queryCxmUserIsSuperWhite(String mobile){
 		User user = userMapper.queryUserByMobile(mobile);
