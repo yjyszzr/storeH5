@@ -275,11 +275,6 @@ public class UserService extends AbstractService<User> {
 		user.setIsReal("0");
 		user.setPushKey("");
 		user.setDeviceChannel("");
-		Integer insertRsult = userMapper.insertWithReturnId(user);
-		if (1 != insertRsult) {
-			log.error("注册用户失败");
-			return null;
-		}
 		//查询彩小秘用户是否是超级用户
 		Boolean isSuperUserWhite = userService1.queryCxmUserIsSuperWhite(Integer.valueOf(mobile));
 		log.info("[saveUser]" + " mobile:" + mobile + " isSuperWhite:" + isSuperUserWhite);
@@ -287,6 +282,11 @@ public class UserService extends AbstractService<User> {
 			user.setIsSuperWhite(1);
 		}else{
 			user.setIsSuperWhite(0);
+		}
+		Integer insertRsult = userMapper.insertWithReturnId(user);
+		if (1 != insertRsult) {
+			log.error("注册用户失败");
+			return null;
 		}
 		Integer userId = user.getUserId();
 		return userId;
