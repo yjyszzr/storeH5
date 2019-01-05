@@ -25,12 +25,14 @@ import com.dl.lottery.dto.OrderIdDTO;
 import com.dl.lottery.param.DlJcZqMatchBetParam;
 import com.dl.lottery.param.DlJcZqMatchListParam;
 import com.dl.order.api.IOrderService;
+import com.dl.order.dto.OrderDTO;
 import com.dl.order.dto.OrderDetailDTO;
 import com.dl.order.dto.OrderInfoListDTO;
 import com.dl.order.dto.StoreUserInfoDTO;
 import com.dl.order.dto.TicketSchemeDTO;
 import com.dl.order.param.OrderDetailParam;
 import com.dl.order.param.OrderInfoListParam;
+import com.dl.order.param.OrderSnParam;
 import com.dl.order.param.TicketSchemeParam;
 import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.dto.UserDTO;
@@ -114,7 +116,7 @@ public class StoreMatchController {
 	
 	@ApiOperation(value = "查询订单详情", notes = "查询订单详情")
     @PostMapping("/getOrderDetail")
-    public BaseResult<OrderDetailDTO> getOrderDetail(@Valid @RequestBody OrderDetailParam param) {
+    public BaseResult<OrderDetailDTO> getOrderDetail(@Valid @RequestBody OrderDetailParam param) { 
 		Integer userId = SessionUtil.getUserId();
 		Integer storeId = param.getStoreId();
 		String orderId = param.getOrderId();
@@ -160,7 +162,9 @@ public class StoreMatchController {
 			}
 		}
 		orderDetailDTO.setUserInfo(storeUserDTO);
-		orderDetailDTO.setStoreId(param.getStoreId());
+		OrderSnParam snParam =new OrderSnParam();
+		 OrderDTO   orderDTO    = 	iOrderService.getOrderInfoByOrderSn(snParam).getData();
+		orderDetailDTO.setStoreId(orderDTO.getStoreId());
 		return ResultGenerator.genSuccessResult("订单详情查询成功", orderDetailDTO);
     }
 
