@@ -60,7 +60,7 @@ public class StoreOrderController {
 			return ResultGenerator.genResult(OrderEnums.ORDER_EMPTY.getcode(),OrderEnums.ORDER_EMPTY.getMsg());
 		}
 		Integer orderStatus = order.getOrderStatus();
-		if (!orderStatus.equals("0")){
+		if (orderStatus != 0){
 			return ResultGenerator.genResult(OrderEnums.ORDER_INVALID.getcode(),OrderEnums.ORDER_INVALID.getMsg());
 		}
 		BigDecimal ticketAmout = order.getTicketAmount();
