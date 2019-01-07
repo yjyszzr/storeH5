@@ -1,12 +1,5 @@
 package com.dl.store.web;
 
-import java.math.BigDecimal;
-import javax.annotation.Resource;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
@@ -23,6 +16,14 @@ import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserStoreMoneyService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/order")
@@ -57,6 +58,10 @@ public class StoreOrderController {
 		Order order = orderService.queryOrderByOrderSn(orderSn);
 		if(order == null) {
 			return ResultGenerator.genResult(OrderEnums.ORDER_EMPTY.getcode(),OrderEnums.ORDER_EMPTY.getMsg());
+		}
+		Integer orderStatus = order.getOrderStatus();
+		if (!orderStatus.equals("0")){
+			return ResultGenerator.genResult(OrderEnums.ORDER_INVALID.getcode(),OrderEnums.ORDER_INVALID.getMsg());
 		}
 		BigDecimal ticketAmout = order.getTicketAmount();
 		BigDecimal money = null;

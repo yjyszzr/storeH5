@@ -10,7 +10,8 @@ public enum OrderEnums {
 	USER_ID_EMPTY(302003,"用户ID为空"),
 	STORE_ID_EMPTY(302002,"店铺ID为空"),
 	ORDER_SN_EMPTY(302001,"订单号为空"),
-	ORDER_EMPTY(302000,"查询订单失败");
+	ORDER_EMPTY(302000,"查询订单失败"),
+    ORDER_INVALID(302001,"订单失效，请重新下单");
 	
 	private Integer code;
     private String msg;
