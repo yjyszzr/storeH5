@@ -70,7 +70,7 @@ public class UserService extends AbstractService<User> {
 	
 	public Boolean queryStoreUserIsSuperWhite(Integer userId){
 		User user = userMapper.queryUserByUserId(userId);
-		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
+		if(user != null && user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
 			return true;
 		}else{
 			return false;
