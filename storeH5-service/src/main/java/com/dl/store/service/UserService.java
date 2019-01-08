@@ -199,9 +199,9 @@ public class UserService extends AbstractService<User> {
 		log.info("userId+20180109:"+userId);
 
 		com.dl.member.dto.UserDTO userDto = new com.dl.member.dto.UserDTO();
-		com.dl.member.param.UserIdParam userIdParam = new com.dl.member.param.UserIdParam();
+		com.dl.member.param.UserIdRealParam userIdParam = new com.dl.member.param.UserIdRealParam();
 		userIdParam.setUserId(userId);
-		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfo(userIdParam);
+		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfoReal(userIdParam);
 		if(userDTOBaseResult.isSuccess()){
 			userDto = userDTOBaseResult.getData();
 		}else{
