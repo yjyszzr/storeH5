@@ -14,6 +14,8 @@ import com.dl.base.util.SessionUtil;
 import com.dl.member.api.IMessageService;
 import com.dl.member.api.IUserService;
 import com.dl.member.dto.UserNoticeDTO;
+import com.dl.member.param.UserIdRealParam;
+import com.dl.member.param.UserRealParam;
 import com.dl.shop.auth.api.IAuthService;
 import com.dl.shop.auth.dto.InvalidateTokenDTO;
 import com.dl.store.core.MemberConstant;
@@ -239,25 +241,35 @@ public class UserService extends AbstractService<User> {
 			return ResultGenerator.genResult(memRst.getCode(),memRst.getMsg());
 		}
 
-		log.info("memDTO 信息:"+ JSON.toJSONString(memRst.getData()));
 		com.dl.member.dto.UserDTO userDto = memRst.getData();
 
 		//手机号得一致
-		if(!userDto.getMobile().equals(param.getMobile())){
+		UserIdRealParam userRealParam = new UserIdRealParam();
+		userRealParam.setUserId(userId);
+		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfoReal(userRealParam);
+		if(!userDTOBaseResult.isSuccess()){
+			log.error("iUserService.queryUserByMobileAndPass 接口异常");
+			return ResultGenerator.genResult(memRst.getCode(),memRst.getMsg());
+		}
+
+		if(!userDTOBaseResult.getData().getMobile().equals(param.getMobile())){
 			return ResultGenerator.genResult(MemberEnums.NOT_SAME_MOBILE.getcode(),MemberEnums.NOT_SAME_MOBILE.getMsg());
 		}
 
-		if(userId != null){
-			DlUserAuths dlUserAuths = new DlUserAuths();
-			dlUserAuths.setThirdMobile(userDto.getMobile());
-			dlUserAuths.setThirdPass(userDto.getPassword());
-			dlUserAuths.setThirdSalt(userDto.getSalt());
-			dlUserAuths.setThirdUserId(userDto.getUserId());
-			dlUserAuths.setUserId(userId);
-			Integer id = dlUserAuthsService.saveThirdUser(dlUserAuths);
-			if(id != null){
-				userMapper.updateUserHasThid(1,userId);
-			}
+		Boolean  bindRst = dlUserAuthsService.queryBindThird(userDto.getUserId());
+		if(bindRst == true){
+			return ResultGenerator.genResult(MemberEnums.DATA_ALREADY_EXIT_IN_DB.getcode(),"已经绑定过");
+		}
+
+		DlUserAuths dlUserAuths = new DlUserAuths();
+		dlUserAuths.setThirdMobile(userDto.getMobile());
+		dlUserAuths.setThirdPass(userDto.getPassword());
+		dlUserAuths.setThirdSalt(userDto.getSalt());
+		dlUserAuths.setThirdUserId(userDto.getUserId());
+		dlUserAuths.setUserId(userId);
+		Integer id = dlUserAuthsService.saveThirdUser(dlUserAuths);
+		if(id != null){
+			userMapper.updateUserHasThid(1,userId);
 		}
 
 		return ResultGenerator.genSuccessResult("绑定新用户成功");
