@@ -192,6 +192,7 @@ public class UserService extends AbstractService<User> {
 		if(rst.isSuccess()){
 			userId = rst.getData();
 		}
+		log.info("userId+20180109:"+userId);
 
 		com.dl.member.dto.UserDTO userDto = new com.dl.member.dto.UserDTO();
 		com.dl.member.param.UserIdParam userIdParam = new com.dl.member.param.UserIdParam();
@@ -200,7 +201,7 @@ public class UserService extends AbstractService<User> {
 		if(userDTOBaseResult.isSuccess()){
 			userDto = userDTOBaseResult.getData();
 		}
-
+		log.info("userDto+20180109:"+userDto.getMobile()+","+userDto.getPassword()+","+userDto.getSalt());
 
 		Integer newUserId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
 		if(newUserId != null){
