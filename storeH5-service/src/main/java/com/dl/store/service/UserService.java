@@ -191,6 +191,8 @@ public class UserService extends AbstractService<User> {
 		BaseResult<Integer> rst = iAuthService.getUserIdByToken(invalidateTokenDTO);
 		if(rst.isSuccess()){
 			userId = rst.getData();
+		}else{
+			return ResultGenerator.genResult(rst.getCode(),rst.getMsg());
 		}
 		log.info("userId+20180109:"+userId);
 
@@ -200,6 +202,8 @@ public class UserService extends AbstractService<User> {
 		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfo(userIdParam);
 		if(userDTOBaseResult.isSuccess()){
 			userDto = userDTOBaseResult.getData();
+		}else{
+			return ResultGenerator.genResult(rst.getCode(),rst.getMsg());
 		}
 		log.info("userDto+20180109:"+userDto.getMobile()+","+userDto.getPassword()+","+userDto.getSalt());
 
