@@ -14,6 +14,8 @@ import com.dl.base.util.SessionUtil;
 import com.dl.member.api.IMessageService;
 import com.dl.member.api.IUserService;
 import com.dl.member.dto.UserNoticeDTO;
+import com.dl.shop.auth.api.IAuthService;
+import com.dl.shop.auth.dto.InvalidateTokenDTO;
 import com.dl.store.core.MemberConstant;
 import com.dl.store.dao3.UserMapper;
 import com.dl.store.dto.UserDTO;
@@ -57,6 +59,9 @@ public class UserService extends AbstractService<User> {
 
 	@Resource
 	private DlUserAuthsService dlUserAuthsService;
+
+	@Resource
+	private IAuthService iAuthService;
 	
 	@Resource
 	private IMessageService iMessageService;
@@ -167,29 +172,47 @@ public class UserService extends AbstractService<User> {
 	}
 
 
+//	com.dl.member.param.TokenParam memToken = new com.dl.member.param.TokenParam();
+//		memToken.setUserToken(tokenStr);
+//	BaseResult<com.dl.member.dto.UserDTO> memRst =  iUserService.queryUserInfoByToken(memToken);
+//		if(memRst.getCode() != 0){
+//		log.error("iUserService.queryUserInfoByToken 接口异常");
+//		return ResultGenerator.genFailResult("fail",userLoginDTO);
+//	}
+
+
+
 	public BaseResult<UserLoginDTO> bindsThirdAndReg(String tokenStr) {
 		UserLoginDTO userLoginDTO = new UserLoginDTO();
-		com.dl.member.param.TokenParam memToken = new com.dl.member.param.TokenParam();
-		memToken.setUserToken(tokenStr);
-		BaseResult<com.dl.member.dto.UserDTO> memRst =  iUserService.queryUserInfoByToken(memToken);
-		if(memRst.getCode() != 0){
-			log.error("iUserService.queryUserInfoByToken 接口异常");
-			return ResultGenerator.genFailResult("fail",userLoginDTO);
+
+		Integer userId = null;
+		InvalidateTokenDTO invalidateTokenDTO = new InvalidateTokenDTO();
+		invalidateTokenDTO.setToken(tokenStr);
+		BaseResult<Integer> rst = iAuthService.getUserIdByToken(invalidateTokenDTO);
+		if(rst.isSuccess()){
+			userId = rst.getData();
 		}
 
-		log.info("memDTO 信息:"+ JSON.toJSONString(memRst.getData()));
-		com.dl.member.dto.UserDTO userDto = memRst.getData();
-		Integer userId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
-		if(userId != null){
+		com.dl.member.dto.UserDTO userDto = new com.dl.member.dto.UserDTO();
+		com.dl.member.param.UserIdParam userIdParam = new com.dl.member.param.UserIdParam();
+		userIdParam.setUserId(userId);
+		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfo(userIdParam);
+		if(userDTOBaseResult.isSuccess()){
+			userDto = userDTOBaseResult.getData();
+		}
+
+
+		Integer newUserId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
+		if(newUserId != null){
 			DlUserAuths dlUserAuths = new DlUserAuths();
 			dlUserAuths.setThirdMobile(userDto.getMobile());
 			dlUserAuths.setThirdPass(userDto.getPassword());
 			dlUserAuths.setThirdSalt(userDto.getSalt());
 			dlUserAuths.setThirdUserId(userDto.getUserId());
-			dlUserAuths.setUserId(userId);
+			dlUserAuths.setUserId(newUserId);
 			Integer id = dlUserAuthsService.saveThirdUser(dlUserAuths);
 			if(id != null){
-				userMapper.updateUserHasThid(1,userId);
+				userMapper.updateUserHasThid(1,newUserId);
 			}
 			userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userDto.getMobile(), "4");
 		}
@@ -213,6 +236,11 @@ public class UserService extends AbstractService<User> {
 
 		log.info("memDTO 信息:"+ JSON.toJSONString(memRst.getData()));
 		com.dl.member.dto.UserDTO userDto = memRst.getData();
+
+		//手机号得一致
+		if(!userDto.getMobile().equals(param.getMobile())){
+			return ResultGenerator.genResult(MemberEnums.NOT_SAME_MOBILE.getcode(),MemberEnums.NOT_SAME_MOBILE.getMsg());
+		}
 
 		if(userId != null){
 			DlUserAuths dlUserAuths = new DlUserAuths();

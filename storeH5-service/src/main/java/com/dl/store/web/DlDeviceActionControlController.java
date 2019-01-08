@@ -101,13 +101,4 @@ public class DlDeviceActionControlController {
         return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
     }
 
-    //        com.dl.member.param.TokenParam tokenParam = new com.dl.member.param.TokenParam();
-//        tokenParam.setUserToken(param.getUserToken());
-//        BaseResult<UserDTO> userDTOBaseResult = iuserService.queryUserInfoByToken(tokenParam);
-//        if(!userDTOBaseResult.isSuccess()){
-//            log.error("iuserService.queryUserInfoByToken 接口异常"+userDTOBaseResult.getMsg());
-//            return ResultGenerator.genResult(userDTOBaseResult.getCode(),userDTOBaseResult.getMsg());
-//        }
-//
-//        UserDTO userDTO = userDTOBaseResult.getData();
 }
