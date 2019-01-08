@@ -70,6 +70,10 @@ public class UserService extends AbstractService<User> {
 		}
 	}
 
+	public User queryUserByUserId(Integer userId){
+		return  userMapper.queryUserByUserId(userId);
+	}
+
 	/**
 	 * 保存用户
 	 *
