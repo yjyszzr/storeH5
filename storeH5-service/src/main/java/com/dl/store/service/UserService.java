@@ -231,6 +231,7 @@ public class UserService extends AbstractService<User> {
 		if(userId == null){
 			return ResultGenerator.genNeedLoginResult("请登录");
 		}
+
 		UserLoginDTO userLoginDTO = new UserLoginDTO();
 		com.dl.member.param.MobileAndPassParam mobileAndPassParam = new com.dl.member.param.MobileAndPassParam();
 		mobileAndPassParam.setMobile(param.getMobile());
@@ -244,15 +245,8 @@ public class UserService extends AbstractService<User> {
 		com.dl.member.dto.UserDTO userDto = memRst.getData();
 
 		//手机号得一致
-		UserIdRealParam userRealParam = new UserIdRealParam();
-		userRealParam.setUserId(userId);
-		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfoReal(userRealParam);
-		if(!userDTOBaseResult.isSuccess()){
-			log.info("userDTOBaseResult.getCode():"+userDTOBaseResult.getCode()+",userDTOBaseResult.getMsg():"+userDTOBaseResult.getMsg());
-			return ResultGenerator.genResult(memRst.getCode(),memRst.getMsg());
-		}
-
-		if(!userDTOBaseResult.getData().getMobile().equals(param.getMobile())){
+		User user = userMapper.queryUserByUserId(userId);
+		if(!user.getMobile().equals(param.getMobile())){
 			return ResultGenerator.genResult(MemberEnums.NOT_SAME_MOBILE.getcode(),MemberEnums.NOT_SAME_MOBILE.getMsg());
 		}
 
