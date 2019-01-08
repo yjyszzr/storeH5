@@ -237,7 +237,7 @@ public class UserService extends AbstractService<User> {
 		mobileAndPassParam.setPass(param.getPass());
 		BaseResult<com.dl.member.dto.UserDTO> memRst = iUserService.queryUserByMobileAndPass(mobileAndPassParam);
 		if(memRst.getCode() != 0){
-			log.error("iUserService.queryUserByMobileAndPass 接口异常");
+			log.info("memRst.getCode():"+memRst.getCode()+",memRst.getMsg():"+memRst.getMsg());
 			return ResultGenerator.genResult(memRst.getCode(),memRst.getMsg());
 		}
 
@@ -248,7 +248,7 @@ public class UserService extends AbstractService<User> {
 		userRealParam.setUserId(userId);
 		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfoReal(userRealParam);
 		if(!userDTOBaseResult.isSuccess()){
-			log.error("iUserService.queryUserByMobileAndPass 接口异常");
+			log.info("userDTOBaseResult.getCode():"+userDTOBaseResult.getCode()+",userDTOBaseResult.getMsg():"+userDTOBaseResult.getMsg());
 			return ResultGenerator.genResult(memRst.getCode(),memRst.getMsg());
 		}
 
