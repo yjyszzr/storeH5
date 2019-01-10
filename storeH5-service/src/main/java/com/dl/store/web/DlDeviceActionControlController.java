@@ -9,7 +9,7 @@ import com.dl.shop.auth.dto.InvalidateTokenDTO;
 import com.dl.store.dto.DlDeviceActionControlDTO;
 import com.dl.store.dto.UserLoginDTO;
 import com.dl.store.model.DlDeviceActionControl;
-import com.dl.store.model.User;
+import com.dl.store.model.DlUserAuths;
 import com.dl.store.param.TokenParam;
 import com.dl.store.service.DlDeviceActionControlService;
 import com.dl.store.service.DlUserAuthsService;
@@ -89,13 +89,10 @@ public class DlDeviceActionControlController {
                 deviceCtrlDto.setAlertTimes(0);
             }
             //已经绑定并且登录的用户，返回最新的登录token
-            Boolean binds = dlUserAuthsService.queryBindThird(userId);
-            if(binds){
-                User user = userService.queryUserByUserId(userId);
-                if(user!=null){
-                    UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(user.getMobile(),"4");
+            DlUserAuths userAuths = dlUserAuthsService.getUserAuthByThirdUserId(userId);
+            if(userAuths != null){
+                    UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userAuths.getThirdMobile(),"4");
                     deviceCtrlDto.setUserToken(userLoginDTO.getToken());
-                }
             }
         }
         return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
