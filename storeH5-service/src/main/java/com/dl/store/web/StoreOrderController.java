@@ -3,6 +3,7 @@ package com.dl.store.web;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
+import com.dl.member.enums.MemberEnums;
 import com.dl.store.dto.DlHallInfoDTO;
 import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.enums.OrderEnums;
@@ -16,6 +17,7 @@ import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserStoreMoneyService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/order")
@@ -37,6 +40,9 @@ public class StoreOrderController {
 	private UserAccountService userAccountService;
 	@Resource
 	private UserBonusService userBonusService;
+
+	@Resource
+	private StringRedisTemplate stringRedisTemplate;
 	
 	@ApiOperation(value = "订单支付", notes = "订单支付")
 	@PostMapping("/pay")
@@ -46,6 +52,16 @@ public class StoreOrderController {
 		Integer userId = SessionUtil.getUserId();
 		Integer bonusId = param.getBonusId();
 		log.info("[orderPay]" + " orderSn:" + orderSn + " storeId:" + storeId + " userId:" + userId + " bonusId:" + bonusId);
+
+
+		String uniquePay =  "user_pay_unique_"+userId+"_"+param.getOrderSn();
+		Boolean absent = stringRedisTemplate.opsForValue().setIfAbsent(uniquePay, "on");
+		log.info("absent:"+absent);
+		stringRedisTemplate.expire(uniquePay, 10, TimeUnit.SECONDS);
+		if(!absent) {
+			return ResultGenerator.genResult(MemberEnums.NOT_VALID_PAY.getcode(), MemberEnums.NOT_VALID_PAY.getMsg());
+		}
+
 		if(StringUtils.isEmpty(orderSn)) {
 			return ResultGenerator.genResult(OrderEnums.ORDER_SN_EMPTY.getcode(),OrderEnums.ORDER_SN_EMPTY.getMsg());
 		}
