@@ -3,10 +3,10 @@ package com.dl.store.web;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
-import com.dl.member.enums.MemberEnums;
 import com.dl.store.dto.DlHallInfoDTO;
 import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.enums.OrderEnums;
+import com.dl.store.enums.MemberEnums;
 import com.dl.store.model.Order;
 import com.dl.store.model.UserBonus;
 import com.dl.store.model.UserStoreMoney;
@@ -52,7 +52,6 @@ public class StoreOrderController {
 		Integer userId = SessionUtil.getUserId();
 		Integer bonusId = param.getBonusId();
 		log.info("[orderPay]" + " orderSn:" + orderSn + " storeId:" + storeId + " userId:" + userId + " bonusId:" + bonusId);
-
 
 		String uniquePay =  "user_pay_unique_"+userId+"_"+param.getOrderSn();
 		Boolean absent = stringRedisTemplate.opsForValue().setIfAbsent(uniquePay, "on");
