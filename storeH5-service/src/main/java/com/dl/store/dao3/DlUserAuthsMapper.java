@@ -14,5 +14,7 @@ public interface DlUserAuthsMapper extends Mapper<DlUserAuths> {
 
     DlUserAuths getUserAuthById(@Param("userId") Integer userId);
 
+    DlUserAuths getUserAuthByThirdUserId(@Param("thirdUserId") Integer thirdUserId);
+
     DlUserAuths getUserAuthByThirdMobile(@Param("thirdMobile") String thirdMobile);
 }

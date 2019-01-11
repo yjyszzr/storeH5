@@ -14,6 +14,10 @@ import com.dl.base.util.SessionUtil;
 import com.dl.member.api.IMessageService;
 import com.dl.member.api.IUserService;
 import com.dl.member.dto.UserNoticeDTO;
+import com.dl.member.param.UserIdRealParam;
+import com.dl.member.param.UserRealParam;
+import com.dl.shop.auth.api.IAuthService;
+import com.dl.shop.auth.dto.InvalidateTokenDTO;
 import com.dl.store.core.MemberConstant;
 import com.dl.store.dao3.UserMapper;
 import com.dl.store.dto.UserDTO;
@@ -57,17 +61,24 @@ public class UserService extends AbstractService<User> {
 
 	@Resource
 	private DlUserAuthsService dlUserAuthsService;
+
+	@Resource
+	private IAuthService iAuthService;
 	
 	@Resource
 	private IMessageService iMessageService;
 	
 	public Boolean queryStoreUserIsSuperWhite(Integer userId){
 		User user = userMapper.queryUserByUserId(userId);
-		if(user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
+		if(user != null && user.getIsSuperWhite() != null && user.getIsSuperWhite() == 1){
 			return true;
 		}else{
 			return false;
 		}
+	}
+
+	public User queryUserByUserId(Integer userId){
+		return  userMapper.queryUserByUserId(userId);
 	}
 
 	/**
@@ -163,29 +174,52 @@ public class UserService extends AbstractService<User> {
 	}
 
 
+//	com.dl.member.param.TokenParam memToken = new com.dl.member.param.TokenParam();
+//		memToken.setUserToken(tokenStr);
+//	BaseResult<com.dl.member.dto.UserDTO> memRst =  iUserService.queryUserInfoByToken(memToken);
+//		if(memRst.getCode() != 0){
+//		log.error("iUserService.queryUserInfoByToken 接口异常");
+//		return ResultGenerator.genFailResult("fail",userLoginDTO);
+//	}
+
+
+
 	public BaseResult<UserLoginDTO> bindsThirdAndReg(String tokenStr) {
 		UserLoginDTO userLoginDTO = new UserLoginDTO();
-		com.dl.member.param.TokenParam memToken = new com.dl.member.param.TokenParam();
-		memToken.setUserToken(tokenStr);
-		BaseResult<com.dl.member.dto.UserDTO> memRst =  iUserService.queryUserInfoByToken(memToken);
-		if(memRst.getCode() != 0){
-			log.error("iUserService.queryUserInfoByToken 接口异常");
-			return ResultGenerator.genFailResult("fail",userLoginDTO);
-		}
 
-		log.info("memDTO 信息:"+ JSON.toJSONString(memRst.getData()));
-		com.dl.member.dto.UserDTO userDto = memRst.getData();
-		Integer userId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
-		if(userId != null){
+		Integer userId = null;
+		InvalidateTokenDTO invalidateTokenDTO = new InvalidateTokenDTO();
+		invalidateTokenDTO.setToken(tokenStr);
+		BaseResult<Integer> rst = iAuthService.getUserIdByToken(invalidateTokenDTO);
+		if(rst.isSuccess()){
+			userId = rst.getData();
+		}else{
+			return ResultGenerator.genResult(rst.getCode(),rst.getMsg());
+		}
+		log.info("userId+20180109:"+userId);
+
+		com.dl.member.dto.UserDTO userDto = new com.dl.member.dto.UserDTO();
+		com.dl.member.param.UserIdRealParam userIdParam = new com.dl.member.param.UserIdRealParam();
+		userIdParam.setUserId(userId);
+		BaseResult<com.dl.member.dto.UserDTO> userDTOBaseResult = iUserService.queryUserInfoReal(userIdParam);
+		if(userDTOBaseResult.isSuccess()){
+			userDto = userDTOBaseResult.getData();
+		}else{
+			return ResultGenerator.genResult(rst.getCode(),rst.getMsg());
+		}
+		log.info("userDto+20180109:"+userDto.getMobile()+","+userDto.getPassword()+","+userDto.getSalt());
+
+		Integer newUserId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
+		if(newUserId != null){
 			DlUserAuths dlUserAuths = new DlUserAuths();
 			dlUserAuths.setThirdMobile(userDto.getMobile());
 			dlUserAuths.setThirdPass(userDto.getPassword());
 			dlUserAuths.setThirdSalt(userDto.getSalt());
 			dlUserAuths.setThirdUserId(userDto.getUserId());
-			dlUserAuths.setUserId(userId);
+			dlUserAuths.setUserId(newUserId);
 			Integer id = dlUserAuthsService.saveThirdUser(dlUserAuths);
 			if(id != null){
-				userMapper.updateUserHasThid(1,userId);
+				userMapper.updateUserHasThid(1,newUserId);
 			}
 			userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userDto.getMobile(), "4");
 		}
@@ -197,30 +231,39 @@ public class UserService extends AbstractService<User> {
 		if(userId == null){
 			return ResultGenerator.genNeedLoginResult("请登录");
 		}
+
 		UserLoginDTO userLoginDTO = new UserLoginDTO();
 		com.dl.member.param.MobileAndPassParam mobileAndPassParam = new com.dl.member.param.MobileAndPassParam();
 		mobileAndPassParam.setMobile(param.getMobile());
 		mobileAndPassParam.setPass(param.getPass());
 		BaseResult<com.dl.member.dto.UserDTO> memRst = iUserService.queryUserByMobileAndPass(mobileAndPassParam);
 		if(memRst.getCode() != 0){
-			log.error("iUserService.queryUserByMobileAndPass 接口异常");
+			log.info("memRst.getCode():"+memRst.getCode()+",memRst.getMsg():"+memRst.getMsg());
 			return ResultGenerator.genResult(memRst.getCode(),memRst.getMsg());
 		}
 
-		log.info("memDTO 信息:"+ JSON.toJSONString(memRst.getData()));
 		com.dl.member.dto.UserDTO userDto = memRst.getData();
 
-		if(userId != null){
-			DlUserAuths dlUserAuths = new DlUserAuths();
-			dlUserAuths.setThirdMobile(userDto.getMobile());
-			dlUserAuths.setThirdPass(userDto.getPassword());
-			dlUserAuths.setThirdSalt(userDto.getSalt());
-			dlUserAuths.setThirdUserId(userDto.getUserId());
-			dlUserAuths.setUserId(userId);
-			Integer id = dlUserAuthsService.saveThirdUser(dlUserAuths);
-			if(id != null){
-				userMapper.updateUserHasThid(1,userId);
-			}
+		//手机号得一致
+		User user = userMapper.queryUserByUserId(userId);
+		if(!user.getMobile().equals(param.getMobile())){
+			return ResultGenerator.genResult(MemberEnums.NOT_SAME_MOBILE.getcode(),MemberEnums.NOT_SAME_MOBILE.getMsg());
+		}
+
+		Boolean  bindRst = dlUserAuthsService.queryBindThird(userDto.getUserId());
+		if(bindRst == true){
+			return ResultGenerator.genResult(MemberEnums.DATA_ALREADY_EXIT_IN_DB.getcode(),"已经绑定过");
+		}
+
+		DlUserAuths dlUserAuths = new DlUserAuths();
+		dlUserAuths.setThirdMobile(userDto.getMobile());
+		dlUserAuths.setThirdPass(userDto.getPassword());
+		dlUserAuths.setThirdSalt(userDto.getSalt());
+		dlUserAuths.setThirdUserId(userDto.getUserId());
+		dlUserAuths.setUserId(userId);
+		Integer id = dlUserAuthsService.saveThirdUser(dlUserAuths);
+		if(id != null){
+			userMapper.updateUserHasThid(1,userId);
 		}
 
 		return ResultGenerator.genSuccessResult("绑定新用户成功");

@@ -32,6 +32,10 @@ public class DlUserAuthsService extends AbstractService<DlUserAuths> {
         return dlUserAuthsMapper.getUserAuthById(userId);
     }
 
+    public DlUserAuths getUserAuthByThirdUserId(Integer thirdUserId){
+        return dlUserAuthsMapper.getUserAuthByThirdUserId(thirdUserId);
+    }
+
     public DlUserAuths queryBindsUserByThirdMobile(String mobile){
         return dlUserAuthsMapper.getUserAuthByThirdMobile(mobile);
     }

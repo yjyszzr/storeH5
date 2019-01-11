@@ -53,7 +53,9 @@ public enum MemberEnums {
 	NO_UPDATE(301060,"无最新版本"),
 	OLD_PWD_WRONG(301061,"旧密码不匹配"),
 	NOT_BINDS_CXM(301062,"未绑定球多多账号，暂时无法登录"),
-	CANNOT_USE(301063,"红包不符合使用条件");
+	CANNOT_USE(301063,"红包不符合使用条件"),
+	NOT_SAME_MOBILE(301064,"只有相同账号才能关联"),
+	NOT_VALID_PAY(301065,"请勿多次支付");
 	
 //	MOBILE_ERROR(301012,"手机号码格式错误"),
 //	ALREADY_SMS_VERIFY(301013,"手机号已经验证过"),	
