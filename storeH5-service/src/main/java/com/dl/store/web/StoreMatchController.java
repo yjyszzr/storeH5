@@ -172,7 +172,7 @@ public class StoreMatchController {
 
 	@ApiOperation(value = "根据orderId查询订单详情", notes = "根据orderId查询订单详情")
 	@PostMapping("/getOrderDetailByOrderId")
-	public BaseResult<OrderDetailDTO> getOrderDetailByOrderSn(@Valid @RequestBody OrderDetailParam param) {
+	public BaseResult<OrderDetailDTO> getOrderDetailByOrderId(@Valid @RequestBody OrderDetailParam param) {
 		 OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(param).getData();
 		return ResultGenerator.genSuccessResult("订单详情查询成功", orderDetailDTO);
 	}
