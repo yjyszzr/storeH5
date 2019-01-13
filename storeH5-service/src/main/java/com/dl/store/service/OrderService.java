@@ -468,7 +468,7 @@ public class OrderService extends AbstractService<Order> {
 
 	public OrderDetailDTO getOrderDetail(OrderDetailParam param) {
 		log.error("订单编号==============================================：" + param.getOrderSn()  + " orderId:" + param.getOrderId());
-		if (StringUtils.isBlank(param.getOrderSn()) || StringUtils.isEmpty(param.getOrderId())) {
+		if (StringUtils.isBlank(param.getOrderSn()) && StringUtils.isEmpty(param.getOrderId())) {
 			log.error("订单编号：为空，该订单不存在");
 			throw new ServiceException(RespStatusEnum.FAIL.getCode(), "订单不能为空");
 		}
