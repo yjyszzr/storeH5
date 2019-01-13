@@ -14,4 +14,6 @@ public class OrderDetailParam implements Serializable{
 	private String orderSn;
 	@ApiModelProperty("店铺Id")
 	private Integer storeId;
+	@ApiModelProperty("订单Id")
+	private String orderId;
 }

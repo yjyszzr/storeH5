@@ -28,6 +28,7 @@ import com.dl.store.dto.UserDTO;
 import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.UserStoreMoney;
 import com.dl.store.param.UserIdParam;
+import com.dl.store.service.OrderService;
 import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserService;
 import com.dl.store.service.UserStoreMoneyService;
@@ -48,6 +49,8 @@ public class LottoController {
 	private ISuperLottoService iLottoService;
 	@Resource
 	private IOrderService iOrderService;
+	@Resource
+	private OrderService orderService;
 	@Resource
 	private UserService userService;
 	@Resource
@@ -101,11 +104,10 @@ public class LottoController {
 		UserIdParam userIdParam = new UserIdParam();
 		userIdParam.setUserId(userId);
 		UserDTO user = userService.queryUserInfo(userIdParam);
-		OrderDetailParam orderDetailParam = new OrderDetailParam();
+		com.dl.store.param.OrderDetailParam orderDetailParam = new com.dl.store.param.OrderDetailParam();
 		orderDetailParam.setStoreId(storeId);
-		orderDetailParam.setBonusId(bonusId);
 		orderDetailParam.setOrderId(orderId);
-		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(orderDetailParam).getData();
+		OrderDetailDTO orderDetailDTO = orderService.getOrderDetail(orderDetailParam);
 		log.info("[orderDetailDTO]" + "->" + orderDetailDTO);
 		if("1".equals(user.getIsSuperWhite()) && userId != null && userId > 0) {
 			userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,storeId);	

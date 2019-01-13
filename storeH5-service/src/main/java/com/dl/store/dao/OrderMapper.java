@@ -30,7 +30,8 @@ public interface OrderMapper extends Mapper<Order> {
 
 	public Order getOrderInfoByOrderSn(@Param("orderSn")String orderSn);
 
-
+	public Order getOrderInfoByOrderId(@Param("orderId")String orderId);
+	
 	public int updateWiningMoney(Order updateOrder);
 
 
