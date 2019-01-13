@@ -39,14 +39,14 @@ public class LottoController {
 	}
 	
 	@ApiOperation(value = "生成模拟订单", notes = "生成模拟订单")	
-	@PostMapping("/createOrderSimulateByStore")
+	@PostMapping("/createOrderSimulate")
     public BaseResult<OrderIdDTO> createOrderSimulateByStore(@RequestBody SaveBetInfoParam param){
 		log.info("[createOrderSimulateByStore]");
 		return iLottoService.createOrderSimulateByStore(param);
 	}
 	
 	@ApiOperation(value = "获取乐透详情", notes = "获取乐透详情")
-	@PostMapping("/getLottoDetailByStore")
+	@PostMapping("/getLottoDetail")
 	public BaseResult<LottoOrderDetailDTO> getLottoOrderDetailByStore(@RequestBody OrderDetailParam param){
 		log.info("[getLottoOrderDetailByStore]");
 		return iOrderService.getLottoOrderDetailSimulatByStore(param);
