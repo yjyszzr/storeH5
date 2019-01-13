@@ -106,6 +106,7 @@ public class LottoController {
 		orderDetailParam.setBonusId(bonusId);
 		orderDetailParam.setOrderId(orderId);
 		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(orderDetailParam).getData();
+		log.info("[orderDetailDTO]" + "->" + orderDetailDTO);
 		if("1".equals(user.getIsSuperWhite()) && userId != null && userId > 0) {
 			userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,storeId);	
 			storeUserDTO = new StoreUserInfoDTO();
