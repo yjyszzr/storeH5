@@ -17,7 +17,7 @@ import com.dl.store.core.ProjectConstant;
 @Import({ RestTemplateConfig.class, Swagger2.class, WebMvcConfigurerStore.class, FeignConfiguration.class })
 @MapperScan(basePackages = { ProjectConstant.MAPPER_PACKAGE, "com.dl.store.dao3","com.dl.store.dao2","com.dl.store.dao" })
 @EnableEurekaClient
-@EnableFeignClients({"com.dl.member.api", "com.dl.order.api","com.dl.lottery.api","com.dl.shop.auth.api","com.dl.shop.payment.api"})
+@EnableFeignClients({"com.dl.member.api", "com.dl.order.api","com.dl.lottery.api","com.dl.shop.auth.api","com.dl.shop.payment.api","com.dl.lotto.api"})
 @EnableTransactionManagement
 public class StoreServiceApplication {
 

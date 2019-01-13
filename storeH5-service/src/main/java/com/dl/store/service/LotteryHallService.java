@@ -33,6 +33,9 @@ public class LotteryHallService {
 //				}
 				dlPlayDetailDto.setRedirectUrl(lotteryClassify.getRedirectUrl());
 				dlPlayDetailDto.setPlayClassifyName(lotteryClassify.getLotteryName());
+			}else if(2 == lotteryClassify.getLotteryClassifyId()){
+				dlPlayDetailDto.setRedirectUrl(lotteryClassify.getRedirectUrl());
+				dlPlayDetailDto.setPlayClassifyName(lotteryClassify.getLotteryName());
 			}else {
 				dlPlayDetailDto.setRedirectUrl("");
 				dlPlayDetailDto.setPlayClassifyName(lotteryClassify.getStatusReason());
