@@ -1,5 +1,7 @@
 package com.dl.store.web;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,13 +9,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
+import com.dl.base.result.ResultGenerator;
+import com.dl.base.util.SessionUtil;
 import com.dl.lottery.dto.OrderIdDTO;
 import com.dl.lotto.api.ISuperLottoService;
 import com.dl.lotto.dto.LottoFirstDTO;
 import com.dl.lotto.param.SaveBetInfoParam;
+import com.dl.member.api.IUserService;
 import com.dl.order.api.IOrderService;
 import com.dl.order.dto.LottoOrderDetailDTO;
+import com.dl.order.dto.OrderDTO;
+import com.dl.order.dto.OrderDetailDTO;
+import com.dl.order.dto.StoreUserInfoDTO;
 import com.dl.order.param.OrderDetailParam;
+import com.dl.order.param.OrderIdParam;
+import com.dl.store.dto.UserBonusDTO;
+import com.dl.store.dto.UserDTO;
+import com.dl.store.enums.OrderEnums;
+import com.dl.store.model.UserStoreMoney;
+import com.dl.store.param.UserIdParam;
+import com.dl.store.service.UserBonusService;
+import com.dl.store.service.UserService;
+import com.dl.store.service.UserStoreMoneyService;
+
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +48,12 @@ public class LottoController {
 	private ISuperLottoService iLottoService;
 	@Resource
 	private IOrderService iOrderService;
+	@Resource
+	private UserService userService;
+	@Resource
+	private UserStoreMoneyService userStoreMoneyService;
+	@Resource
+	private UserBonusService userBonusService;
 	
 	@ApiOperation(value = "选号投注页数据", notes = "选号投注页数据")	
 	@PostMapping("/getTicketInfo")
@@ -41,14 +65,74 @@ public class LottoController {
 	@ApiOperation(value = "生成模拟订单", notes = "生成模拟订单")	
 	@PostMapping("/createOrderSimulate")
     public BaseResult<OrderIdDTO> createOrderSimulateByStore(@RequestBody SaveBetInfoParam param){
-		log.info("[createOrderSimulateByStore]");
+		Integer storeId = param.getStoreId();
+		log.info("[createOrderSimulateByStore]" + " storeId:" + storeId);
 		return iLottoService.createOrderSimulateByStore(param);
 	}
 	
 	@ApiOperation(value = "获取乐透详情", notes = "获取乐透详情")
 	@PostMapping("/getLottoDetail")
 	public BaseResult<LottoOrderDetailDTO> getLottoOrderDetailByStore(@RequestBody OrderDetailParam param){
-		log.info("[getLottoOrderDetailByStore]");
-		return iOrderService.getLottoOrderDetailSimulatByStore(param);
+		Integer userId = SessionUtil.getUserId();
+		Integer storeId = param.getStoreId();
+		String orderId = param.getOrderId();
+		Integer bonusId = param.getBonusId();
+		log.info("[getLottoOrderDetailByStore]" + " userId:" + userId + " storeId:" + storeId + " orderId:" + orderId);
+		if(storeId == null || storeId <= 0) {
+			return ResultGenerator.genResult(OrderEnums.STORE_ID_EMPTY.getcode(),OrderEnums.STORE_ID_EMPTY.getMsg());
+		}
+		BaseResult<LottoOrderDetailDTO> baseResult = iOrderService.getLottoOrderDetailSimulatByStore(param);
+		if(!baseResult.isSuccess()) {
+			return ResultGenerator.genResult(baseResult.getCode(),baseResult.getMsg());
+		}
+		LottoOrderDetailDTO lottoDetailDTO = baseResult.getData();
+		StoreUserInfoDTO storeUserDTO = getStoreUserInfoDTO(orderId,userId,storeId,bonusId);
+		lottoDetailDTO.setUserInfo(storeUserDTO);
+		return ResultGenerator.genSuccessResult("succ", lottoDetailDTO);
+	}
+	
+	
+	private StoreUserInfoDTO getStoreUserInfoDTO(String orderId,Integer userId,Integer storeId,Integer bonusId) {
+		StoreUserInfoDTO storeUserDTO = null;
+		UserStoreMoney userStoreMoney = null;
+		UserIdParam userIdParam = new UserIdParam();
+		userIdParam.setUserId(userId);
+		UserDTO user = userService.queryUserInfo(userIdParam);
+		OrderDetailParam orderDetailParam = new OrderDetailParam();
+		orderDetailParam.setStoreId(storeId);
+		orderDetailParam.setBonusId(bonusId);
+		orderDetailParam.setOrderId(orderId);
+		OrderDetailDTO orderDetailDTO = iOrderService.getOrderDetail(orderDetailParam).getData();
+		if("1".equals(user.getIsSuperWhite()) && userId != null && userId > 0) {
+			userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,storeId);	
+			storeUserDTO = new StoreUserInfoDTO();
+			storeUserDTO.setIsSuperWhite("1");
+			BigDecimal bigDec = null;
+			if(userStoreMoney != null) {
+				bigDec = userStoreMoney.getMoney();
+			}else {
+				bigDec = BigDecimal.ZERO;
+			}
+			Integer bonusSize = userBonusService.validBonusSize(userId,storeId);
+			log.info("[getOrderDetail]" + " money:" + bigDec + " bonusSize:" + bonusSize);
+			storeUserDTO.setMoney(bigDec.toString());
+			storeUserDTO.setBonusNum(bonusSize);
+			if(bonusId != null && bonusId > 0) {
+				UserBonusDTO userBonusDTO = userBonusService.queryUserBonus(bonusId);
+				log.info("[getOrderDetail]" + " userBonusDTO:" + userBonusDTO);
+				if(userBonusDTO != null) {
+					BigDecimal amt = BigDecimal.valueOf(Double.valueOf(orderDetailDTO.getTicketAmount())).subtract(userBonusDTO.getBonusPrice());
+					log.info("[getOrderDetail]" + "实付金额:" + amt + " 订单金额:" + orderDetailDTO.getTicketAmount() + " 红包金额:" + userBonusDTO.getBonusPrice());
+					storeUserDTO.setActualAmount(amt+"");
+					storeUserDTO.setBonusName(userBonusDTO.getBonusPrice().toString()+"元代金券");
+					storeUserDTO.setBonusPrice(userBonusDTO.getBonusPrice().toString());
+				}else {
+					storeUserDTO.setActualAmount(orderDetailDTO.getTicketAmount());
+				}
+			}else {
+				storeUserDTO.setActualAmount(orderDetailDTO.getTicketAmount());
+			}
+		}
+		return storeUserDTO;
 	}
 }
