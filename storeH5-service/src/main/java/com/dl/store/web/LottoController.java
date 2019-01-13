@@ -66,6 +66,9 @@ public class LottoController {
 	@PostMapping("/createOrderSimulate")
     public BaseResult<OrderIdDTO> createOrderSimulateByStore(@RequestBody SaveBetInfoParam param){
 		Integer storeId = param.getStoreId();
+		if(storeId == null || storeId <= 0) {
+			return ResultGenerator.genResult(OrderEnums.STORE_ID_EMPTY.getcode(),OrderEnums.STORE_ID_EMPTY.getMsg());
+		}
 		log.info("[createOrderSimulateByStore]" + " storeId:" + storeId);
 		return iLottoService.createOrderSimulateByStore(param);
 	}
