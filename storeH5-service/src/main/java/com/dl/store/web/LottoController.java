@@ -13,7 +13,9 @@ import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
 import com.dl.lottery.dto.OrderIdDTO;
 import com.dl.lotto.api.ISuperLottoService;
+import com.dl.lotto.dto.LottoChartDataDTO;
 import com.dl.lotto.dto.LottoFirstDTO;
+import com.dl.lotto.param.ChartSetupParam;
 import com.dl.lotto.param.SaveBetInfoParam;
 import com.dl.member.api.IUserService;
 import com.dl.order.api.IOrderService;
@@ -57,6 +59,13 @@ public class LottoController {
 	private UserStoreMoneyService userStoreMoneyService;
 	@Resource
 	private UserBonusService userBonusService;
+	
+	@ApiOperation(value = "获取走势图", notes = "走势图")
+	@PostMapping("/getChartData")
+    public BaseResult<LottoChartDataDTO> getChartDataByStore(@RequestBody ChartSetupParam param){
+		log.info("[getChartDataByStore]");
+		return iLottoService.getChartDataByStore(param);
+	}
 	
 	@ApiOperation(value = "选号投注页数据", notes = "选号投注页数据")	
 	@PostMapping("/getTicketInfo")
