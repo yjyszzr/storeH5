@@ -135,6 +135,14 @@ public class OrderService extends AbstractService<Order> {
 	private OrderWithUserMapper orderWithUserMapper;
  
 
+	public void setFirstPayTime(String userId, String mobile, String firstPayTime) {
+		Map parameter = new HashMap();
+		parameter.put("user_id", userId);
+		parameter.put("mobile", mobile);
+		parameter.put("first_pay_time", firstPayTime);
+		this.orderMapper.setFirstPayTime(parameter);
+	}
+	
     /**
      * 更新订单为已支付
      * @param orderSn

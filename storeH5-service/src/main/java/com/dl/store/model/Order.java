@@ -159,7 +159,9 @@ public class Order {
     @Column(name = "pay_time")
     private Integer payTime;
 
-    /**
+
+
+	/**
      * 订单类型
      */
     @Column(name = "order_type")
@@ -255,5 +257,6 @@ public class Order {
     
     @Column(name = "ticket_num")
     private Integer ticketNum;
+    
     
 }

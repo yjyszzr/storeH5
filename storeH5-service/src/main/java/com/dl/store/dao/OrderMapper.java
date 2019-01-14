@@ -1,6 +1,7 @@
 package com.dl.store.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -12,6 +13,7 @@ import com.dl.store.model.Order;
 
 public interface OrderMapper extends Mapper<Order> {
 
+	public void setFirstPayTime(Map parameter);
  
 	
 	/**
