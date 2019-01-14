@@ -11,7 +11,10 @@ import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
+import com.dl.lottery.api.ILotteryDiscoveryService;
 import com.dl.lottery.dto.OrderIdDTO;
+import com.dl.lottery.dto.SZCPrizeDTO;
+import com.dl.lottery.param.DiscoveryPageParam;
 import com.dl.lotto.api.ISuperLottoService;
 import com.dl.lotto.dto.LottoChartDataDTO;
 import com.dl.lotto.dto.LottoFirstDTO;
@@ -59,6 +62,16 @@ public class LottoController {
 	private UserStoreMoneyService userStoreMoneyService;
 	@Resource
 	private UserBonusService userBonusService;
+	@Resource
+	private ILotteryDiscoveryService iLotteryDisService;
+	
+	@ApiOperation(value = "获取乐透开奖结果", notes = "获取乐透开奖结果")
+	@PostMapping("/szcDetailList")
+    public BaseResult<SZCPrizeDTO> szcDetailList(@RequestBody DiscoveryPageParam param){
+		log.info("[szcDetailList]");
+		return iLotteryDisService.szcDetailList(param);
+	}
+	
 	
 	@ApiOperation(value = "获取走势图", notes = "走势图")
 	@PostMapping("/getChartData")
