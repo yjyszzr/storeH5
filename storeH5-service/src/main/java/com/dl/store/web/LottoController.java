@@ -3,9 +3,12 @@ package com.dl.store.web;
 import java.math.BigDecimal;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
@@ -14,7 +17,9 @@ import com.dl.base.util.SessionUtil;
 import com.dl.lottery.api.ILotteryDiscoveryService;
 import com.dl.lottery.dto.OrderIdDTO;
 import com.dl.lottery.dto.SZCPrizeDTO;
+import com.dl.lottery.dto.SZCResultDTO;
 import com.dl.lottery.param.DiscoveryPageParam;
+import com.dl.lottery.param.SZCQueryParam;
 import com.dl.lotto.api.ISuperLottoService;
 import com.dl.lotto.dto.LottoChartDataDTO;
 import com.dl.lotto.dto.LottoFirstDTO;
@@ -64,6 +69,14 @@ public class LottoController {
 	private UserBonusService userBonusService;
 	@Resource
 	private ILotteryDiscoveryService iLotteryDisService;
+	
+	
+	@ApiOperation(value = "查询每期结果", notes = "查询每期结果")
+	@PostMapping("/querySzcOpenPrizesByDate")
+    public BaseResult<SZCResultDTO> querySzcOpenPrizesByDate(@RequestBody SZCQueryParam param){
+		log.info("[szcDetailList]");
+		return iLotteryDisService.querySzcOpenPrizesByDate(param);
+	}
 	
 	@ApiOperation(value = "获取乐透开奖结果", notes = "获取乐透开奖结果")
 	@PostMapping("/szcDetailList")
