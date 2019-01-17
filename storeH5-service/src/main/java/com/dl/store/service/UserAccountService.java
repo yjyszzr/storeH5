@@ -64,6 +64,8 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		userStoreMoney.setUserId(userId);
 		userStoreMoney.setStoreId(storeId);
 		userStoreMoney = userStoreMoneyMapper.queryInfo(userStoreMoney);
+		BigDecimal uMoney = userStoreMoney.getMoney();
+		
 		UserAccount userAccount = new UserAccount();
 		userAccount.setUserId(userId);
 		String accountSn = SNGenerator.nextSN(SNBusinessCodeEnum.ACCOUNT_SN.getCode());
@@ -71,8 +73,10 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		//1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
 		if(processType == 3) {
 			userAccount.setAmount(BigDecimal.ZERO.subtract(ticketAmt));
+			userAccount.setCurBalance(uMoney.subtract(ticketAmt));
 		}else if(processType == 1 || processType == 6){
 			userAccount.setAmount(ticketAmt);
+			userAccount.setCurBalance(uMoney.add(ticketAmt));
 		}
 		userAccount.setAccountSn(accountSn);
 		userAccount.setProcessType(processType);
@@ -81,7 +85,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		userAccount.setPayId(storeId+"");
 		userAccount.setAddTime(DateUtil.getCurrentTimeLong());
 		userAccount.setLastTime(DateUtil.getCurrentTimeLong());
-		userAccount.setCurBalance(userStoreMoney.getMoney().subtract(ticketAmt));
+		
 		userAccount.setStatus(1);
 		userAccount.setStoreId(storeId);
 		userAccount.setOrderSn(orderSn);
