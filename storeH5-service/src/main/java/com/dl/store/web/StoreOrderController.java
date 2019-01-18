@@ -177,7 +177,8 @@ public class StoreOrderController {
 		log.info("[orderPay]" + " succ:" + succ);
 		
 		try {
-			if (succ) {
+			if (succ) { 
+				log.info("[customer] start ================================= ");
 //				userId
 				String mobile = "";
 				String firstPayTime = "";
@@ -187,12 +188,18 @@ public class StoreOrderController {
 				mobile = user.getMobile();
 				firstPayTime = order.getPayTime() + "";
 				
+				log.info("[customer] userId:" + userId); 
+				log.info("[customer] mobile:" + mobile);
+				log.info("[customer] firstPayTime:" + firstPayTime);
+				
 				if (null != userId
 					&& !StringUtil.isBlank(mobile)
 					&& !StringUtil.isBlank(firstPayTime)
 				) {
 					this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
+					log.info("[customer] to db");
 				}
+				log.info("[customer] end ================================= ");
 			} 
 		} catch (Exception e) {
 			e.printStackTrace();
