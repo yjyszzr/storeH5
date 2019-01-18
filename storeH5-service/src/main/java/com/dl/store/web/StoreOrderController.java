@@ -56,30 +56,34 @@ public class StoreOrderController {
 	@ApiOperation(value = "订单支付", notes = "订单支付")
 	@PostMapping("/pay")
     public BaseResult<DlHallInfoDTO> orderPay(@RequestBody OrderPayParam param){
-		// test start
 //		try {
-//			if (true) {
-//				Integer userId = new Integer("444908");
-//				String mobile = "13611002464";
-//				String firstPayTime = "1547693145";
+//			if (true) { 
+//				log.info("[customer] start ================================= ");
+//				Integer userId = 1000014;
+//				String mobile = "18931659162";
+//				String firstPayTime = "1547799999";
 //				
-////				String orderSn = "";
-////				User user = this.userService.findById(userId);
-////				mobile = user.getMobile();
-////				Order order = orderService.queryOrderByOrderSn(orderSn);
+//			 
+//				User user = this.userService.findById(userId);
+//				mobile = user.getMobile();
 ////				firstPayTime = order.getPayTime() + "";
+//				
+//				log.info("[customer] userId:" + userId); 
+//				log.info("[customer] mobile:" + mobile);
+//				log.info("[customer] firstPayTime:" + firstPayTime);
 //				
 //				if (null != userId
 //					&& !StringUtil.isBlank(mobile)
 //					&& !StringUtil.isBlank(firstPayTime)
 //				) {
 //					this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
+//					log.info("[customer] to db");
 //				}
-//			}
+//				log.info("[customer] end ================================= ");
+//			} 
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-//		// test end
 		
 		
 		String orderSn = param.getOrderSn();
