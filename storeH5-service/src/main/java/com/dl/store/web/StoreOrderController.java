@@ -56,32 +56,6 @@ public class StoreOrderController {
 	@ApiOperation(value = "订单支付", notes = "订单支付")
 	@PostMapping("/pay")
     public BaseResult<DlHallInfoDTO> orderPay(@RequestBody OrderPayParam param){
-		// test start
-//		try {
-//			if (true) {
-//				Integer userId = new Integer("444908");
-//				String mobile = "13611002464";
-//				String firstPayTime = "1547693145";
-//				
-////				String orderSn = "";
-////				User user = this.userService.findById(userId);
-////				mobile = user.getMobile();
-////				Order order = orderService.queryOrderByOrderSn(orderSn);
-////				firstPayTime = order.getPayTime() + "";
-//				
-//				if (null != userId
-//					&& !StringUtil.isBlank(mobile)
-//					&& !StringUtil.isBlank(firstPayTime)
-//				) {
-//					this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
-//				}
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		// test end
-		
-		
 		String orderSn = param.getOrderSn();
 		Integer storeId = param.getStoreId();
 		Integer userId = SessionUtil.getUserId();
@@ -177,8 +151,8 @@ public class StoreOrderController {
 		log.info("[orderPay]" + " succ:" + succ);
 		
 		try {
+			log.info("[customer] start ================================= ");
 			if (succ) { 
-				log.info("[customer] start ================================= ");
 //				userId
 				String mobile = "";
 				String firstPayTime = "";
@@ -186,7 +160,13 @@ public class StoreOrderController {
 			 
 				User user = this.userService.findById(userId);
 				mobile = user.getMobile();
-				firstPayTime = order.getPayTime() + "";
+				if (mobile!= null) mobile = mobile.trim();
+//				firstPayTime = order.getPayTime() + "";
+//				firstPayTime = order.getAddTime() + "";
+				Order _order = orderService.queryOrderByOrderSn(orderSn);
+				if(order != null) {
+					firstPayTime = order.getPayTime() + "";
+				}
 				
 				log.info("[customer] userId:" + userId); 
 				log.info("[customer] mobile:" + mobile);
@@ -199,13 +179,15 @@ public class StoreOrderController {
 					this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
 					log.info("[customer] to db");
 				}
-				log.info("[customer] end ================================= ");
+			
 			} 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			log.info("[customer] end ================================= ");
 		}
-		
 		
 		return ResultGenerator.genSuccessResult("支付成功");
 	}
+	
 }
