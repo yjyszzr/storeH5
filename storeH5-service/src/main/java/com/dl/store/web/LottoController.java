@@ -1,7 +1,6 @@
 package com.dl.store.web;
 
 import java.math.BigDecimal;
-
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -129,6 +128,13 @@ public class LottoController {
 			return ResultGenerator.genResult(baseResult.getCode(),baseResult.getMsg());
 		}
 		LottoOrderDetailDTO lottoDetailDTO = baseResult.getData();
+		//模拟中状态
+		if(lottoDetailDTO != null) {
+			if("0".equals(lottoDetailDTO.getOrderStatus())) {
+				lottoDetailDTO.setProcessStatusDesc("支付中");
+				lottoDetailDTO.setOrderStatusDesc("支付中");
+			}
+		}
 		StoreUserInfoDTO storeUserDTO = getStoreUserInfoDTO(orderId,userId,storeId,bonusId);
 		lottoDetailDTO.setUserInfo(storeUserDTO);
 		return ResultGenerator.genSuccessResult("succ", lottoDetailDTO);

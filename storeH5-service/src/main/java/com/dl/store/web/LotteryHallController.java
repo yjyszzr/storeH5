@@ -1,11 +1,8 @@
 package com.dl.store.web;
 
-import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
-import com.dl.lotto.api.ISuperLottoService;
-import com.dl.lotto.dto.LottoDTO;
 import com.dl.store.dto.DlHallInfoDTO;
 import com.dl.store.dto.DlPlayClassifyDetailDTO;
 import com.dl.store.dto.UserDTO;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
@@ -40,7 +36,6 @@ public class LotteryHallController {
 
 	@Resource
 	private UserBonusService userBonusService;
-	
 	
 	
 	@ApiOperation(value = "首页大厅", notes = "首页大厅")	
