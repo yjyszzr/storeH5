@@ -164,7 +164,7 @@ public class StoreOrderController {
 //				firstPayTime = order.getPayTime() + "";
 				firstPayTime = order.getAddTime() + "";
 				Order _order = orderService.queryOrderByOrderSn(orderSn);
-				if(order != null) {
+				if(_order != null) {
 					firstPayTime = order.getPayTime() + "";
 				}
 				
