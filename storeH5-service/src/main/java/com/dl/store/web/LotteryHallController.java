@@ -1,8 +1,11 @@
 package com.dl.store.web;
 
+import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
+import com.dl.lotto.api.ISuperLottoService;
+import com.dl.lotto.dto.LottoDTO;
 import com.dl.store.dto.DlHallInfoDTO;
 import com.dl.store.dto.DlPlayClassifyDetailDTO;
 import com.dl.store.dto.UserDTO;
@@ -37,7 +40,8 @@ public class LotteryHallController {
 
 	@Resource
 	private UserBonusService userBonusService;
-
+	
+	
 	
 	@ApiOperation(value = "首页大厅", notes = "首页大厅")	
 	@PostMapping("/info")
@@ -84,4 +88,5 @@ public class LotteryHallController {
 		log.info("[hallInfo]" + " money:" + money + " isSuperWhite:" + isSuperWhite);
 		return ResultGenerator.genSuccessResult("succ",hallInfo);
 	}
+	
 }
