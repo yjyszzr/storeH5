@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.dl.base.param.EmptyParam;
 import com.dl.base.result.BaseResult;
@@ -25,14 +23,13 @@ import com.dl.lotto.dto.LottoChartDataDTO;
 import com.dl.lotto.dto.LottoFirstDTO;
 import com.dl.lotto.param.ChartSetupParam;
 import com.dl.lotto.param.SaveBetInfoParam;
-import com.dl.member.api.IUserService;
 import com.dl.order.api.IOrderService;
 import com.dl.order.dto.LottoOrderDetailDTO;
-import com.dl.order.dto.OrderDTO;
+import com.dl.order.dto.LottoTicketSchemeDTO;
 import com.dl.order.dto.OrderDetailDTO;
 import com.dl.order.dto.StoreUserInfoDTO;
 import com.dl.order.param.OrderDetailParam;
-import com.dl.order.param.OrderIdParam;
+import com.dl.order.param.TicketSchemeParam;
 import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.dto.UserDTO;
 import com.dl.store.enums.OrderEnums;
@@ -70,6 +67,11 @@ public class LottoController {
 	@Resource
 	private ILotteryDiscoveryService iLotteryDisService;
 	
+	@ApiOperation(value = "查询出票方案", notes = "查询出票方案")
+    @PostMapping("/getTicketSchemeByStore")
+    public BaseResult<LottoTicketSchemeDTO> getTicketScheme(@Valid @RequestBody TicketSchemeParam param) {
+		return iOrderService.getLottoTicketScheme(param);
+    }
 	
 	@ApiOperation(value = "查询每期结果", notes = "查询每期结果")
 	@PostMapping("/querySzcOpenPrizesByDate")
