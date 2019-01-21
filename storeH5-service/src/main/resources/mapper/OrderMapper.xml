@@ -77,7 +77,10 @@
   </update>
   
   <update id="updatePayStatusByOrderSn" parameterType="com.dl.store.model.Order">
-  		update dl_order set surplus=#{surplus},order_status=#{orderStatus},pay_status=#{payStatus},pay_time=#{payTime},
+  		update dl_order set surplus=#{surplus},order_status=#{orderStatus},
+  		<if test="payStatus!=null">
+  		pay_status=#{payStatus}, pay_time=unix_timestamp(now()),
+  		</if>
   		pay_code=#{payCode},
   		<if test="bonus!=null">bonus=#{bonus},</if>
   		<if test="userBonusId!=null">user_bonus_id=#{userBonusId},</if>
