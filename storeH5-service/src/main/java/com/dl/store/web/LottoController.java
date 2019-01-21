@@ -26,7 +26,9 @@ import com.dl.order.api.IOrderService;
 import com.dl.order.dto.LottoOrderDetailDTO;
 import com.dl.order.dto.LottoTicketSchemeDTO;
 import com.dl.order.dto.OrderDetailDTO;
+import com.dl.order.dto.OrderShareDTO;
 import com.dl.order.dto.StoreUserInfoDTO;
+import com.dl.order.param.OrderDetailByOrderSnPara;
 import com.dl.order.param.OrderDetailParam;
 import com.dl.order.param.TicketSchemeParam;
 import com.dl.store.dto.UserBonusDTO;
@@ -65,6 +67,12 @@ public class LottoController {
 	private UserBonusService userBonusService;
 	@Resource
 	private ILotteryDiscoveryService iLotteryDisService;
+	
+	@ApiOperation(value = "根据ordersn查询订单详情", notes = "根据ordersn查询订单详情")
+    @PostMapping("/getOrderDetailByShareStore")
+    public BaseResult<OrderShareDTO> getOrderDetailByShare(@Valid @RequestBody OrderDetailByOrderSnPara param) {
+		return iOrderService.getOrderDetailByShare(param);
+	}
 	
 	@ApiOperation(value = "查询出票方案", notes = "查询出票方案")
     @PostMapping("/getTicketSchemeByStore")
