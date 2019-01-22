@@ -190,7 +190,7 @@ public class StoreOrderController {
 
 				if (mobile!= null) mobile = mobile.trim();
 //				firstPayTime = order.getPayTime() + "";
-				firstPayTime = order.getAddTime() + "";
+//				firstPayTime = order.getAddTime() + "";
 				Order _order = orderService.queryOrderByOrderSn(orderSn);
 				if(_order != null) {
 					firstPayTime = order.getPayTime() + "";
