@@ -193,7 +193,7 @@ public class StoreOrderController {
 //				firstPayTime = order.getAddTime() + "";
 				Order _order = orderService.queryOrderByOrderSn(orderSn);
 				if(_order != null) {
-					firstPayTime = order.getPayTime() + "";
+					firstPayTime = _order.getPayTime() + "";
 				}
 				
 				log.info("[customer] userId:" + userId); 
