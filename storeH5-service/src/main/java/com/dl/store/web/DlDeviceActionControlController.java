@@ -86,6 +86,7 @@ public class DlDeviceActionControlController {
                     dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
                     dctrl.setAlertTimes(deviveCtrl == null?0:deviveCtrl.getAlertTimes()+1);
                     dlDeviceActionControlService.save(dctrl);
+                    deviceCtrlDto.setAlertTimes(0);
                 }
             }else{//已绑定并且登录的用户，一直弹框
                 deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
