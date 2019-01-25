@@ -81,16 +81,22 @@ public class DlDeviceActionControlController {
             if(userAuths == null){//未绑定并且登录的用户，一直弹框
                 log.info("userAuths:"+ JSON.toJSONString(userAuths));
                 log.info("deviveCtrl:"+ JSON.toJSONString(deviveCtrl));
-                if(deviveCtrl == null  || deviveCtrl.getAlertTimes() <= 20){
+                if(deviveCtrl == null){
                     DlDeviceActionControl dctrl = new DlDeviceActionControl();
                     dctrl.setMac(String.valueOf(userId));
                     dctrl.setBusiType(1);
                     dctrl.setAddTime(DateUtil.getCurrentTimeLong());
                     dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
-                    dctrl.setAlertTimes(deviveCtrl == null?1:deviveCtrl.getAlertTimes()+1);
+                    dctrl.setAlertTimes(1);
                     dlDeviceActionControlService.save(dctrl);
                     deviceCtrlDto.setAlertTimes(0);
+                }else if(deviveCtrl.getAlertTimes() <= 20){
+                    dlDeviceActionControlService.updateDeviceCtrlAlertTime(deviveCtrl.getAlertTimes() +1,String.valueOf(userId));
+                    deviceCtrlDto.setAlertTimes(0);
+                }else{
+                    deviceCtrlDto.setAlertTimes(1);
                 }
+
             }else{//已绑定并且登录的用户，不弹框
                 deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
             }

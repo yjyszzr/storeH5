@@ -22,6 +22,10 @@ public class DlDeviceActionControlService extends AbstractService<DlDeviceAction
         return dlDeviceActionControlMapper.updateDeviceUpdateTime(updateTime,mac);
     }
 
+    public Integer updateDeviceCtrlAlertTime(Integer alertTimes,String mac){
+        return dlDeviceActionControlMapper.updateDeviceCtrlAlertTime(alertTimes,mac);
+    }
+
     public DlDeviceActionControl queryDeviceAlertTimesForH5(String userId,Integer busiType,Integer updateTime){
         return dlDeviceActionControlMapper.queryDeviceAlertTimesForH5(userId,busiType,updateTime);
     }

@@ -25,4 +25,8 @@
     update dl_device_action_control set update_time = #{updateTime} where mac = #{mac}
   </update>
 
+  <update id="updateDeviceCtrlAlertTime">
+    update dl_device_action_control set alert_times = #{alertTimes} where mac = #{mac}
+  </update>
+
 </mapper>
