@@ -78,13 +78,13 @@ public class DlDeviceActionControlController {
             DlDeviceActionControl deviveCtrl = dlDeviceActionControlService.queryDeviceAlertTimesForH5(String.valueOf(userId),1,curTime);
             DlUserAuths userAuths = dlUserAuthsService.getUserAuthByThirdUserId(userId);
             if(userAuths == null){//未绑定并且登录的用户，一直弹框
-                if(deviveCtrl.getAlertTimes() == null  || deviveCtrl.getAlertTimes() <= 20){
+                if(deviveCtrl == null  || deviveCtrl.getAlertTimes() <= 20){
                     DlDeviceActionControl dctrl = new DlDeviceActionControl();
                     dctrl.setMac(String.valueOf(userId));
                     dctrl.setBusiType(1);
                     dctrl.setAddTime(DateUtil.getCurrentTimeLong());
                     dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
-                    dctrl.setAlertTimes(deviveCtrl.getAlertTimes()+1);
+                    dctrl.setAlertTimes(deviveCtrl == null?0:deviveCtrl.getAlertTimes()+1);
                     dlDeviceActionControlService.save(dctrl);
                 }
             }else{//已绑定并且登录的用户，一直弹框
