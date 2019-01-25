@@ -1,5 +1,6 @@
 package com.dl.store.web;
 
+import com.alibaba.fastjson.JSON;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.DateUtil;
@@ -78,17 +79,19 @@ public class DlDeviceActionControlController {
             DlDeviceActionControl deviveCtrl = dlDeviceActionControlService.queryDeviceAlertTimesForH5(String.valueOf(userId),1,curTime);
             DlUserAuths userAuths = dlUserAuthsService.getUserAuthByThirdUserId(userId);
             if(userAuths == null){//未绑定并且登录的用户，一直弹框
+                log.info("userAuths:"+ JSON.toJSONString(userAuths));
+                log.info("deviveCtrl:"+ JSON.toJSONString(deviveCtrl));
                 if(deviveCtrl == null  || deviveCtrl.getAlertTimes() <= 20){
                     DlDeviceActionControl dctrl = new DlDeviceActionControl();
                     dctrl.setMac(String.valueOf(userId));
                     dctrl.setBusiType(1);
                     dctrl.setAddTime(DateUtil.getCurrentTimeLong());
                     dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
-                    dctrl.setAlertTimes(deviveCtrl == null?0:deviveCtrl.getAlertTimes()+1);
+                    dctrl.setAlertTimes(deviveCtrl == null?1:deviveCtrl.getAlertTimes()+1);
                     dlDeviceActionControlService.save(dctrl);
                     deviceCtrlDto.setAlertTimes(0);
                 }
-            }else{//已绑定并且登录的用户，一直弹框
+            }else{//已绑定并且登录的用户，不弹框
                 deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
             }
 
