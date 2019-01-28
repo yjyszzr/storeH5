@@ -64,12 +64,12 @@ public class StoreUserMoneyController {
 		//更改订单退款状态
 		boolean succ = orderService.updateOrderRollBack(orderSn);
 		log.info("[orderRollBack]" + "更改订单回滚状态:" + succ);
-		//账户余额回滚
-		succ = userStoreMoneyService.orderRollBack(userId,storeId,moneyPaid);
-		log.info("[orderRollBack]" + "账户回滚结果:" + succ);
 		//增加流水记录
 		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,moneyPaid,null,null,6);
 		log.info("[orderRollBack]" + "增加账户流水记录:" + cnt);
+		//账户余额回滚
+		succ = userStoreMoneyService.orderRollBack(userId,storeId,moneyPaid);
+		log.info("[orderRollBack]" + "账户回滚结果:" + succ);
 		return ResultGenerator.genSuccessResult("账户回滚成功");
 	}
 	
