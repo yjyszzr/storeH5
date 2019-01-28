@@ -45,6 +45,7 @@
     <result column="award_time" jdbcType="VARCHAR" property="awardTime" />
     <result column="pic" jdbcType="VARCHAR" property="pic" />
     <result column="store_id" jdbcType="INTEGER" property="storeId" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" /> 
   </resultMap>
   <insert id="insertOrder" parameterType="com.dl.store.model.Order" useGeneratedKeys="true" keyProperty="orderId">
   		insert into dl_order (order_sn,parent_sn,user_id,order_status,pay_status,pay_id,pay_code,pay_name,pay_sn,

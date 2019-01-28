@@ -1,5 +1,6 @@
 package com.dl.store.web;
 
+import com.alibaba.fastjson.JSON;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.DateUtil;
@@ -76,24 +77,37 @@ public class DlDeviceActionControlController {
         }else{
             Integer curTime = DateUtil.getCurrentTimeLong();
             DlDeviceActionControl deviveCtrl = dlDeviceActionControlService.queryDeviceAlertTimesForH5(String.valueOf(userId),1,curTime);
-            if(deviveCtrl!= null && deviveCtrl.getAlertTimes() == 1){
-                deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
-            }else{
-                DlDeviceActionControl dctrl = new DlDeviceActionControl();
-                dctrl.setMac(String.valueOf(userId));
-                dctrl.setBusiType(1);
-                dctrl.setAddTime(DateUtil.getCurrentTimeLong());
-                dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
-                dctrl.setAlertTimes(1);
-                dlDeviceActionControlService.save(dctrl);
-                deviceCtrlDto.setAlertTimes(0);
-            }
-            //已经绑定并且登录的用户，返回最新的登录token
             DlUserAuths userAuths = dlUserAuthsService.getUserAuthByThirdUserId(userId);
+            if(userAuths == null){//未绑定并且登录的用户，一直弹框
+                log.info("userAuths:"+ JSON.toJSONString(userAuths));
+                log.info("deviveCtrl:"+ JSON.toJSONString(deviveCtrl));
+                if(deviveCtrl == null){
+                    DlDeviceActionControl dctrl = new DlDeviceActionControl();
+                    dctrl.setMac(String.valueOf(userId));
+                    dctrl.setBusiType(1);
+                    dctrl.setAddTime(DateUtil.getCurrentTimeLong());
+                    dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
+                    dctrl.setAlertTimes(1);
+                    dlDeviceActionControlService.save(dctrl);
+                    deviceCtrlDto.setAlertTimes(0);
+                }else if(deviveCtrl.getAlertTimes() <= 20){
+                    dlDeviceActionControlService.updateDeviceCtrlAlertTime(deviveCtrl.getAlertTimes() +1,String.valueOf(userId));
+                    deviceCtrlDto.setAlertTimes(0);
+                }else{
+                    deviceCtrlDto.setAlertTimes(1);
+                }
+
+            }else{//已绑定并且登录的用户，不弹框
+                deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
+            }
+
+            //已经绑定并且登录的用户，返回最新的登录token
             if(userAuths != null){
                     UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userAuths.getThirdMobile(),"4");
                     deviceCtrlDto.setUserToken(userLoginDTO.getToken());
             }
+
+
         }
         return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
     }

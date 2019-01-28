@@ -258,5 +258,6 @@ public class Order {
     @Column(name = "ticket_num")
     private Integer ticketNum;
     
-    
+    @Column(name = "mobile")
+    private String mobile;  
 }

@@ -9,6 +9,7 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="store_id" jdbcType="INTEGER" property="storeId" />
     <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="money_limit" jdbcType="DECIMAL" property="moneyLimit" />
     <result column="last_time" jdbcType="INTEGER" property="lastTime" />
   </resultMap>
 
@@ -21,8 +22,9 @@
    <update id="orderPay" parameterType="com.dl.store.model.UserStoreMoney">
     	 UPDATE dl_user_store_money
 			 <trim prefix="set" suffixOverrides=",">
-			  <if test="money!=null">money=#{money},</if>
+			  <if test="money!=null">money=#{money}</if>
 			 </trim>
+			 <if test="moneyLimit!=null">, money_limit=#{moneyLimit} </if>
 		 WHERE user_id=#{userId}  and store_id = #{storeId}
   </update>
   

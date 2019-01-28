@@ -29,8 +29,9 @@ public class LotteryHallService {
 			DlPlayClassifyDetailDTO dlPlayDetailDto = new DlPlayClassifyDetailDTO();
 			dlPlayDetailDto.setLotteryId(String.valueOf(lotteryClassify.getLotteryClassifyId()));
 			dlPlayDetailDto.setPlayClassifyImg(lotteryClassify.getLotteryImg());
-			dlPlayDetailDto.setPlayClassifyLabelName(lotteryClassify.getSubTitle());
+			dlPlayDetailDto.setPlayClassifyLabelName(lotteryClassify.getStatusReason());
 			dlPlayDetailDto.setStatus(lotteryClassify.getStatus());
+			dlPlayDetailDto.setSubTitle(lotteryClassify.getSubTitle());
 			if(1 == lotteryClassify.getLotteryClassifyId()) {
 //				String isLogin = "&isLogin=0";
 //				if(userId != null) {
@@ -43,12 +44,10 @@ public class LotteryHallService {
 				dlPlayDetailDto.setPlayClassifyName(lotteryClassify.getLotteryName());
 				String subTitle = queryLatestLottoPrizes();
 				dlPlayDetailDto.setSubTitle(subTitle);
-				dlPlayDetailDto.setPlayClassifyLabelName(subTitle);
 			}else {
 				dlPlayDetailDto.setRedirectUrl("");
 				dlPlayDetailDto.setPlayClassifyName(lotteryClassify.getStatusReason());
 			}
-			dlPlayDetailDto.setSubTitle(lotteryClassify.getSubTitle());
 			dlPlayClassifyDetailDTOs.add(dlPlayDetailDto);
 		}
 

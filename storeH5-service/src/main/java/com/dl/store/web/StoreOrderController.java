@@ -117,7 +117,7 @@ public class StoreOrderController {
 		BigDecimal money = null;
 		UserStoreMoney userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId, storeId);
 		if(userStoreMoney != null) {
-			money = userStoreMoney.getMoney();
+			money = userStoreMoney.getMoney().add(userStoreMoney.getMoneyLimit());
 		}
 		//该订单是否已支付
 		log.info("[orderPay]" + " ticketAmout:" + ticketAmout + " money:" + money + " userId:" + userId + " storeId:" + storeId + " orderSn:" + orderSn);
@@ -182,23 +182,25 @@ public class StoreOrderController {
 //				userId
 				String mobile = "";
 				String firstPayTime = "";
-				
 			 
-				User user = this.userService.findById(userId);
-				mobile = user.getMobile();
-				firstPayTime = order.getPayTime() + "";
+//				User user = this.userService.findById(userId);
+//				mobile = user.getMobile();
+//				firstPayTime = order.getPayTime() + "";
 
-				if (mobile!= null) mobile = mobile.trim();
+//				if (mobile!= null) mobile = mobile.trim();
 //				firstPayTime = order.getPayTime() + "";
 //				firstPayTime = order.getAddTime() + "";
 				Order _order = orderService.queryOrderByOrderSn(orderSn);
 				if(_order != null) {
-					firstPayTime = order.getPayTime() + "";
+					firstPayTime = _order.getPayTime() + "";
+					mobile = _order.getMobile().trim();
 				}
 				
-				log.info("[customer] userId:" + userId); 
-				log.info("[customer] mobile:" + mobile);
-				log.info("[customer] firstPayTime:" + firstPayTime);
+//				log.info("[customer] userId:" + userId); 
+//				log.info("[customer] mobile:" + mobile);
+//				log.info("[customer] firstPayTime:" + firstPayTime);
+				
+				log.info("customer|userId:" + userId + "|mobile:" + mobile + "|firstPayTime:" + firstPayTime);
 				
 				if (null != userId
 					&& !StringUtil.isBlank(mobile)

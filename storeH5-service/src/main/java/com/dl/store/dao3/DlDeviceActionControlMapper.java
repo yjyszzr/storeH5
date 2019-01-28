@@ -12,4 +12,6 @@ public interface DlDeviceActionControlMapper extends Mapper<DlDeviceActionContro
 
     int updateDeviceUpdateTime(@Param("updateTime") Integer updateTime, @Param("mac") String mac);
 
+    int updateDeviceCtrlAlertTime(@Param("alertTimes") Integer alertTimes,@Param("mac") String mac);
+
 }
