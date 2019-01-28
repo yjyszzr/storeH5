@@ -101,6 +101,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 			note = "退款" + String.format("%.2f",ticketAmt.doubleValue()) + "元";
 		}
 		userAccount.setNote(note);
+		log.info("++++++++++++++++++++++++++++++++派奖金额："+userAccount.getCurBalance());
 		cnt = userAccountMapper.insertUserAccountBySelective(userAccount);
 		return cnt;
 	}

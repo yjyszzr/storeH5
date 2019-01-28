@@ -1,14 +1,5 @@
 package com.dl.store.web;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Resource;
-
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.store.model.Order;
@@ -17,9 +8,16 @@ import com.dl.store.param.OrderRollBackParam;
 import com.dl.store.service.OrderService;
 import com.dl.store.service.UserAccountService;
 import com.dl.store.service.UserStoreMoneyService;
-
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/pay")
@@ -90,6 +88,7 @@ public class StoreUserMoneyController {
 		Integer storeId = order.getStoreId();
 		Integer orderStatus = order.getOrderStatus();
 		BigDecimal awardMoney = order.getWinningMoney();
+		log.info("---------------------order--------awardMoney:"+awardMoney);
 		if(userId == null || userId <= 0) {
 			log.info("[orderAward]" + " UserId为空");
 			return ResultGenerator.genFailResult("UserId为空");
@@ -118,6 +117,8 @@ public class StoreUserMoneyController {
 		succ = userStoreMoneyService.awardMony(userId,storeId,awardMoney);
 		log.info("[orderAward]" + "增加钱包金额:" + succ);
 		//添加流水记录操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
+
+		log.info("---------------------mapper--------awardMoney:"+awardMoney);
 		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, orderSn,awardMoney,null,null,1);
 		log.info("[orderAward]" + "增加账户流水成功:" + cnt);
 		return ResultGenerator.genSuccessResult("派奖成功");
