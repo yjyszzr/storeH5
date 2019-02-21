@@ -117,7 +117,7 @@ public class StoreOrderController {
 		BigDecimal money = null;
 		UserStoreMoney userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId, storeId);
 		if(userStoreMoney != null) {
-			money = userStoreMoney.getMoney();
+			money = userStoreMoney.getMoney().add(userStoreMoney.getMoneyLimit());
 		}
 		//该订单是否已支付
 		log.info("[orderPay]" + " ticketAmout:" + ticketAmout + " money:" + money + " userId:" + userId + " storeId:" + storeId + " orderSn:" + orderSn);

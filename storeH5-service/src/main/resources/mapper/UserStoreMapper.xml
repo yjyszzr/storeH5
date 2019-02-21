@@ -22,7 +22,10 @@
    <update id="orderPay" parameterType="com.dl.store.model.UserStoreMoney">
     	 UPDATE dl_user_store_money
 			 <trim prefix="set" suffixOverrides=",">
-			  <if test="money!=null">money=#{money},</if>
+			  <if test="money!=null">money=#{money}</if>
+			 </trim>
+			 <trim prefix="set" suffixOverrides=",">
+			  <if test="money_limit!=null">, money_limit=#{moneyLimit}</if>
 			 </trim>
 		 WHERE user_id=#{userId}  and store_id = #{storeId}
   </update>

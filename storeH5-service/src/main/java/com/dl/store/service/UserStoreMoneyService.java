@@ -28,19 +28,26 @@ public class UserStoreMoneyService {
 	 * @param money
 	 * @return
 	 */
-	public boolean orderPay(Integer userId,Integer storeId,BigDecimal amt,BigDecimal userBonudsPrice){
+	public synchronized boolean orderPay(Integer userId,Integer storeId,BigDecimal amt,BigDecimal userBonudsPrice){
 		boolean succ = false;
 		if(amt.doubleValue() > 0) {
 			UserStoreMoney params = new UserStoreMoney();
 			params.setUserId(userId);
 			params.setStoreId(storeId);
 			UserStoreMoney userStoreMoney = userStoreMoneyMapper.queryInfo(params);
-			log.info("[orderPay]" + " query:" + userStoreMoney.getUserId() + " storeId:" + userStoreMoney.getStoreId() + " money:" + userStoreMoney.getMoney());
-			BigDecimal userMoney = userStoreMoney.getMoney();
-			BigDecimal moneyResult = userMoney.subtract(amt);
-			userStoreMoney.setMoney(moneyResult);
+			log.info("[orderPay]" + " query:" + userStoreMoney.getUserId() + " storeId:" + userStoreMoney.getStoreId() + " money:" + userStoreMoney.getMoney() + " limitMoney:" + userStoreMoney.getMoneyLimit());
+			BigDecimal userMoneyLimit = userStoreMoney.getMoney();
+			BigDecimal moneyResult = userMoneyLimit.subtract(amt);
+			if(moneyResult.floatValue() >= 0) {
+				userStoreMoney.setMoneyLimit(moneyResult);
+			}else {
+				//不可提现余额钱包清空
+				userStoreMoney.setMoneyLimit(BigDecimal.ZERO);
+				//减少可提现余额钱包
+				userStoreMoney.setMoney(userStoreMoney.getMoney().add(moneyResult));
+			}
 			int cnt = userStoreMoneyMapper.orderPay(userStoreMoney);
-			log.info("[orderPay]" + " cnt:" + cnt + " result:" + moneyResult + " orderMoney:" + amt + " userMoney:" + userMoney);
+			log.info("[orderPay]" + " cnt:" + cnt + " result:" + moneyResult + " orderMoney:" + amt + " userMoney:" + userStoreMoney.getMoney());
 			succ = true;
 		}
 		return succ;
