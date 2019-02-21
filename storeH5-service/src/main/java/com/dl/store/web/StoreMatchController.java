@@ -137,7 +137,7 @@ public class StoreMatchController {
 			storeUserDTO.setIsSuperWhite("1");
 			BigDecimal bigDec = null;
 			if(userStoreMoney != null) {
-				bigDec = userStoreMoney.getMoney();
+				bigDec = userStoreMoney.getMoney().add(userStoreMoney.getMoneyLimit());
 			}else {
 				bigDec = BigDecimal.ZERO;
 			}
