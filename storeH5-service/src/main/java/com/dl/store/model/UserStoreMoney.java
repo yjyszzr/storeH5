@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import lombok.Data;
 
 @Table(name = "dl_user_store_money")
@@ -30,10 +31,13 @@ public class UserStoreMoney {
     private Integer storeId;
     
     /**
-     * phone
+     * money
      */
     @Column(name = "money")
     private BigDecimal money;
+    
+    @Column(name = "money_limit")
+    private BigDecimal moneyLimit;
     
     /**
      * 最后变更时间

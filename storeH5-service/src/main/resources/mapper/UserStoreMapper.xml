@@ -9,6 +9,7 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="store_id" jdbcType="INTEGER" property="storeId" />
     <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="money_limit" jdbcType="DECIMAL" property="moneyLimit" />
     <result column="last_time" jdbcType="INTEGER" property="lastTime" />
   </resultMap>
 
