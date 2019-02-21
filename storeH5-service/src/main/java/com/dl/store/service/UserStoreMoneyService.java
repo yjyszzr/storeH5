@@ -35,12 +35,14 @@ public class UserStoreMoneyService {
 			params.setUserId(userId);
 			params.setStoreId(storeId);
 			UserStoreMoney userStoreMoney = userStoreMoneyMapper.queryInfo(params);
-			log.info("[orderPay]" + " query:" + userStoreMoney.getUserId() + " storeId:" + userStoreMoney.getStoreId() + " money:" + userStoreMoney.getMoney() + " limitMoney:" + userStoreMoney.getMoneyLimit());
+			log.info("[orderPay]" + " query:" + userStoreMoney.getUserId() + " storeId:" + userStoreMoney.getStoreId() + " money:" + userStoreMoney.getMoney() + " limitMoney:" + userStoreMoney.getMoneyLimit() + " amt:" + amt);
 			BigDecimal userMoneyLimit = userStoreMoney.getMoney();
 			BigDecimal moneyResult = userMoneyLimit.subtract(amt);
 			if(moneyResult.floatValue() >= 0) {
+				log.info("[orderPay]" + " brach 1  result:" + moneyResult);
 				userStoreMoney.setMoneyLimit(moneyResult);
 			}else {
+				log.info("[orderPay]" + " brach 2 r:" + userStoreMoney.getMoney().add(moneyResult));
 				//不可提现余额钱包清空
 				userStoreMoney.setMoneyLimit(BigDecimal.ZERO);
 				//减少可提现余额钱包
