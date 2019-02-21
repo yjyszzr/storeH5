@@ -64,7 +64,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		userStoreMoney.setUserId(userId);
 		userStoreMoney.setStoreId(storeId);
 		userStoreMoney = userStoreMoneyMapper.queryInfo(userStoreMoney);
-		BigDecimal uMoney = userStoreMoney.getMoney();
+		BigDecimal uMoney = userStoreMoney.getMoney().add(userStoreMoney.getMoneyLimit());
 		
 		UserAccount userAccount = new UserAccount();
 		userAccount.setUserId(userId);
