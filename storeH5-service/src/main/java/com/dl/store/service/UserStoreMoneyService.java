@@ -36,7 +36,7 @@ public class UserStoreMoneyService {
 			params.setStoreId(storeId);
 			UserStoreMoney userStoreMoney = userStoreMoneyMapper.queryInfo(params);
 			log.info("[orderPay]" + " query:" + userStoreMoney.getUserId() + " storeId:" + userStoreMoney.getStoreId() + " money:" + userStoreMoney.getMoney() + " limitMoney:" + userStoreMoney.getMoneyLimit() + " amt:" + amt);
-			BigDecimal userMoneyLimit = userStoreMoney.getMoney();
+			BigDecimal userMoneyLimit = userStoreMoney.getMoneyLimit();
 			BigDecimal moneyResult = userMoneyLimit.subtract(amt);
 			if(moneyResult.floatValue() >= 0) {
 				log.info("[orderPay]" + " brach 1  result:" + moneyResult);
