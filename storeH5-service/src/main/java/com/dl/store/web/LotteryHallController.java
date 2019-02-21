@@ -67,7 +67,7 @@ public class LotteryHallController {
 			userIdParams.setUserId(userId);
 			UserDTO userDTO = userService.queryUserInfo(userIdParams);
 			if(money != null) {
-				hallInfo.setMoney(money.add(moneyLimit).floatValue()+"");
+				hallInfo.setMoney(money.add(moneyLimit)+"");
 			}else {
 				hallInfo.setMoney(BigDecimal.ZERO.toString());
 			}
