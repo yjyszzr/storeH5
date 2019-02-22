@@ -39,10 +39,8 @@ public class UserStoreMoneyService {
 			BigDecimal userMoneyLimit = userStoreMoney.getMoneyLimit();
 			BigDecimal moneyResult = userMoneyLimit.subtract(amt);
 			if(moneyResult.floatValue() >= 0) {
-				log.info("[orderPay]" + " brach 1  result:" + moneyResult);
 				userStoreMoney.setMoneyLimit(moneyResult);
 			}else {
-				log.info("[orderPay]" + " brach 2 r:" + userStoreMoney.getMoney().add(moneyResult));
 				//不可提现余额钱包清空
 				userStoreMoney.setMoneyLimit(BigDecimal.ZERO);
 				//减少可提现余额钱包
