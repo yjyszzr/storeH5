@@ -54,6 +54,7 @@ public class LotteryHallController {
 			UserStoreMoney userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,param.getStoreId());
 			if(userStoreMoney != null) {
 				money = userStoreMoney.getMoney();
+				moneyLimit = userStoreMoney.getMoneyLimit();
 			}
 		}
 		String isSuperWhite = null;
