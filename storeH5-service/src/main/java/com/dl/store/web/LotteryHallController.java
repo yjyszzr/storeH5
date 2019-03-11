@@ -1,15 +1,5 @@
 package com.dl.store.web;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.SessionUtil;
@@ -23,9 +13,15 @@ import com.dl.store.service.LotteryHallService;
 import com.dl.store.service.UserBonusService;
 import com.dl.store.service.UserService;
 import com.dl.store.service.UserStoreMoneyService;
-
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/hall")
@@ -50,7 +46,6 @@ public class LotteryHallController {
 		DlHallInfoDTO hallInfo = new DlHallInfoDTO();
 		hallInfo.setList(rList);
 		BigDecimal money = null;
-		BigDecimal moneyLimit = null;
 		Integer userId = SessionUtil.getUserId();
 		Integer storeId = param.getStoreId();
 		log.info("[hallInfo]" + " userId:" + userId + " storeId:" + storeId);
@@ -58,7 +53,6 @@ public class LotteryHallController {
 			UserStoreMoney userStoreMoney = userStoreMoneyService.queryUserMoneyInfo(userId,param.getStoreId());
 			if(userStoreMoney != null) {
 				money = userStoreMoney.getMoney();
-				moneyLimit = userStoreMoney.getMoneyLimit();
 			}
 		}
 		String isSuperWhite = null;
@@ -67,14 +61,9 @@ public class LotteryHallController {
 			userIdParams.setUserId(userId);
 			UserDTO userDTO = userService.queryUserInfo(userIdParams);
 			if(money != null) {
-				hallInfo.setMoney(money.add(moneyLimit)+"");
+				hallInfo.setMoney(money+"");
 			}else {
 				hallInfo.setMoney(BigDecimal.ZERO.toString());
-			}
-			if(money != null) {
-				hallInfo.setMoneyLimit(money+"");
-			}else {
-				hallInfo.setMoneyLimit(BigDecimal.ZERO.toString());
 			}
 			if(userDTO != null) {
 				isSuperWhite = userDTO.getIsSuperWhite();
@@ -96,3 +85,4 @@ public class LotteryHallController {
 	}
 	
 }
+
