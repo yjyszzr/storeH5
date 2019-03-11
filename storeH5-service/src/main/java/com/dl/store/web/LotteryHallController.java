@@ -46,6 +46,7 @@ public class LotteryHallController {
 		DlHallInfoDTO hallInfo = new DlHallInfoDTO();
 		hallInfo.setList(rList);
 		BigDecimal money = null;
+		BigDecimal moneyLimit = null;
 		Integer userId = SessionUtil.getUserId();
 		Integer storeId = param.getStoreId();
 		log.info("[hallInfo]" + " userId:" + userId + " storeId:" + storeId);
@@ -61,9 +62,14 @@ public class LotteryHallController {
 			userIdParams.setUserId(userId);
 			UserDTO userDTO = userService.queryUserInfo(userIdParams);
 			if(money != null) {
-				hallInfo.setMoney(money+"");
+				hallInfo.setMoney(money.add(moneyLimit)+"");
 			}else {
 				hallInfo.setMoney(BigDecimal.ZERO.toString());
+			}
+			if(moneyLimit != null) {
+				hallInfo.setMoneyLimit(moneyLimit+"");
+			}else {
+				hallInfo.setMoneyLimit(BigDecimal.ZERO.toString());
 			}
 			if(userDTO != null) {
 				isSuperWhite = userDTO.getIsSuperWhite();
