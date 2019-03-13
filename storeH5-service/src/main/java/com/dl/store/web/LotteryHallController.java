@@ -67,8 +67,8 @@ public class LotteryHallController {
 			}else {
 				hallInfo.setMoney(BigDecimal.ZERO.toString());
 			}
-			if(moneyLimit != null) {
-				hallInfo.setMoneyLimit(moneyLimit+"");
+			if(money != null) {
+				hallInfo.setMoneyLimit(money+"");
 			}else {
 				hallInfo.setMoneyLimit(BigDecimal.ZERO.toString());
 			}
