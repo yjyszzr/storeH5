@@ -1,9 +1,9 @@
 package com.dl.store.dto;
 
-import java.util.List;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class DlHallInfoDTO {
@@ -11,10 +11,10 @@ public class DlHallInfoDTO {
 	private List<DlPlayClassifyDetailDTO> list;
 
 	@ApiModelProperty(value = "金额")
-	private String money;
+	private String money = "0.00";
 	
 	@ApiModelProperty(value = "不可提现余额")
-	private String moneyLimit;
+	private String moneyLimit = "0.00";
 
 	@ApiModelProperty(value = "是否是超级白名单 0否 1是")
 	private String isSuperWhite;

@@ -103,13 +103,18 @@ public class DlDeviceActionControlController {
 
             //已经绑定并且登录的用户，返回最新的登录token
             if(userAuths != null){
-                    UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userAuths.getThirdMobile(),"4");
-                    deviceCtrlDto.setUserToken(userLoginDTO.getToken());
+                UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userAuths.getThirdMobile(),"4");
+                deviceCtrlDto.setUserToken(userLoginDTO.getToken());
             }
-
-
         }
         return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
+    }
+
+
+    @ApiOperation(value = "进入店铺大厅页面:1.自动绑定并返回新token 2.告诉是否弹框 3.返回的弹框地址", notes = "进入店铺大厅页面:1.自动绑定并返回新token 2.告诉是否弹框 3.返回的弹框地址")
+    @PostMapping("/enterStoreAction")
+    public BaseResult<DlDeviceActionControlDTO> enterStoreAction(@RequestBody TokenParam param){
+        return dlDeviceActionControlService.enterStoreAction(param);
     }
 
 }

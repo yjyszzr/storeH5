@@ -23,6 +23,9 @@ public class DlDeviceActionControlDTO {
     @Column(name = "更新时间")
     private Integer updateTime = 0;
 
+    @Column(name = "二维码图片地址")
+    private String picUrl = "";
+
     @Column(name = "登录token: 不为空的情况下替换前端缓存的token，为空的情况下不替换")
     private String userToken = "";
 }
