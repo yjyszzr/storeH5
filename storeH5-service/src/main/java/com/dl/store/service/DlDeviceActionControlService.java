@@ -109,7 +109,8 @@ public class DlDeviceActionControlService extends AbstractService<DlDeviceAction
         String wxNum = "";
         List<Integer> bidList = new ArrayList<>();
         BusiIdsListParam bids = new BusiIdsListParam();
-        bidList.add(57,58);
+        bidList.add(57);
+        bidList.add(58);
         bids.setBusinessIdList(bidList);
         BaseResult<List<SysConfigDTO>> sysConfigList =  iSysConfigService.querySysConfigList(bids);
         if(sysConfigList.isSuccess()){
