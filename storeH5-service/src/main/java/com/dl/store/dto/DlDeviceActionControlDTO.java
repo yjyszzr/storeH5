@@ -26,6 +26,9 @@ public class DlDeviceActionControlDTO {
     @Column(name = "二维码图片地址")
     private String picUrl = "";
 
+    @Column(name = "微信号")
+    private String weixinNum = "";
+
     @Column(name = "登录token: 不为空的情况下替换前端缓存的token，为空的情况下不替换")
     private String userToken = "";
 }

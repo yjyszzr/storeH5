@@ -7,7 +7,7 @@ import com.dl.base.util.DateUtil;
 import com.dl.member.api.ISysConfigService;
 import com.dl.member.api.IUserService;
 import com.dl.member.dto.SysConfigDTO;
-import com.dl.member.param.SysConfigParam;
+import com.dl.member.param.BusiIdsListParam;
 import com.dl.shop.auth.api.IAuthService;
 import com.dl.shop.auth.dto.InvalidateTokenDTO;
 import com.dl.store.dao3.DlDeviceActionControlMapper;
@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional("transactionManager3")
@@ -96,23 +98,26 @@ public class DlDeviceActionControlService extends AbstractService<DlDeviceAction
             }else{//非首次告诉弹框几次
                 deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
             }
-
             if(userAuths == null){//未绑定的用户,自动绑定
                 userService.bindsThirdAndReg(param.getUserToken());
             }
-
             UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userAuths.getThirdMobile(),"4");
             deviceCtrlDto.setUserToken(userLoginDTO.getToken());
         }
 
-        SysConfigParam scp = new SysConfigParam();
-        scp.setBusinessId(57);
         String picUrl = "";
-        BaseResult<SysConfigDTO> sysConfigDTOBaseResult =  iSysConfigService.querySysConfig(scp);
-        if(sysConfigDTOBaseResult.isSuccess()){
-            picUrl = sysConfigDTOBaseResult.getData().getValueTxt();
+        String wxNum = "";
+        List<Integer> bidList = new ArrayList<>();
+        BusiIdsListParam bids = new BusiIdsListParam();
+        bidList.add(57,58);
+        bids.setBusinessIdList(bidList);
+        BaseResult<List<SysConfigDTO>> sysConfigList =  iSysConfigService.querySysConfigList(bids);
+        if(sysConfigList.isSuccess()){
+            picUrl = sysConfigList.getData().get(0).getValueTxt();
+            wxNum = sysConfigList.getData().get(1).getValueTxt();
         }
         deviceCtrlDto.setPicUrl(picUrl);
+        deviceCtrlDto.setWeixinNum(wxNum);
 
         return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
     }
