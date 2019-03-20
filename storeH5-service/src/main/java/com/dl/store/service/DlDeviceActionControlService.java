@@ -71,38 +71,42 @@ public class DlDeviceActionControlService extends AbstractService<DlDeviceAction
             return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
         }
 
-        Integer userId = null;
-        InvalidateTokenDTO invalidateTokenDTO = new InvalidateTokenDTO();
-        invalidateTokenDTO.setToken(param.getUserToken());
-        BaseResult<Integer> rst = iAuthService.getUserIdByToken(invalidateTokenDTO);
-        if(rst.isSuccess()){
-            userId = rst.getData();
-        }
+        if(param.getType().equals("1")) {
+            Integer userId = null;
+            InvalidateTokenDTO invalidateTokenDTO = new InvalidateTokenDTO();
+            invalidateTokenDTO.setToken(param.getUserToken());
+            BaseResult<Integer> rst = iAuthService.getUserIdByToken(invalidateTokenDTO);
+            if (rst.isSuccess()) {
+                userId = rst.getData();
+            }
 
-        if(userId == null){//非登录用户
-            deviceCtrlDto.setAlertTimes(0);
-        }else{//已登录用户
-            Integer curTime = DateUtil.getCurrentTimeLong();
-            DlDeviceActionControl deviveCtrl = this.queryDeviceAlertTimesForH5(String.valueOf(userId),1,curTime);
-            DlUserAuths userAuths = dlUserAuthsService.getUserAuthByThirdUserId(userId);
-            if(deviveCtrl == null){//首次进入的弹框
-                DlDeviceActionControl dctrl = new DlDeviceActionControl();
-                dctrl.setMac(String.valueOf(userId));
-                dctrl.setBusiType(1);
-                dctrl.setAddTime(DateUtil.getCurrentTimeLong());
-                dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
-                dctrl.setAlertTimes(1);
-                this.save(dctrl);
-
+            if (userId == null) {//非登录用户
                 deviceCtrlDto.setAlertTimes(0);
-            }else{//非首次告诉弹框几次
-                deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
+            } else {//已登录用户
+                Integer curTime = DateUtil.getCurrentTimeLong();
+                DlDeviceActionControl deviveCtrl = this.queryDeviceAlertTimesForH5(String.valueOf(userId), 1, curTime);
+                DlUserAuths userAuths = dlUserAuthsService.getUserAuthByThirdUserId(userId);
+                if (deviveCtrl == null) {//首次进入的弹框
+                    DlDeviceActionControl dctrl = new DlDeviceActionControl();
+                    dctrl.setMac(String.valueOf(userId));
+                    dctrl.setBusiType(1);
+                    dctrl.setAddTime(DateUtil.getCurrentTimeLong());
+                    dctrl.setUpdateTime(DateUtil.getCurrentTimeLong());
+                    dctrl.setAlertTimes(1);
+                    this.save(dctrl);
+
+                    deviceCtrlDto.setAlertTimes(0);
+                } else {//非首次告诉弹框几次
+                    deviceCtrlDto.setAlertTimes(deviveCtrl.getAlertTimes());
+                }
+                if (userAuths == null) {//未绑定的用户,自动绑定
+                    userService.bindsThirdAndReg(param.getUserToken());
+                }
+                UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userAuths.getThirdMobile(), "4");
+                deviceCtrlDto.setUserToken(userLoginDTO.getToken());
             }
-            if(userAuths == null){//未绑定的用户,自动绑定
-                userService.bindsThirdAndReg(param.getUserToken());
-            }
-            UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(userAuths.getThirdMobile(),"4");
-            deviceCtrlDto.setUserToken(userLoginDTO.getToken());
+        }else if(param.getType().equals("2")){
+            deviceCtrlDto.setUserToken(param.getUserToken());
         }
 
         String picUrl = "";

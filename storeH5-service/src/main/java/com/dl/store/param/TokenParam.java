@@ -9,4 +9,7 @@ import lombok.Data;
 public class TokenParam {
     @ApiModelProperty("用户的token ")
     private String userToken;
+
+    @ApiModelProperty("type:1-app 2-h5")
+    private String type;
 }
