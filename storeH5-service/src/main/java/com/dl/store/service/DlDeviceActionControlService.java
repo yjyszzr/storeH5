@@ -71,6 +71,21 @@ public class DlDeviceActionControlService extends AbstractService<DlDeviceAction
 
     public BaseResult<DlDeviceActionControlDTO> enterStoreAction(TokenParam param){
         DlDeviceActionControlDTO deviceCtrlDto = new DlDeviceActionControlDTO();
+        String picUrl = "";
+        String wxNum = "";
+        List<Integer> bidList = new ArrayList<>();
+        BusiIdsListParam bids = new BusiIdsListParam();
+        bidList.add(57);
+        bidList.add(58);
+        bids.setBusinessIdList(bidList);
+        BaseResult<List<SysConfigDTO>> sysConfigList =  iSysConfigService.querySysConfigList(bids);
+        if(sysConfigList.isSuccess()){
+            picUrl = sysConfigList.getData().get(0).getValueTxt();
+            wxNum = sysConfigList.getData().get(1).getValueTxt();
+        }
+        deviceCtrlDto.setPicUrl(picUrl);
+        deviceCtrlDto.setWeixinNum(wxNum);
+
         if(StringUtils.isEmpty(param.getUserToken())){
             deviceCtrlDto.setAlertTimes(0);
             return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
@@ -119,21 +134,6 @@ public class DlDeviceActionControlService extends AbstractService<DlDeviceAction
             UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(bindUserAuths.getThirdMobile(), "4");
             deviceCtrlDto.setUserToken(userLoginDTO.getToken());
         }
-
-        String picUrl = "";
-        String wxNum = "";
-        List<Integer> bidList = new ArrayList<>();
-        BusiIdsListParam bids = new BusiIdsListParam();
-        bidList.add(57);
-        bidList.add(58);
-        bids.setBusinessIdList(bidList);
-        BaseResult<List<SysConfigDTO>> sysConfigList =  iSysConfigService.querySysConfigList(bids);
-        if(sysConfigList.isSuccess()){
-            picUrl = sysConfigList.getData().get(0).getValueTxt();
-            wxNum = sysConfigList.getData().get(1).getValueTxt();
-        }
-        deviceCtrlDto.setPicUrl(picUrl);
-        deviceCtrlDto.setWeixinNum(wxNum);
 
         return ResultGenerator.genSuccessResult("success",deviceCtrlDto);
     }
