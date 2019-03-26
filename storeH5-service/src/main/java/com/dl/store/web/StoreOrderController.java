@@ -1,39 +1,31 @@
 package com.dl.store.web;
 
-import java.math.BigDecimal;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-
-import org.jsoup.helper.StringUtil;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
-import com.dl.base.util.DateUtilNew;
 import com.dl.base.util.SessionUtil;
 import com.dl.store.dto.DlHallInfoDTO;
 import com.dl.store.dto.UserBonusDTO;
 import com.dl.store.enums.MemberEnums;
 import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.Order;
-import com.dl.store.model.User;
 import com.dl.store.model.UserBonus;
 import com.dl.store.model.UserStoreMoney;
 import com.dl.store.param.OrderPayParam;
-import com.dl.store.service.OrderService;
-import com.dl.store.service.UserAccountService;
-import com.dl.store.service.UserBonusService;
-import com.dl.store.service.UserService;
-import com.dl.store.service.UserStoreMoneyService;
-
+import com.dl.store.service.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.helper.StringUtil;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/order")
@@ -55,6 +47,7 @@ public class StoreOrderController {
 	
 	@ApiOperation(value = "订单支付", notes = "订单支付")
 	@PostMapping("/pay")
+	@Transactional
     public BaseResult<DlHallInfoDTO> orderPay(@RequestBody OrderPayParam param){
 		// test start
 //		try {
