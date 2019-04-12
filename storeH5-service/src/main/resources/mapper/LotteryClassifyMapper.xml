@@ -42,7 +42,7 @@
            redirect_url
         from
             dl_lottery_classify
-        where is_show = 1 and app_code_name = #{appCodeName}
+        where is_show = 1
         order by sort asc
   </select>
   
