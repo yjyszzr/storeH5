@@ -1,6 +1,5 @@
 package com.dl.store.service;
 
-import com.alibaba.fastjson.JSON;
 import com.dl.base.enums.RespStatusEnum;
 import com.dl.base.exception.ServiceException;
 import com.dl.base.model.UserDeviceInfo;
@@ -14,8 +13,6 @@ import com.dl.base.util.SessionUtil;
 import com.dl.member.api.IMessageService;
 import com.dl.member.api.IUserService;
 import com.dl.member.dto.UserNoticeDTO;
-import com.dl.member.param.UserIdRealParam;
-import com.dl.member.param.UserRealParam;
 import com.dl.shop.auth.api.IAuthService;
 import com.dl.shop.auth.dto.InvalidateTokenDTO;
 import com.dl.store.core.MemberConstant;
@@ -38,6 +35,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
@@ -209,7 +207,14 @@ public class UserService extends AbstractService<User> {
 		}
 		log.info("userDto+20180109:"+userDto.getMobile()+","+userDto.getPassword()+","+userDto.getSalt());
 
-		Integer newUserId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
+		Integer newUserId = null;
+		User user = userMapper.queryUserByMobile(userDto.getMobile());
+		if(user != null){
+			newUserId = user.getUserId();
+		}else{
+			newUserId = this.saveUser(userDto.getMobile(),userDto.getPassword(),userDto.getSalt(),userDto.getIsSuperWhite());
+		}
+
 		if(newUserId != null){
 			DlUserAuths dlUserAuths = new DlUserAuths();
 			dlUserAuths.setThirdMobile(userDto.getMobile());
