@@ -173,4 +173,8 @@
   	WHERE user_id = #{userId}
   </update>
 
+	<select id="queryUserByMobileAndAppCdde" resultMap="BaseResultMap">
+		select * from dl_user where mobile =#{mobile} and app_code_name = #{appCodeName}
+	</select>
+
 </mapper>

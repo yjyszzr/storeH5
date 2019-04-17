@@ -355,7 +355,9 @@ public class UserService extends AbstractService<User> {
 			return ResultGenerator.genResult(MemberEnums.MOBILE_VALID_ERROR.getcode(), MemberEnums.MOBILE_VALID_ERROR.getMsg());
 		}
 
-		User user = this.findBy("mobile", mobileNumber);
+		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
+		String appCodeName = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User user = userMapper.queryUserByMobileAndAppCdde(userLoginMobileParam.getMobile(),appCodeName);
 		if (null == user) {
 			return ResultGenerator.genResult(MemberEnums.NO_REGISTER.getcode(), MemberEnums.NO_REGISTER.getMsg());
 		}
@@ -373,7 +375,9 @@ public class UserService extends AbstractService<User> {
 			return ResultGenerator.genResult(MemberEnums.PASS_FORMAT_ERROR.getcode(), MemberEnums.PASS_FORMAT_ERROR.getMsg());
 		}
 
-		User user = this.findBy("mobile", mobileNumber);
+		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
+		String appCodeName = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User user = userMapper.queryUserByMobileAndAppCdde(mobileNumber,appCodeName);
 		if (null == user) {
 			return ResultGenerator.genResult(MemberEnums.NO_REGISTER.getcode(), MemberEnums.NO_REGISTER.getMsg());
 		}

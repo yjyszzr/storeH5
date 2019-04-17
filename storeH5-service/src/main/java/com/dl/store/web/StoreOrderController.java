@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/order")
 @Slf4j
+@Transactional("transactionManager3")
 public class StoreOrderController {
 	@Resource
 	private OrderService orderService;
@@ -47,7 +48,6 @@ public class StoreOrderController {
 	
 	@ApiOperation(value = "订单支付", notes = "订单支付")
 	@PostMapping("/pay")
-	@Transactional
     public BaseResult<DlHallInfoDTO> orderPay(@RequestBody OrderPayParam param){
 		// test start
 //		try {

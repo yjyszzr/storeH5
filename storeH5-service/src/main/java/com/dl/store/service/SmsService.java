@@ -3,7 +3,6 @@ package com.dl.store.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dl.base.configurer.RestTemplateConfig;
-import com.dl.base.enums.ThirdApiEnum;
 import com.dl.base.model.UserDeviceInfo;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
@@ -83,7 +82,9 @@ public class SmsService {
 			return ResultGenerator.genResult(MemberEnums.MOBILE_VALID_ERROR.getcode(), MemberEnums.MOBILE_VALID_ERROR.getMsg());
 		}
 		String smsType = smsParam.getSmsType();
-		User user = userService.findBy("mobile", smsParam.getMobile());
+		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
+		String appCodeNameStr = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User user = userMapper.queryUserByMobileAndAppCdde(smsParam.getMobile(),appCodeNameStr);
 		if (MemberConstant.VERIFY_TYPE_LOGIN.equals(smsType) || MemberConstant.VERIFY_TYPE_FORGET.equals(smsType)) {// 登录，忘记密码
 			if (null == user) {
 				return ResultGenerator.genResult(MemberEnums.NO_REGISTER.getcode(), MemberEnums.NO_REGISTER.getMsg());

@@ -1,11 +1,14 @@
 package com.dl.store.service;
 
+import com.dl.base.model.UserDeviceInfo;
 import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.service.AbstractService;
 import com.dl.base.util.IpUtil;
 import com.dl.base.util.RegexUtil;
+import com.dl.base.util.SessionUtil;
 import com.dl.store.core.ProjectConstant;
+import com.dl.store.dao3.UserMapper;
 import com.dl.store.enums.MemberEnums;
 import com.dl.store.model.User;
 import com.dl.store.param.UserParam;
@@ -13,6 +16,7 @@ import com.dl.store.param.UserRegisterParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +27,9 @@ public class UserRegisterService extends AbstractService<User> {
     
     @Resource
     private UserService userService;
+
+	@Resource
+	private UserMapper userMapper;
     
 	/**
 	 * 注册并登录
@@ -34,8 +41,10 @@ public class UserRegisterService extends AbstractService<User> {
     	if(!RegexUtil.checkMobile(userRegisterParam.getMobile())) {
     		return ResultGenerator.genResult(MemberEnums.MOBILE_VALID_ERROR.getcode(), MemberEnums.MOBILE_VALID_ERROR.getMsg());
     	}
-    	
-    	User user = userService.findBy("mobile", userRegisterParam.getMobile());
+
+		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
+		String appCodeNameStr = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User user = userMapper.queryUserByMobileAndAppCdde(userRegisterParam.getMobile(),appCodeNameStr);
     	if(null != user) {
     		return ResultGenerator.genResult(MemberEnums.ALREADY_REGISTER.getcode(), MemberEnums.ALREADY_REGISTER.getMsg());
     	}

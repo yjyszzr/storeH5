@@ -129,7 +129,6 @@ public class DlDeviceActionControlService extends AbstractService<DlDeviceAction
                 userService.bindsThirdAndReg(param.getUserToken());
             }
 
-
             DlUserAuths bindUserAuths = dlUserAuthsService.getUserAuthByThirdUserId(userId);
             UserLoginDTO userLoginDTO = userLoginService.queryUserLoginDTOByMobile(bindUserAuths.getThirdMobile(), "4");
             deviceCtrlDto.setUserToken(userLoginDTO.getToken());

@@ -75,7 +75,9 @@ public class UserLoginService extends AbstractService<User> {
 		UserLoginDTO userLoginDTO = new UserLoginDTO();
 		userLoginMobileParam.setPassword("******");
 		String loginParams = JSONHelper.bean2json(userLoginMobileParam);
-		User user = userService.findBy("mobile", mobile);
+		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
+		String appCodeNameStr = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User user = userMapper.queryUserByMobileAndAppCdde(userLoginMobileParam.getMobile(),appCodeNameStr);
 		if (null == user) {
 			//this.loginLog(-1, 0, 1, loginParams, MemberEnums.NO_REGISTER.getMsg());
 			return ResultGenerator.genResult(MemberEnums.NO_REGISTER.getcode(), MemberEnums.NO_REGISTER.getMsg());
@@ -213,7 +215,10 @@ public class UserLoginService extends AbstractService<User> {
 			this.loginLog(-1, 0, 1, loginParams, com.dl.member.enums.MemberEnums.SMSCODE_WRONG.getMsg());
 			return ResultGenerator.genResult(com.dl.member.enums.MemberEnums.SMSCODE_WRONG.getcode(), com.dl.member.enums.MemberEnums.SMSCODE_WRONG.getMsg());
 		}
-		User user = userService.findBy("mobile", mobile);
+
+		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
+		String appCodeNameStr = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User user = userMapper.queryUserByMobileAndAppCdde(userLoginMobileParam.getMobile(),appCodeNameStr);
 		if (null == user) {// 新用户注册并登录
 
 			UserRegisterParam userRegisterParam = new UserRegisterParam();
@@ -282,7 +287,9 @@ public class UserLoginService extends AbstractService<User> {
 	 * @return
 	 */
 	public UserLoginDTO queryUserLoginDTOByMobile(String mobile, String loginSource) {
-		User userInfo = userService.findBy("mobile", mobile);
+		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
+		String appCodeNameStr = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User userInfo = userMapper.queryUserByMobileAndAppCdde(mobile,appCodeNameStr);
 		UserLoginDTO userLoginDTO = new UserLoginDTO();
 		userLoginDTO.setMobile(userInfo.getMobile());
 		userLoginDTO.setHeadImg(userInfo.getHeadImg());
