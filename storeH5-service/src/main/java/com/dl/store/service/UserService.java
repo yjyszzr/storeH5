@@ -357,7 +357,7 @@ public class UserService extends AbstractService<User> {
 
 		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
 		String appCodeName = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
-		User user = userMapper.queryUserByMobileAndAppCdde(userLoginMobileParam.getMobile(),appCodeName);
+		User user = userMapper.queryUserByMobileAndAppCdde(mobileNumber,appCodeName);
 		if (null == user) {
 			return ResultGenerator.genResult(MemberEnums.NO_REGISTER.getcode(), MemberEnums.NO_REGISTER.getMsg());
 		}
