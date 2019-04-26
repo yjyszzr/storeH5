@@ -288,8 +288,8 @@ public class UserLoginService extends AbstractService<User> {
 	 */
 	public UserLoginDTO queryUserLoginDTOByMobile(String mobile, String loginSource) {
 		UserDeviceInfo userDeviceInfo = SessionUtil.getUserDevice();
-		String appCodeNameStr = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
-		User userInfo = userMapper.queryUserByMobileAndAppCdde(mobile,appCodeNameStr);
+		//String appCodeNameStr = org.apache.commons.lang.StringUtils.isEmpty(userDeviceInfo.getAppCodeName())?"10":userDeviceInfo.getAppCodeName();
+		User userInfo = userMapper.queryUserByMobile(mobile);
 		UserLoginDTO userLoginDTO = new UserLoginDTO();
 		userLoginDTO.setMobile(userInfo.getMobile());
 		userLoginDTO.setHeadImg(userInfo.getHeadImg());
