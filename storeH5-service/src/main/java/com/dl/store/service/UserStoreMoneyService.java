@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.DateUtil;
 import com.dl.store.dao3.UserStoreMoneyMapper;
 import com.dl.store.model.UserStoreMoney;
@@ -90,6 +91,43 @@ public class UserStoreMoneyService {
 			BigDecimal userMoney = userMoneyResult.getMoney();
 			BigDecimal moneyResult = userMoney.add(money);
 			userStoreMoney.setMoney(moneyResult);
+			int cnt = userStoreMoneyMapper.orderPay(userStoreMoney);
+			if(cnt > 0) {
+				succ = true;
+			}
+		}
+		return succ;
+	}
+	
+	
+	/**
+	 * 购彩金额
+	 * @param userId
+	 * @param storeId
+	 * @param money
+	 * @return
+	 */
+	public boolean awardMonyTwo(Integer userId,Integer storeId,BigDecimal money) {
+		boolean succ = false;
+		UserStoreMoney userStoreMoney = new UserStoreMoney();
+		userStoreMoney.setStoreId(storeId);
+		userStoreMoney.setUserId(userId);
+		UserStoreMoney userMoneyResult = userStoreMoneyMapper.queryInfo(userStoreMoney);
+		if(userMoneyResult == null || userMoneyResult.getId() == null || userMoneyResult.getId() <= 0) {
+			userStoreMoney.setMoney(money);
+			userStoreMoney.setLastTime(DateUtil.getCurrentTimeLong());
+			int cnt = userStoreMoneyMapper.insert(userStoreMoney);
+			if(cnt > 0) {
+				succ = true;
+			}
+		}else {
+			BigDecimal userMoney = userMoneyResult.getMoneyLimit();//不可提现余额
+			BigDecimal moneyResult = userMoney.subtract(money);
+			if(userMoney.subtract(money).doubleValue() >= 0) {
+            }else {
+                return false;
+            }
+			userStoreMoney.setMoneyLimit(moneyResult);
 			int cnt = userStoreMoneyMapper.orderPay(userStoreMoney);
 			if(cnt > 0) {
 				succ = true;
