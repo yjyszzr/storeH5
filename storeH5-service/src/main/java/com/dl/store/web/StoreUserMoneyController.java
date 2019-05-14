@@ -139,7 +139,7 @@ public class StoreUserMoneyController {
 		//扣钱
 		boolean succ = userStoreMoneyService.awardMonyTwo(userId,storeId,awardMoney);
 		if(!succ) {
-			ResultGenerator.genFailResult("fail");
+			return ResultGenerator.genFailResult("fail");
 		}
 		log.info("[orderAward]" + "扣除钱包金额:" + succ);
 		//添加流水记录操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
