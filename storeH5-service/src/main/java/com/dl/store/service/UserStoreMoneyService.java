@@ -121,14 +121,17 @@ public class UserStoreMoneyService {
 				succ = true;
 			}
 		}else {
-			BigDecimal userMoney = userMoneyResult.getMoneyLimit();//不可提现余额
-			BigDecimal moneyResult = userMoney.subtract(money);
+			BigDecimal userMoney = userMoneyResult.getMoney();//不可提现余额
+			BigDecimal userMoneyLimit = userMoneyResult.getMoneyLimit();//不可提现余额
+			BigDecimal moneyResult = userMoneyLimit.subtract(money);
 			if(userMoney.subtract(money).doubleValue() >= 0) {
             }else {
                 return false;
             }
+			userStoreMoney.setMoney(userMoney);
 			userStoreMoney.setMoneyLimit(moneyResult);
 			int cnt = userStoreMoneyMapper.orderPay(userStoreMoney);
+			log.info("awardMonyTwo:扣除余额"+userStoreMoney.getMoneyLimit());
 			if(cnt > 0) {
 				succ = true;
 			}
