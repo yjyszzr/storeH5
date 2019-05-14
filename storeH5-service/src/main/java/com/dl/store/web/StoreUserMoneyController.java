@@ -124,4 +124,25 @@ public class StoreUserMoneyController {
 
 		return ResultGenerator.genSuccessResult("派奖成功");
 	}
+	
+	@ApiOperation(value = "扣钱", notes = "扣钱")
+	@PostMapping("/awardtwo")
+    public BaseResult<?> orderAwardTwo(@RequestBody AwardParam param){
+		Integer userId = param.getUserId();
+		Integer storeId = param.getStoreId();
+		BigDecimal awardMoney = param.getTicketAmount();
+
+		if(userId == null || userId <= 0) {
+			log.info("[orderAward]" + " UserId为空");
+			return ResultGenerator.genFailResult("UserId为空");
+		}
+		//添加流水记录操作类型:0-全部 1-奖金 2-充值 3-购彩 4-提现 5-红包 6-账户回滚, 7购券, 8退款，9充值过多（输入错误）
+		int cnt = userAccountService.insertOrderPayInfo(userId, storeId, param.getOrderSn(),BigDecimal.ZERO.subtract(awardMoney),null,null,3);
+		log.info("[orderAward]" + "增加账户流水成功:" + cnt);
+		//扣钱
+		boolean succ = userStoreMoneyService.awardMony(userId,storeId,awardMoney);
+		log.info("[orderAward]" + "扣除钱包金额:" + succ);
+
+		return ResultGenerator.genSuccessResult("扣款成功");
+	}
 }

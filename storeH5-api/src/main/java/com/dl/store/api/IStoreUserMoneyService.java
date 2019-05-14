@@ -17,4 +17,7 @@ public interface IStoreUserMoneyService {
 
 	@RequestMapping(path = "/pay/rollback", method = RequestMethod.POST)
 	public BaseResult<Object> orderRollBack(@RequestBody OrderRollBackParam param);
+	
+	@RequestMapping(path = "/pay/awardtwo", method = RequestMethod.POST)
+	public BaseResult<Object> orderAwardTwo(@RequestBody AwardParam param);
 }
