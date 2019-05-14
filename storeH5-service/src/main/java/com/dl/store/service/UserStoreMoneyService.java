@@ -124,7 +124,7 @@ public class UserStoreMoneyService {
 			BigDecimal userMoney = userMoneyResult.getMoney();//不可提现余额
 			BigDecimal userMoneyLimit = userMoneyResult.getMoneyLimit();//不可提现余额
 			BigDecimal moneyResult = userMoneyLimit.subtract(money);
-			if(userMoney.subtract(money).doubleValue() >= 0) {
+			if(userMoneyLimit.subtract(money).doubleValue() >= 0) {
             }else {
                 return false;
             }
