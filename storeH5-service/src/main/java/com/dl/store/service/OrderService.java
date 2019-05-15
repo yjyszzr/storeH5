@@ -141,6 +141,7 @@ public class OrderService extends AbstractService<Order> {
 		parameter.put("mobile", mobile);
 		parameter.put("first_pay_time", firstPayTime);
 		int rst = this.orderMapper.setFirstPayTime(parameter);
+		return rst;
 	}
 	
     /**
