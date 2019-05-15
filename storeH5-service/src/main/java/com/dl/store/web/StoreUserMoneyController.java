@@ -153,7 +153,7 @@ public class StoreUserMoneyController {
 	
 	@ApiOperation(value = "设置第一次支付时间", notes = "设置第一次支付时间")
 	@PostMapping("/recordFirstPayTime")
-	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
+	public BaseResult<String> recordFirstPayTime(@RequestBody FirstPayTimeParam firstPayTimeParam){
 		return userStoreMoneyService.recordFirstPayTime(firstPayTimeParam);
 	}
 }
