@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.dl.store.param.FirstPayTimeParam;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -147,5 +148,12 @@ public class StoreUserMoneyController {
 		log.info("[orderAward]" + "增加账户流水成功:" + cnt);
 
 		return ResultGenerator.genSuccessResult("扣款成功");
+	}
+	
+	
+	@ApiOperation(value = "设置第一次支付时间", notes = "设置第一次支付时间")
+	@PostMapping("/recordFirstPayTime")
+	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
+		return userStoreMoneyService.recordFirstPayTime(firstPayTimeParam);
 	}
 }
