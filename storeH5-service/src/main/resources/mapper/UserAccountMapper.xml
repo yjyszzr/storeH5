@@ -42,24 +42,8 @@
   </select>
   
   <select id="queryUserAccountBySelective" parameterType="com.dl.store.model.UserAccount"  resultMap="BaseResultMap">
-  		SELECT *  FROM dl_user_account 
-	  	<where>
-		  	<if test="userId != null">
-		        AND user_id = #{userId}
-		    </if>
-		    <if test="processType != null">
-		        AND process_type = #{processType}
-		    </if>
-		    <if test="id != null">
-		        AND id = #{id}
-		    </if>
-		    <if test="accountSn != null">
-		        AND account_sn = #{accountSn}
-		    </if>
-		    <if test="orderSn != null">
-		        AND order_sn = #{orderSn}
-		    </if>
-	    </where>
+  		SELECT *  FROM dl_user_account
+  		where user_id =  #{userId} and process_type not in(10,11,12)
   		ORDER BY add_time DESC
   </select>
   
