@@ -10,6 +10,7 @@ import com.dl.store.enums.OrderEnums;
 import com.dl.store.model.Order;
 import com.dl.store.model.UserBonus;
 import com.dl.store.model.UserStoreMoney;
+import com.dl.store.param.FirstPayTimeParam;
 import com.dl.store.param.OrderPayParam;
 import com.dl.store.service.*;
 import io.swagger.annotations.ApiOperation;
@@ -168,49 +169,36 @@ public class StoreOrderController {
 		//更改订单状态为已支付
 		boolean succ = orderService.updatePayStatus(orderSn,amt,bonudsPrice,userBoundsId);
 		log.info("[orderPay]" + " succ:" + succ);
-		
-		try {	
-			log.info("[customer] start ================================= ");
-			if (succ) { 
-//				userId
-				String mobile = "";
-				String firstPayTime = "";
-			 
-//				User user = this.userService.findById(userId);
-//				mobile = user.getMobile();
-//				firstPayTime = order.getPayTime() + "";
 
-//				if (mobile!= null) mobile = mobile.trim();
-//				firstPayTime = order.getPayTime() + "";
-//				firstPayTime = order.getAddTime() + "";
-				Order _order = orderService.queryOrderByOrderSn(orderSn);
-				if(_order != null) {
-					firstPayTime = _order.getPayTime() + "";
-					mobile = _order.getMobile().trim();
-				}
-				
-//				log.info("[customer] userId:" + userId); 
-//				log.info("[customer] mobile:" + mobile);
-//				log.info("[customer] firstPayTime:" + firstPayTime);
-				
-				log.info("customer|userId:" + userId + "|mobile:" + mobile + "|firstPayTime:" + firstPayTime);
-				
-				if (null != userId
-					&& !StringUtil.isBlank(mobile)
-					&& !StringUtil.isBlank(firstPayTime)
-				) {
-					this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
-					log.info("[customer] to db");
-				}
-			
-			} 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			log.info("[customer] end ================================= ");
-		}
+		FirstPayTimeParam firstPayTimeParam = new FirstPayTimeParam();
+		firstPayTimeParam.setOrderSn(orderSn);
+		this.recordFirstPayTime(firstPayTimeParam);
 		
 		return ResultGenerator.genSuccessResult("支付成功");
+	}
+
+
+	@ApiOperation(value = "设置第一次支付时间", notes = "设置第一次支付时间")
+	@PostMapping("/recordFirstPayTime")
+	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
+		String mobile = "";
+		String firstPayTime = "";
+		Integer userId = null;
+		Order _order = orderService.queryOrderByOrderSn(firstPayTimeParam.getOrderSn());
+		if(_order != null) {
+			userId = _order.getUserId();
+			firstPayTime = _order.getPayTime() + "";
+			mobile = _order.getMobile().trim();
+		}
+
+		log.info("customer|userId:" + userId + "|mobile:" + mobile + "|firstPayTime:" + firstPayTime);
+
+		if (null != userId && !StringUtil.isBlank(mobile) && !StringUtil.isBlank(firstPayTime)) {
+			int rst = this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
+			log.info("[customer] to db");
+		}
+
+		return ResultGenerator.genSuccessResult("success");
 	}
 	
 }

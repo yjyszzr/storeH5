@@ -1,19 +1,18 @@
 package com.dl.store.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.dl.base.mapper.Mapper;
 import com.dl.store.dto.OrderInfoListDTO;
 import com.dl.store.dto.OrderWithUserDTO;
 import com.dl.store.model.Order;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 
 public interface OrderMapper extends Mapper<Order> {
 
-	public void setFirstPayTime(Map parameter);
+	public int setFirstPayTime(Map parameter);
  
 	
 	/**
