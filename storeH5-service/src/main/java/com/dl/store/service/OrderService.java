@@ -1,38 +1,8 @@
 package com.dl.store.service;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.dl.base.enums.MatchBetTypeEnum;
-import com.dl.base.enums.MatchPlayTypeEnum;
-import com.dl.base.enums.MatchResultCrsEnum;
-import com.dl.base.enums.MatchResultHadEnum;
-import com.dl.base.enums.MatchResultHafuEnum;
-import com.dl.base.enums.RespStatusEnum;
-import com.dl.base.enums.SNBusinessCodeEnum;
+import com.dl.base.enums.*;
 import com.dl.base.exception.ServiceException;
 import com.dl.base.model.UserDeviceInfo;
 import com.dl.base.result.BaseResult;
@@ -59,41 +29,36 @@ import com.dl.order.param.OrderInfoListParam;
 import com.dl.order.param.TicketSchemeParam;
 import com.dl.store.core.ProjectConstant;
 import com.dl.store.dao.DlPrintLotteryMapper;
+import com.dl.store.dao.OrderMapper;
 import com.dl.store.dao.OrderWithUserMapper;
 import com.dl.store.dao2.DlLeagueMatchResultMapper;
 import com.dl.store.dao3.OrderDetailMapper;
-import com.dl.store.dao.OrderMapper;
-import com.dl.store.dto.LotteryPrintDTO;
-import com.dl.store.dto.OrderAppendInfoDTO;
-import com.dl.store.dto.OrderDTO;
-import com.dl.store.dto.OrderDetailDataDTO;
-import com.dl.store.dto.OrderInfoAndDetailDTO;
-import com.dl.store.dto.OrderInfoDTO;
-import com.dl.store.dto.OrderInfoListDTO;
-import com.dl.store.dto.OrderWithUserDTO;
-import com.dl.store.dto.SysConfigDTO;
-import com.dl.store.dto.TicketSchemeDTO;
+import com.dl.store.dto.*;
 import com.dl.store.dto.TicketSchemeDTO.TicketSchemeDetailDTO;
-import com.dl.store.dto.UserIdAndRewardDTO;
 import com.dl.store.enums.OrderExceptionEnum;
 import com.dl.store.exception.SubmitOrderException;
 import com.dl.store.exception.UserAccountException;
-import com.dl.store.model.DlLeagueMatchResult;
-import com.dl.store.model.DlPrintLottery;
-import com.dl.store.model.DlUserAuths;
-import com.dl.store.model.LotteryClassifyTemp;
-import com.dl.store.model.LotteryPlayClassifyTemp;
-import com.dl.store.model.Order;
-import com.dl.store.model.OrderDetail;
-import com.dl.store.model.PlayTypeName;
+import com.dl.store.model.*;
 import com.dl.store.param.OrderDetailParam;
 import com.dl.store.param.SubmitOrderParam;
 import com.dl.store.param.SubmitOrderParam.TicketDetail;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -141,6 +106,7 @@ public class OrderService extends AbstractService<Order> {
 		parameter.put("mobile", mobile);
 		parameter.put("first_pay_time", firstPayTime);
 		int rst = this.orderMapper.setFirstPayTime(parameter);
+		return rst;
 	}
 	
     /**
