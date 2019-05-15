@@ -1,13 +1,12 @@
 package com.dl.store.model;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import lombok.Data;
+import java.math.BigDecimal;
+import java.util.Date;
 @Data
 @Table(name = "dl_order")
 public class Order {
@@ -259,7 +258,14 @@ public class Order {
     private Integer ticketNum;
     
     @Column(name = "mobile")
-    private String mobile;  
+    private String mobile;
 
 
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
 }
