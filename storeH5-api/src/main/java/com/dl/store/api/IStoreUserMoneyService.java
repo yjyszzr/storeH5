@@ -22,7 +22,7 @@ public interface IStoreUserMoneyService {
 	public BaseResult<Object> orderAwardTwo(@RequestBody AwardParam param);
 
 	@RequestMapping(path = "/pay/recordFirstPayTime", method = RequestMethod.POST)
-	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam);
+	public BaseResult<String> recordFirstPayTime(@RequestBody FirstPayTimeParam firstPayTimeParam);
 
 }
 
