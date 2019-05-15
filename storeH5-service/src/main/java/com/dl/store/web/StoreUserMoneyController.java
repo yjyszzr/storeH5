@@ -4,6 +4,7 @@ import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.store.model.Order;
 import com.dl.store.param.AwardParam;
+import com.dl.store.param.FirstPayTimeParam;
 import com.dl.store.param.OrderRollBackParam;
 import com.dl.store.service.OrderService;
 import com.dl.store.service.UserAccountService;
@@ -29,6 +30,7 @@ public class StoreUserMoneyController {
 	private UserStoreMoneyService userStoreMoneyService;
 	@Resource
 	private UserAccountService userAccountService;
+
 	
 	@ApiOperation(value = "", notes = "订单回滚")
 	@PostMapping("/rollback")
@@ -148,4 +150,11 @@ public class StoreUserMoneyController {
 
 		return ResultGenerator.genSuccessResult("扣款成功");
 	}
+
+	@ApiOperation(value = "设置第一次支付时间", notes = "设置第一次支付时间")
+	@PostMapping("/recordFirstPayTime")
+	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
+		return userStoreMoneyService.recordFirstPayTime(firstPayTimeParam);
+	}
+
 }

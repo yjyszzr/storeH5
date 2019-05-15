@@ -15,7 +15,6 @@ import com.dl.store.param.OrderPayParam;
 import com.dl.store.service.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.helper.StringUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -46,6 +45,9 @@ public class StoreOrderController {
 
 	@Resource
 	private StringRedisTemplate stringRedisTemplate;
+
+
+
 	
 	@ApiOperation(value = "订单支付", notes = "订单支付")
 	@PostMapping("/pay")
@@ -172,33 +174,9 @@ public class StoreOrderController {
 
 		FirstPayTimeParam firstPayTimeParam = new FirstPayTimeParam();
 		firstPayTimeParam.setOrderSn(orderSn);
-		this.recordFirstPayTime(firstPayTimeParam);
+		userStoreMoneyService.recordFirstPayTime(firstPayTimeParam);
 		
 		return ResultGenerator.genSuccessResult("支付成功");
-	}
-
-
-	@ApiOperation(value = "设置第一次支付时间", notes = "设置第一次支付时间")
-	@PostMapping("/recordFirstPayTime")
-	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
-		String mobile = "";
-		String firstPayTime = "";
-		Integer userId = null;
-		Order _order = orderService.queryOrderByOrderSn(firstPayTimeParam.getOrderSn());
-		if(_order != null) {
-			userId = _order.getUserId();
-			firstPayTime = _order.getPayTime() + "";
-			mobile = _order.getMobile().trim();
-		}
-
-		log.info("customer|userId:" + userId + "|mobile:" + mobile + "|firstPayTime:" + firstPayTime);
-
-		if (null != userId && !StringUtil.isBlank(mobile) && !StringUtil.isBlank(firstPayTime)) {
-			int rst = this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
-			log.info("[customer] to db");
-		}
-
-		return ResultGenerator.genSuccessResult("success");
 	}
 	
 }

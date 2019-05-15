@@ -21,7 +21,7 @@ public interface IStoreUserMoneyService {
 	@RequestMapping(path = "/pay/awardtwo", method = RequestMethod.POST)
 	public BaseResult<Object> orderAwardTwo(@RequestBody AwardParam param);
 
-	@RequestMapping(path = "/order/recordFirstPayTime", method = RequestMethod.POST)
+	@RequestMapping(path = "/pay/recordFirstPayTime", method = RequestMethod.POST)
 	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam);
 
 }

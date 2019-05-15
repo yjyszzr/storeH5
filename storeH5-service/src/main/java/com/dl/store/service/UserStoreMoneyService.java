@@ -1,18 +1,19 @@
 package com.dl.store.service;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.base.util.DateUtil;
 import com.dl.store.dao3.UserStoreMoneyMapper;
+import com.dl.store.model.Order;
 import com.dl.store.model.UserStoreMoney;
-
+import com.dl.store.param.FirstPayTimeParam;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.helper.StringUtil;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 @Service
 @Transactional("transactionManager3")
@@ -21,6 +22,9 @@ public class UserStoreMoneyService {
 
 	@Resource
 	private UserStoreMoneyMapper userStoreMoneyMapper;
+
+	@Resource
+	private OrderService orderService;
 	
 	/***
 	 * 订单支付，店铺余额减
@@ -154,4 +158,26 @@ public class UserStoreMoneyService {
 		}
 		return succ;
 	}
+
+	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
+		String mobile = "";
+		String firstPayTime = "";
+		Integer userId = null;
+		Order _order = orderService.queryOrderByOrderSn(firstPayTimeParam.getOrderSn());
+		if(_order != null) {
+			userId = _order.getUserId();
+			firstPayTime = _order.getPayTime() + "";
+			mobile = _order.getMobile().trim();
+		}
+
+		log.info("customer|userId:" + userId + "|mobile:" + mobile + "|firstPayTime:" + firstPayTime);
+
+		if (null != userId && !StringUtil.isBlank(mobile) && !StringUtil.isBlank(firstPayTime)) {
+			int rst = this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
+			log.info("[customer] to db");
+		}
+
+		return ResultGenerator.genSuccessResult("success");
+	}
+
 }
