@@ -167,7 +167,7 @@ public class UserStoreMoneyService {
 		if(_order != null) {
 			userId = _order.getUserId();
 			log.info("first payTime:"+_order.getPayTime());
-			firstPayTime = String.valueOf(_order.getPayTime());
+			firstPayTime = String.valueOf(DateUtil.getCurrentTimeLong());
 			mobile = _order.getMobile().trim();
 		}
 
