@@ -22,6 +22,9 @@ public class UserStoreMoneyService {
 	@Resource
 	private UserStoreMoneyMapper userStoreMoneyMapper;
 	
+	@Resource
+	private OrderService orderService;
+	
 	/***
 	 * 订单支付，店铺余额减
 	 * @param userId
@@ -154,4 +157,26 @@ public class UserStoreMoneyService {
 		}
 		return succ;
 	}
+	
+	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
+		String mobile = "";
+		String firstPayTime = "";
+		Integer userId = null;
+		Order _order = orderService.queryOrderByOrderSn(firstPayTimeParam.getOrderSn());
+		if(_order != null) {
+			userId = _order.getUserId();
+			firstPayTime = _order.getPayTime() + "";
+			mobile = _order.getMobile().trim();
+		}
+
+		log.info("customer|userId:" + userId + "|mobile:" + mobile + "|firstPayTime:" + firstPayTime);
+
+		if (null != userId && !StringUtil.isBlank(mobile) && !StringUtil.isBlank(firstPayTime)) {
+			int rst = this.orderService.setFirstPayTime(userId + "", mobile, firstPayTime);
+			log.info("[customer] to db");
+		}
+
+		return ResultGenerator.genSuccessResult("success");
+	}
+	
 }
