@@ -166,7 +166,8 @@ public class UserStoreMoneyService {
 		Order _order = orderService.queryOrderByOrderSn(firstPayTimeParam.getOrderSn());
 		if(_order != null) {
 			userId = _order.getUserId();
-			firstPayTime = _order.getPayTime() + "";
+			log.info("first payTime:"+_order.getPayTime());
+			firstPayTime = String.valueOf(_order.getPayTime());
 			mobile = _order.getMobile().trim();
 		}
 
