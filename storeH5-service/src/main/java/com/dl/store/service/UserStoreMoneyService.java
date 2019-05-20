@@ -125,17 +125,23 @@ public class UserStoreMoneyService {
 				succ = true;
 			}
 		}else {
-			BigDecimal userMoney = userMoneyResult.getMoney();//不可提现余额
+			BigDecimal userMoney = userMoneyResult.getMoney();//可提现余额
 			BigDecimal userMoneyLimit = userMoneyResult.getMoneyLimit();//不可提现余额
-			BigDecimal moneyResult = userMoneyLimit.subtract(money);
-			if(userMoneyLimit.subtract(money).doubleValue() >= 0) {
+			if(userMoney.add(userMoneyLimit).subtract(money).doubleValue() >= 0) {//可提现+不可提现-下单金额>0
+				BigDecimal moneyResult = userMoneyLimit.subtract(money);
+				if(moneyResult.doubleValue()>=0) {//不可提现余额大于下单金额  只扣款不可提现余额
+					userStoreMoney.setMoney(userMoney);
+					userStoreMoney.setMoneyLimit(moneyResult);
+				}else {//不可提现余额不足以扣除下单金额时  扣除可提现余额
+					userStoreMoney.setMoney(userMoney.add(moneyResult));
+					userStoreMoney.setMoneyLimit(BigDecimal.ZERO);
+				}
             }else {
                 return false;
             }
-			userStoreMoney.setMoney(userMoney);
-			userStoreMoney.setMoneyLimit(moneyResult);
 			int cnt = userStoreMoneyMapper.orderPay(userStoreMoney);
-			log.info("awardMonyTwo:扣除余额"+userStoreMoney.getMoneyLimit());
+			log.info("awardMonyTwo:不可提现剩余余额"+userStoreMoney.getMoneyLimit());
+			log.info("awardMonyTwo:可提现剩余余额"+userStoreMoney.getMoney());
 			if(cnt > 0) {
 				succ = true;
 			}
