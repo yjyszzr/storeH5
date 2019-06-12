@@ -22,7 +22,7 @@ public class UserStoreMoneyService {
 
 	@Resource
 	private UserStoreMoneyMapper userStoreMoneyMapper;
-
+	
 	@Resource
 	private OrderService orderService;
 	
@@ -158,7 +158,7 @@ public class UserStoreMoneyService {
 		}
 		return succ;
 	}
-
+	
 	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
 		String mobile = "";
 		String firstPayTime = "";
@@ -166,7 +166,8 @@ public class UserStoreMoneyService {
 		Order _order = orderService.queryOrderByOrderSn(firstPayTimeParam.getOrderSn());
 		if(_order != null) {
 			userId = _order.getUserId();
-			firstPayTime = _order.getPayTime() + "";
+			log.info("first payTime:"+_order.getPayTime());
+			firstPayTime = String.valueOf(DateUtil.getCurrentTimeLong());
 			mobile = _order.getMobile().trim();
 		}
 
@@ -179,5 +180,5 @@ public class UserStoreMoneyService {
 
 		return ResultGenerator.genSuccessResult("success");
 	}
-
+	
 }

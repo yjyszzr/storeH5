@@ -4,7 +4,6 @@ import com.dl.base.result.BaseResult;
 import com.dl.base.result.ResultGenerator;
 import com.dl.store.model.Order;
 import com.dl.store.param.AwardParam;
-import com.dl.store.param.FirstPayTimeParam;
 import com.dl.store.param.OrderRollBackParam;
 import com.dl.store.service.OrderService;
 import com.dl.store.service.UserAccountService;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.dl.store.param.FirstPayTimeParam;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -30,7 +30,6 @@ public class StoreUserMoneyController {
 	private UserStoreMoneyService userStoreMoneyService;
 	@Resource
 	private UserAccountService userAccountService;
-
 	
 	@ApiOperation(value = "", notes = "订单回滚")
 	@PostMapping("/rollback")
@@ -150,11 +149,11 @@ public class StoreUserMoneyController {
 
 		return ResultGenerator.genSuccessResult("扣款成功");
 	}
-
+	
+	
 	@ApiOperation(value = "设置第一次支付时间", notes = "设置第一次支付时间")
 	@PostMapping("/recordFirstPayTime")
-	public BaseResult<String> recordFirstPayTime(FirstPayTimeParam firstPayTimeParam){
+	public BaseResult<String> recordFirstPayTime(@RequestBody FirstPayTimeParam firstPayTimeParam){
 		return userStoreMoneyService.recordFirstPayTime(firstPayTimeParam);
 	}
-
 }

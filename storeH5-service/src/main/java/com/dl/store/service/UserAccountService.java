@@ -126,6 +126,7 @@ public class UserAccountService extends AbstractService<UserAccount> {
 		}
 		PageHelper.startPage(pageNum, pageSize);
 		if (MemberConstant.ALL_TIME.equals(timeType)) {
+		    log.info("全部流水:"+JSON.toJSONString(userAccount));
 			userAccountList = userAccountMapper.queryUserAccountBySelective(userAccount);
 		} else if (MemberConstant.TODAY.equals(timeType)) {
 			startTime = DateUtil.getTimeAfterDays(todayDate, 1, 0, 0, 0);
