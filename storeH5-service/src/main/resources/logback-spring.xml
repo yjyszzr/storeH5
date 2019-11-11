@@ -56,6 +56,15 @@
         </filter>
     </appender>
 
+    <!-- 生产环境228，配置sentry用来收集日志-->
+    <appender name="sentry-every" class="com.getsentry.raven.logback.SentryAppender">
+        <dsn>http://e21dec9b90ff4dadaaf5304b1195ff72:9feec0d712804e72b026dd4a41e55612@49.232.65.109:9000/26</dsn>
+        <tags>tag1:value1,tag2:value2</tags>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
     <logger name="com.dl.store" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
     <logger name="com.dl.store.dao3" level="INFO"/>
@@ -78,6 +87,16 @@
             <appender-ref ref="rollingFileINFO"/>
             <appender-ref ref="rollingFileERROR"/>
             <appender-ref ref="sentry-prod"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境日志配置228-->
+    <springProfile name="every">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="rollingFileINFO"/>
+            <appender-ref ref="rollingFileERROR"/>
+            <appender-ref ref="sentry-every"/>
         </root>
     </springProfile>
 </configuration>
